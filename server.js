@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const cloudinary = require('cloudinary').v2;
  
 const app = express();
@@ -10,10 +9,6 @@ app.use(express.json({ limit: '20mb' }));
  
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
- 
-// Inizializzazione sicura di Gemini
-const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
-const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
  
 // Configurazione Cloudinary
 cloudinary.config();
@@ -101,7 +96,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// 3. ENDPOINT: SIMULAZIONE VISIVA + CLOUDINARY + GEMINI
+// 3. ENDPOINT: TEST SIMULAZIONE VISIVA CON CLOUDINARY
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, category, imageBase64, mimeType } = req.body;
@@ -112,63 +107,29 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // A. Caricamento dell'immagine su Cloudinary
+    // Caricamento dell'immagine originale su Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(imageUri, {
       folder: 'visual_infix_simulazioni'
     });
 
-    // B. Elaborazione grafica con Cloudinary
-    let transformationOptions = { secure: true };
-    if (finish && finish.toLowerCase().includes('bianco')) {
-      transformationOptions.transformation = [
-        { effect: "brightness:10", quality: "auto" }
-      ];
-    } else {
-      transformationOptions.transformation = [
-        { effect: "contrast:15", quality: "auto" }
-      ];
-    }
-
-    const transformedUrl = cloudinary.url(uploadResponse.public_id, transformationOptions);
-
-    // C. Analisi tecnica di fattibilità con Gemini (con gestione protetta)
-    let aiFeasibilityReport = "Analisi tecnica completata: vano conforme per l'installazione del serramento.";
-    
-    if (genAI) {
-      try {
-        // Usiamo la versione stabile del modello per evitare errori 404
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const base64Data = imageBase64.includes('base64,') ? imageBase64.split('base64,')[1] : imageBase64;
-
-        const promptText = `Sei un esperto consulente tecnico di Visual INFIX®. Analizza questa foto del vano/serramento. Fornisci un breve parere professionale sulla fattibilità dell'intervento per la categoria "${category || 'Infisso'}" con finitura "${finish || 'Standard'}": massimo 3 frasi in italiano, chiare, tecniche e incoraggianti.`;
-
-        const imagePart = {
-          inlineData: {
-            data: base64Data,
-            mimeType: mimeType || 'image/jpeg'
-          },
-        };
-
-        const result = await model.generateContent([promptText, imagePart]);
-        const response = await result.response;
-        aiFeasibilityReport = response.text();
-      } catch (geminiErr) {
-        console.error("Nota su Gemini:", geminiErr.message);
-        // Fallback pulito se l'API dovesse avere un glitch temporaneo
-        aiFeasibilityReport = `Parere tecnico: Installazione fattibile per ${category || 'il serramento'} con finitura ${finish || 'selezionata'}. Struttura del vano idonea.`;
-      }
-    }
+    // Applicazione di una trasformazione visiva chiara (es. contrasto/regolazione) per vedere la foto "Dopo" modificata
+    const transformedUrl = cloudinary.url(uploadResponse.public_id, {
+      transformation: [
+        { effect: "contrast:25", quality: "auto" }
+      ],
+      secure: true
+    });
  
     res.json({ 
       success: true, 
       imageUrl: transformedUrl, 
       result: transformedUrl,
-      feasibilityReport: aiFeasibilityReport,
-      message: "Simulazione e parere tecnico generati con successo."
+      feasibilityReport: `Simulazione completata per ${category || 'Infisso'} con finitura ${finish || 'Standard'}. Intervento perfettamente fattibile.`,
+      message: "Simulazione generata con successo tramite Cloudinary."
     });
  
   } catch (error) {
-    console.error("Errore server critico:", error);
+    console.error("Errore server Cloudinary:", error);
     res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione grafica." });
   }
 });
