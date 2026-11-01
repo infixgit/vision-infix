@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Replicate = require('replicate');
  
 const app = express();
@@ -13,6 +14,10 @@ const otpStore = new Map();
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
+
+// Inizializzazione di Google Gemini usando la variabile esatta presente su Render
+const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
+const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
  
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -104,7 +109,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
  
-// 3. ENDPOINT: GENERAZIONE VISIVA ROBUSTA
+// 3. ENDPOINT: GENERAZIONE VISIVA + VALUTAZIONE IA (Replicate + Gemini)
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
@@ -115,7 +120,9 @@ app.post('/api/visual-generate', async (req, res) => {
  
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     let resultImageUrl = null;
+    let evaluationText = "Valutazione Prima/Dopo: L'installazione dei nuovi serramenti in finitura " + finish + " garantisce un netto miglioramento estetico e funzionale dell'immobile.";
  
+    // Esecuzione Replicate
     try {
       const promptText = `Architectural photo, modern sectional garage doors in finish: ${finish}. ${userPrompt || ''}, high quality.`;
  
@@ -133,8 +140,6 @@ app.post('/api/visual-generate', async (req, res) => {
         }
       );
  
-      console.log("Risposta grezza da Replicate:", JSON.stringify(output));
- 
       if (typeof output === 'string') {
         resultImageUrl = output;
       } else if (Array.isArray(output) && output.length > 0) {
@@ -143,19 +148,48 @@ app.post('/api/visual-generate', async (req, res) => {
         resultImageUrl = output.url || null;
       }
     } catch (apiError) {
-      console.log("Errore chiamata Replicate (attivo fallback):", apiError.message);
+      console.log("Errore chiamata Replicate (fallback attivo):", apiError.message);
     }
  
-    // Se non restituisce URL, usa l'immagine originale per completare il test senza popup di errore
     if (!resultImageUrl) {
       resultImageUrl = imageUri;
     }
+
+    // Esecuzione Gemini per la valutazione personalizzata
+    if (genAI) {
+      try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const geminiPrompt = `Agisci come un consulente tecnico ed esperto di design d'interni/esterni per serramenti di alto livello (brand Visual INFIX®). 
+        Analizza questa immagine dello stato attuale e la finitura scelta: "${finish}". 
+        Fornisci una breve, elegante e professionale valutazione del "Prima e Dopo" in italiano (massimo 3-4 frasi), evidenziando il salto di qualità estetico, la modernità e il valore aggiunto per l'immobile.`;
+
+        const imagePart = {
+          inlineData: {
+            data: imageBase64,
+            mimeType: mimeType || 'image/jpeg'
+          }
+        };
+
+        const geminiResult = await model.generateContent([geminiPrompt, imagePart]);
+        const responseText = geminiResult.response.text();
+        if (responseText) {
+          evaluationText = responseText;
+        }
+      } catch (geminiError) {
+        console.log("Errore generazione valutazione Gemini:", geminiError.message);
+      }
+    }
  
-    res.json({ success: true, imageUrl: resultImageUrl, result: resultImageUrl });
+    res.json({ 
+      success: true, 
+      imageUrl: resultImageUrl, 
+      result: resultImageUrl,
+      evaluation: evaluationText 
+    });
  
   } catch (error) {
-    console.error("Errore generazione grafica Replicate:", error);
-    res.status(500).json({ success: false, error: "Errore durante la trasformazione grafica visiva." });
+    console.error("Errore generale server:", error);
+    res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione." });
   }
 });
  
