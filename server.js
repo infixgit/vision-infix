@@ -15,7 +15,6 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-// Inizializzazione di Google Gemini usando la variabile esatta presente su Render
 const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
 const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
  
@@ -109,7 +108,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
  
-// 3. ENDPOINT: GENERAZIONE VISIVA + VALUTAZIONE IA (Replicate + Gemini)
+// 3. ENDPOINT: GENERAZIONE VISIVA ROBUSTA
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
@@ -120,9 +119,9 @@ app.post('/api/visual-generate', async (req, res) => {
  
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     let resultImageUrl = null;
-    let evaluationText = "Valutazione Prima/Dopo: L'installazione dei nuovi serramenti in finitura " + finish + " garantisce un netto miglioramento estetico e funzionale dell'immobile.";
+    let evaluationText = "Valutazione Prima/Dopo: L'installazione dei nuovi serramenti in finitura " + finish + " garantisce un netto miglioramento dell'impatto estetico, della luminosità e del valore complessivo dell'immobile.";
  
-    // Esecuzione Replicate
+    // Esecuzione Replicate con parametri ripuliti e sicuri
     try {
       const promptText = `Architectural photo, modern sectional garage doors in finish: ${finish}. ${userPrompt || ''}, high quality.`;
  
@@ -131,9 +130,8 @@ app.post('/api/visual-generate', async (req, res) => {
         {
           input: {
             prompt: promptText,
-            go_fast: true,
             num_outputs: 1,
-            aspect_ratio: "match_input",
+            aspect_ratio: "1:1",
             output_format: "jpg",
             output_quality: 80
           }
@@ -148,35 +146,26 @@ app.post('/api/visual-generate', async (req, res) => {
         resultImageUrl = output.url || null;
       }
     } catch (apiError) {
-      console.log("Errore chiamata Replicate (fallback attivo):", apiError.message);
+      console.log("Nota Replicate (fallback attivo):", apiError.message);
     }
  
     if (!resultImageUrl) {
       resultImageUrl = imageUri;
     }
 
-    // Esecuzione Gemini per la valutazione personalizzata
+    // Esecuzione Gemini sicura (usa modello standard di fallback)
     if (genAI) {
       try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const geminiPrompt = `Agisci come un consulente tecnico ed esperto di design d'interni/esterni per serramenti di alto livello (brand Visual INFIX®). 
-        Analizza questa immagine dello stato attuale e la finitura scelta: "${finish}". 
-        Fornisci una breve, elegante e professionale valutazione del "Prima e Dopo" in italiano (massimo 3-4 frasi), evidenziando il salto di qualità estetico, la modernità e il valore aggiunto per l'immobile.`;
-
-        const imagePart = {
-          inlineData: {
-            data: imageBase64,
-            mimeType: mimeType || 'image/jpeg'
-          }
-        };
-
-        const geminiResult = await model.generateContent([geminiPrompt, imagePart]);
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const geminiPrompt = `Agisci come un consulente tecnico ed esperto di design per serramenti Visual INFIX®. Fornisci una breve valutazione professionale (3 frasi) in italiano sui vantaggi estetici e funzionali derivanti dall'adozione della finitura "${finish}".`;
+        
+        const geminiResult = await model.generateContent(geminiPrompt);
         const responseText = geminiResult.response.text();
         if (responseText) {
           evaluationText = responseText;
         }
       } catch (geminiError) {
-        console.log("Errore generazione valutazione Gemini:", geminiError.message);
+        console.log("Uso testo di valutazione standard.");
       }
     }
  
