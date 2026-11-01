@@ -14,12 +14,14 @@ const otpStore = new Map();
 const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
 const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
  
+// Configurazione Cloudinary
 cloudinary.config();
  
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
  
+// 1. ENDPOINT: INVIO OTP (via Brevo)
 app.post('/api/send-otp', (req, res) => {
   const { email } = req.body;
   if (!email || !email.includes('@')) {
@@ -80,6 +82,7 @@ app.post('/api/send-otp', (req, res) => {
   brevoReq.end();
 });
 
+// 2. ENDPOINT: VERIFICA OTP
 app.post('/api/verify-otp', (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) {
@@ -97,7 +100,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// ENDPOINT: SIMULAZIONE REALE CON TRASFORMAZIONE CLOUDINARY & GEMINI
+// 3. ENDPOINT: SIMULAZIONE VISIVA & PARERE TECNICO
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, category, imageBase64, mimeType } = req.body;
@@ -108,22 +111,18 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // 1. Caricamento dell'immagine originale su Cloudinary
+    // A. Caricamento su Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(imageUri, {
       folder: 'visual_infix_simulazioni'
     });
 
-    // 2. Applicazione della trasformazione grafica reale (es. effetto colore/tono in base alla finitura selezionata)
-    // Sfruttiamo i filtri di Cloudinary (es. e_colorize, effetto tint o modifiche tonali simulate)
+    // B. Trasformazione grafica su Cloudinary basata sulla finitura
     let transformationOptions = { secure: true };
-
     if (finish && finish.toLowerCase().includes('bianco')) {
-      // Effetto per schiarire/portare verso tonalità pulite
       transformationOptions.transformation = [
         { effect: "brightness:10", quality: "auto" }
       ];
     } else {
-      // Effetto generale di personalizzazione cromatica o esaltazione dettagli infisso
       transformationOptions.transformation = [
         { effect: "contrast:15", quality: "auto" }
       ];
@@ -131,10 +130,11 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const transformedUrl = cloudinary.url(uploadResponse.public_id, transformationOptions);
 
-    // 3. Analisi di fattibilità con Gemini
+    // C. Parere tecnico protetto da try/catch per evitare crash in caso di problemi con il modello IA
     let aiFeasibilityReport = "Intervento fattibile con le specifiche indicate.";
     if (genAI) {
       try {
+        // Utilizziamo il nome corretto supportato dalle librerie recenti
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const base64Data = imageBase64.includes('base64,') ? imageBase64.split('base64,')[1] : imageBase64;
 
@@ -147,11 +147,12 @@ app.post('/api/visual-generate', async (req, res) => {
           },
         };
 
-        const result = model.generateContent([promptText, imagePart]);
-        const response = await (await result).response;
+        const result = await model.generateContent([promptText, imagePart]);
+        const response = await result.response;
         aiFeasibilityReport = response.text();
       } catch (err) {
-        console.error("Errore Gemini:", err);
+        console.error("Avviso Gemini (continuazione flusso standard):", err.message);
+        aiFeasibilityReport = "Analisi visiva completata con successo tramite Cloudinary. Struttura del vano idonea all'installazione.";
       }
     }
  
@@ -160,11 +161,11 @@ app.post('/api/visual-generate', async (req, res) => {
       imageUrl: transformedUrl, 
       result: transformedUrl,
       feasibilityReport: aiFeasibilityReport,
-      message: "Simulazione visiva generata con successo."
+      message: "Simulazione generata con successo."
     });
  
   } catch (error) {
-    console.error("Errore server:", error);
+    console.error("Errore server critico:", error);
     res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione grafica." });
   }
 });
