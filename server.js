@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
-const sharp = require('sharp'); // Libreria nativa per elaborazione dinamica delle immagini
 const { GoogleGenerativeAI } = require('@google/generative-ai');
  
 const app = express();
@@ -11,7 +10,6 @@ app.use(express.json({ limit: '20mb' }));
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
  
-// Inizializzazione pulita e scalabile di Gemini (pronta per qualsiasi evoluzione futura)
 const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
 const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
  
@@ -105,7 +103,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
  
-// 3. ENDPOINT: SIMULAZIONE DINAMICA (Sharp + Gemini, scalabile e privo di blocchi)
+// 3. ENDPOINT: SIMULAZIONE STABILE (Senza dipendenze esterne di moduli)
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
@@ -114,29 +112,12 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
  
-    const originalBuffer = Buffer.from(imageBase64, 'base64');
-    let processedBuffer = originalBuffer;
-
-    // Elaborazione dinamica della foto del cliente tramite Sharp (es. ottimizzazione e viraggio cromatico basato sulla finitura)
-    try {
-      processedBuffer = await sharp(originalBuffer)
-        .modulate({
-          brightness: 1.05, // Ottimizzazione luminosità del contesto
-          saturation: 1.1   // Risalto dei dettagli della finitura scelta
-        })
-        .sharpen()
-        .toBuffer();
-    } catch (sharpErr) {
-      console.log("Nota elaborazione grafica locale:", sharpErr.message);
-    }
-
-    const processedBase64 = processedBuffer.toString('base64');
-    const resultImageUrl = `data:${mimeType || 'image/jpeg'};base64,${processedBase64}`;
+    const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     
-    // Testo di fallback professionale
-    let evaluationText = `Valutazione Prima/Dopo (Visual INFIX®): L'intervento di riqualificazione con la finitura "${finish}" garantisce un notevole incremento dell'impatto estetico, della protezione e del valore complessivo dell'immobile.`;
+    // Testo di fallback predefinito
+    let evaluationText = `Valutazione Prima/Dopo (Visual INFIX®): L'installazione dei nuovi elementi in finitura "${finish}" assicura una riqualificazione estetica e funzionale di alto profilo, ottimizzando la luminosità e valorizzando l'intera struttura.`;
  
-    // Generazione della nota di giudizio avanzata tramite Gemini
+    // Generazione della nota di giudizio tramite Gemini
     if (genAI) {
       try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -155,8 +136,8 @@ app.post('/api/visual-generate', async (req, res) => {
  
     res.json({ 
       success: true, 
-      imageUrl: resultImageUrl, 
-      result: resultImageUrl,
+      imageUrl: imageUri, 
+      result: imageUri,
       evaluation: evaluationText,
       message: evaluationText
     });
