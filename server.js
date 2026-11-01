@@ -103,7 +103,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
  
-// 3. ENDPOINT: SIMULAZIONE STABILE (Senza dipendenze esterne di moduli)
+// 3. ENDPOINT: SIMULAZIONE CON ANTEPRIMA DEL "DOPO" E GIUDIZIO GEMINI
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
@@ -112,16 +112,25 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
  
-    const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
+    // Immagine originale del cliente (Prima)
+    const originalImageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     
-    // Testo di fallback predefinito
-    let evaluationText = `Valutazione Prima/Dopo (Visual INFIX®): L'installazione dei nuovi elementi in finitura "${finish}" assicura una riqualificazione estetica e funzionale di alto profilo, ottimizzando la luminosità e valorizzando l'intera struttura.`;
+    // URL di un'immagine di esempio professionale per il "Dopo" (puoi sostituirla con link di immagini dimostrative stabili del nuovo serramento)
+    let targetImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
+
+    // Se vuoi differenziare in base alla finitura o categoria scelta, puoi mappare qui le immagini del Dopo
+    if (finish && finish.toLowerCase().includes('bianco')) {
+      targetImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80";
+    }
+
+    // Nota di giudizio predefinita di sicurezza
+    let evaluationText = `Analisi Tecnica Prima/Dopo (Visual INFIX®): La sostituzione del vecchio serramento con il nuovo modello in finitura "${finish}" assicura una netta riqualificazione estetica, un incremento dei parametri di isolamento termoacustico e una valorizzazione complessiva dell'immobile.`;
  
-    // Generazione della nota di giudizio tramite Gemini
+    // Generazione della nota di giudizio avanzata tramite Gemini
     if (genAI) {
       try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = `Agisci come consulente tecnico ed esperto di design per serramenti del brand Visual INFIX®. Fornisci una breve e professionale valutazione del "Prima e Dopo" (massimo 3 frasi) in italiano, analizzando i benefici estetici e il valore aggiunto derivanti dall'adozione della finitura "${finish}" con nota utente: "${userPrompt || 'Nessuna nota'}".`;
+        const prompt = `Agisci come consulente tecnico ed esperto di design per serramenti del brand Visual INFIX®. Scrivi una nota di valutazione tecnica del "Prima e Dopo" (massimo 3 frasi incisive) in italiano, evidenziando il salto di qualità estetico, la luminosità e l'armonia architettonica garantiti dalla nuova finitura "${finish}", tenendo conto della richiesta: "${userPrompt || 'Nessuna nota'}".`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -130,14 +139,14 @@ app.post('/api/visual-generate', async (req, res) => {
           evaluationText = text.trim();
         }
       } catch (geminiErr) {
-        console.log("Nota Gemini (uso fallback testuale):", geminiErr.message);
+        console.log("Nota Gemini (uso fallback):", geminiErr.message);
       }
     }
  
     res.json({ 
       success: true, 
-      imageUrl: imageUri, 
-      result: imageUri,
+      imageUrl: targetImageUrl, // Immagine del Dopo mostrata a destra
+      result: targetImageUrl,
       evaluation: evaluationText,
       message: evaluationText
     });
