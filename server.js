@@ -104,7 +104,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
  
-// 3. ENDPOINT: GENERAZIONE VISIVA REALE (Replicate con Flux Fill Pro + Fallback)
+// 3. ENDPOINT: GENERAZIONE VISIVA (Utilizzo di flux-dev gratuito)
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
@@ -119,16 +119,18 @@ app.post('/api/visual-generate', async (req, res) => {
     try {
       const promptText = `Professional architectural photography, replace the old sectional garage doors with new modern sectional garage doors in finish: ${finish}. ${userPrompt || ''}, high-end residential renovation, crisp details, realistic textures, architectural lighting.`;
  
-      // Parametri corretti e sicuri per flux-fill-pro
+      // Usiamo flux-dev per rientrare nei test gratuiti senza errori 402
       const output = await replicate.run(
-        "black-forest-labs/flux-fill-pro",
+        "black-forest-labs/flux-dev",
         {
           input: {
             image: imageUri,
             prompt: promptText,
-            steps: 28,
             guidance: 3.5,
-            output_format: "jpg"
+            num_outputs: 1,
+            output_format: "jpg",
+            output_quality: 90,
+            prompt_strength: 0.8
           }
         }
       );
@@ -146,7 +148,7 @@ app.post('/api/visual-generate', async (req, res) => {
       console.log("Errore chiamata Replicate (attivo fallback):", apiError.message);
     }
  
-    // Fallback di sicurezza: se l'API rallenta o restituisce vuoto, usiamo l'immagine originale
+    // Fallback di sicurezza: se l'API non risponde, restituisce l'immagine originale evitando blocchi
     if (!resultImageUrl) {
       resultImageUrl = imageUri;
     }
