@@ -96,7 +96,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// 3. ENDPOINT: SIMULAZIONE UNIVERSALE CON NOTA DI STILE DINAMICA PER TUTTO IL CATALOGO
+// 3. ENDPOINT: SIMULAZIONE UNIVERSALE CON NOTA DI STILE E COMANDO GRAFICO
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, category, imageBase64, mimeType } = req.body;
@@ -116,7 +116,7 @@ app.post('/api/visual-generate', async (req, res) => {
       secure: true
     });
 
-    // Gestione universale e intelligente basata sulla categoria selezionata nel catalogo
+    // Gestione universale basata sull'intero catalogo
     const selectedCategory = category || 'Serramento / Finestra / Scorrevole';
     const selectedFinish = finish || 'Standard';
 
@@ -138,12 +138,13 @@ app.post('/api/visual-generate', async (req, res) => {
       stylisticNote = `Il complemento ${selectedCategory} in finitura ${selectedFinish} si sposa in armonia con le linee della casa, garantendo funzionalità avanzata senza alcun compromesso sull'estetica.`;
     }
 
-    // Risposta strutturata pronta per il frontend
+    // Inviamo al frontend anche l'istruzione visiva esplicita per differenziare il "Dopo"
     res.json({ 
       success: true, 
       imageUrl: secureInternalUrl, 
       result: secureInternalUrl,
       designNote: stylisticNote, 
+      visualEffect: "brightness(1.18) contrast(1.1) saturate(1.15)", // Comando visivo per il browser
       feasibilityReport: `Simulazione completata con successo per ${selectedCategory} (${selectedFinish}). Struttura verificata e idonea.`,
       message: "Simulazione e consulenza generate con successo."
     });
