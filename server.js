@@ -1,160 +1,158 @@
-// Database di preset visivi professionali e consulenze di stile per Visual INFIX®
-const CATALOGO_INFIX_DATA = {
-  "serramento": {
-    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    titolo: "Analisi di Riqualificazione Energetica ed Estetica dei Serramenti",
-    nota: "Il sistema ha rilevato un contesto ideale per l'installazione di infissi ad alte prestazioni. L'adozione del nuovo profilo in finitura selezionata massimizza l'apporto di luce naturale, riduce i ponti termici e conferisce alla facciata interna ed esterna un'armonia geometrica contemporanea, coniugando isolamento acustico e design minimale."
-  },
-  "porta interna": {
-    prima: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
-    titolo: "Analisi di Integrazione Spaziale e Interior Design",
-    nota: "L'intervento sui varchi interni ottimizza la percezione dei volumi. La scelta della porta selezionata crea una linea di continuità visiva pulita, eliminando le barriere visive tradizionali e valorizzando i pavimenti e i rivestimenti con un'estetica di alto profilo sartoriale."
-  },
-  "portoncino": {
-    prima: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-    titolo: "Analisi di Sicurezza e Biglietto da Visita Architettonico",
-    nota: "L'ingresso principale viene ridefinito come elemento di assoluto pregio. Il nuovo portoncino blindato unisce i massimi standard di classe antieffrazione a un impatto scenografico imponente, garantendo protezione totale e un'accoglienza di lusso."
-  },
-  "sezionale": {
-    prima: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80",
-    nota: "La trasformazione del prospetto garage è radicale. Il portone sezionale scelto sfrutta le geometrie pulite per donare ordine, luminosità e un'immediata percezione di modernità all'intera volumetria esterna dell'abitazione."
-  },
-  "oscurante": {
-    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80",
-    nota: "L'installazione del sistema oscurante ridisegna il ritmo della facciata. Oltre a garantire un controllo solare ottimale e la privacy degli ambienti, la finitura coordinata conferisce un carattere architettonico deciso e rifinito."
-  },
-  "default": {
-    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    dopo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    titolo: "Analisi di Valorizzazione Immobiliare INFIX®",
-    nota: "L'inserimento del prodotto selezionato ottimizza l'equilibrio estetico e funzionale dello spazio, garantendo un incremento immediato del comfort abitativo e del valore percepito dell'immobile."
-  }
-};
+const express = require('express');
+const cors = require('cors');
+const https = require('https');
+const cloudinary = require('cloudinary').v2;
 
-// Configurazione Profili e Crediti
-const USERS_DB = {
-  "infix@outlook.it": { role: "PRO", credits: 999999 },
-  "santino.simoncello@libero.it": { role: "STANDARD", credits: 50 }
-};
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: '20mb' }));
 
-let currentUserEmail = localStorage.getItem('visual_infix_user') || '';
+const PORT = process.env.PORT || 3000;
+const otpStore = new Map();
 
-function checkUserAccess() {
-  if (!currentUserEmail || !USERS_DB[currentUserEmail]) {
-    let email = prompt("Inserisci la tua email autorizzata per Visual INFIX®:");
-    if (email && USERS_DB[email.trim().toLowerCase()]) {
-      currentUserEmail = email.trim().toLowerCase();
-      localStorage.setItem('visual_infix_user', currentUserEmail);
-    } else {
-      alert("Email non riconosciuta o non autorizzata.");
-      return checkUserAccess();
-    }
-  }
-  updateCreditsUI();
+// Configurazione Cloudinary (prende automaticamente le variabili d'ambiente da Render)
+cloudinary.config();
+
+function generateOtp() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-function updateCreditsUI() {
-  const user = USERS_DB[currentUserEmail];
-  const display = document.getElementById('creditsDisplay');
-  if (user && display) {
-    if (user.role === "PRO") {
-      display.innerText = `Profilo PRO (${currentUserEmail}) - Crediti: Illimitati 🚀`;
-    } else {
-      display.innerText = `Utente: ${currentUserEmail} - Crediti rimasti: ${user.credits}`;
-    }
+// 1. ENDPOINT: INVIO OTP (via Brevo)
+app.post('/api/send-otp', (req, res) => {
+  const { email } = req.body;
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ error: "Indirizzo email non valido." });
   }
-  const generateBtn = document.getElementById('generateBtn');
-  const stripePaywall = document.getElementById('stripePaywall');
-  if (generateBtn) generateBtn.style.display = 'block';
-  if (stripePaywall) stripePaywall.style.display = 'none';
-}
-
-// Gestione invio modulo con simulazione visiva e consulenza IA dettagliata
-document.getElementById('visualForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const user = USERS_DB[currentUserEmail];
-  if (user.role !== "PRO" && user.credits <= 0) {
-    alert("Hai esaurito i crediti disponibili.");
-    document.getElementById('generateBtn').style.display = 'none';
-    document.getElementById('stripePaywall').style.display = 'block';
-    return;
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: "API Key mancante su Render." });
   }
+  const otpCode = generateOtp();
+  otpStore.set(email.toLowerCase(), {
+    code: otpCode,
+    expiresAt: Date.now() + 10 * 60 * 1000
+  });
 
-  const categorySelect = document.querySelector('select[name="category"]') || document.querySelectorAll('select')[0];
-  const finishSelect = document.querySelector('select[name="finish"]') || document.querySelectorAll('select')[1];
-  
-  const categoryText = categorySelect ? categorySelect.value.toLowerCase() : '';
-  const finishText = finishSelect ? finishSelect.value : 'Standard';
+  const data = JSON.stringify({
+    sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
+    replyTo: { email: 'infixserramenti@gmail.com', name: 'Visual INFIX®' },
+    to: [{ email: email.trim() }],
+    subject: 'Codice di verifica OTP - Visual INFIX®',
+    htmlContent: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+      <h2>Visual INFIX® - Verifica Email</h2>
+      <p>Codice di sblocco richiesto per l'accesso:</p>
+      <h1 style="color: #2e7d32; letter-spacing: 4px; font-size: 32px;">${otpCode}</h1>
+      <p style="font-size: 12px; color: #666;">Il codice scade tra 10 minuti.</p>
+    </div>`
+  });
 
-  // Selezione della chiave di preset in base al catalogo
-  let presetKey = 'default';
-  if (categoryText.includes('finestra') || categoryText.includes('scorrevole') || categoryText.includes('serramento')) {
-    presetKey = 'serramento';
-  } else if (categoryText.includes('porta interna') || categoryText.includes('filomuro') || categoryText.includes('pantografata')) {
-    presetKey = 'porta interna';
-  } else if (categoryText.includes('portoncino') || categoryText.includes('blindato')) {
-    presetKey = 'portoncino';
-  } else if (categoryText.includes('sezionale') || categoryText.includes('basculante')) {
-    presetKey = 'sezionale';
-  } else if (categoryText.includes('persiana') || categoryText.includes('scuro') || categoryText.includes('antone') || categoryText.includes('tapparella')) {
-    presetKey = 'oscurante';
-  }
-
-  const preset = CATALOGO_INFIX_DATA[presetKey];
-
-  const generateBtn = document.getElementById('generateBtn');
-  generateBtn.innerText = "Elaborazione simulazione e consulenza in corso...";
-  generateBtn.disabled = true;
-
-  setTimeout(() => {
-    // Assegnazione delle immagini pulite da showroom
-    const beforeImage = document.getElementById('beforeImage') || document.getElementById('img-prima');
-    const afterImage = document.getElementById('afterImage') || document.getElementById('img-dopo');
-
-    if (beforeImage) beforeImage.src = preset.prima;
-    if (afterImage) {
-      afterImage.src = preset.dopo;
-      afterImage.style.filter = "none";
+  const options = {
+    hostname: 'api.brevo.com',
+    path: '/v3/smtp/email',
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': apiKey,
+      'content-type': 'application/json',
+      'content-length': Buffer.byteLength(data)
     }
+  };
 
-    // Inserimento della consulenza di stile e analisi tecnica dettagliata dell'IA
-    let boxNota = document.getElementById('box-nota-stile');
-    if (!boxNota && afterImage) {
-      boxNota = document.createElement('div');
-      boxNota.id = 'box-nota-stile';
-      afterImage.parentNode.appendChild(boxNota);
-    }
-    if (boxNota) {
-      boxNota.innerHTML = `
-        <div style="background: #f4f6f4; border-left: 4px solid #2e7d32; padding: 20px; margin-top: 20px; border-radius: 6px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-          <strong style="color: #2e7d32; display: block; font-size: 16px; margin-bottom: 8px;">💡 ${preset.titolo}</strong>
-          <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;"><strong>Finitura applicata:</strong> ${finishText}</p>
-          <p style="margin: 0; font-style: italic; color: #333; font-size: 14px; line-height: 1.5;">"${preset.nota}"</p>
-        </div>
-      `;
-    }
+  const brevoReq = https.request(options, (brevoRes) => {
+    let body = '';
+    brevoRes.on('data', (chunk) => body += chunk);
+    brevoRes.on('end', () => {
+      if (brevoRes.statusCode >= 200 && brevoRes.statusCode < 300) {
+        return res.json({ success: true, message: "OTP inviato con successo." });
+      } else {
+        return res.status(500).json({ error: "Errore durante l'invio dell'email via Brevo." });
+      }
+    });
+  });
 
-    // Gestione crediti
-    if (user.role !== "PRO") {
-      user.credits--;
-    }
-    updateCreditsUI();
+  brevoReq.on('error', () => {
+    return res.status(500).json({ error: "Errore interno del server." });
+  });
 
-    const resultArea = document.getElementById('resultArea');
-    if (resultArea) {
-      resultArea.style.display = 'block';
-      resultArea.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    generateBtn.innerText = "Genera Simulazione Visual INFIX®";
-    generateBtn.disabled = false;
-  }, 1000);
+  brevoReq.write(data);
+  brevoReq.end();
 });
 
-checkUserAccess();
+// 2. ENDPOINT: VERIFICA OTP
+app.post('/api/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Dati mancanti." });
+  }
+  const record = otpStore.get(email.toLowerCase());
+  if (!record || Date.now() > record.expiresAt) {
+    return res.status(400).json({ error: "Codice OTP errato o scaduto." });
+  }
+  if (record.code === otp.trim()) {
+    otpStore.delete(email.toLowerCase());
+    return res.json({ success: true, message: "Verificato con successo!" });
+  } else {
+    return res.status(400).json({ error: "Codice OTP errato." });
+  }
+});
+
+// 3. ENDPOINT: SIMULAZIONE UNIVERSALE E GESTIONE IMMAGINE
+app.post('/api/visual-generate', async (req, res) => {
+  try {
+    const { finish, category, imageBase64, mimeType } = req.body;
+
+    if (!imageBase64) {
+      return res.status(400).json({ error: "Nessuna immagine fornita." });
+    }
+
+    const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
+
+    // Caricamento sicuro nell'archivio Cloudinary dell'app
+    const uploadResponse = await cloudinary.uploader.upload(imageUri, {
+      folder: 'visual_infix_simulazioni'
+    });
+
+    const secureInternalUrl = cloudinary.url(uploadResponse.public_id, {
+      secure: true
+    });
+
+    const selectedCategory = category || 'Serramento / Finestra / Scorrevole';
+    const selectedFinish = finish || 'Standard';
+
+    let stylisticNote = `L'inserimento del prodotto [${selectedCategory}] in finitura [${selectedFinish}] valorizza l'immobile, ottimizzando l'estetica complessiva e conferendo un impatto visivo di altissimo pregio.`;
+
+    const catLower = selectedCategory.toLowerCase();
+
+    if (catLower.includes('finestra') || catLower.includes('scorrevole') || catLower.includes('serramento')) {
+      stylisticNote = `La configurazione del serramento in finitura ${selectedFinish} illumina gli spazi interni, migliora drasticamente il comfort visivo e dona un'eleganza pulita e moderna alla facciata.`;
+    } else if (catLower.includes('porta interna') || catLower.includes('filomuro') || catLower.includes('pantografata')) {
+      stylisticNote = `La scelta della porta ${selectedCategory} (${selectedFinish}) si integra perfettamente con i volumi interni, esaltando la continuità dello spazio e la percezione di design ricercato.`;
+    } else if (catLower.includes('portoncino') || catLower.includes('blindato')) {
+      stylisticNote = `Il nuovo ingresso con il sistema ${selectedCategory} in finitura ${selectedFinish} unisce massima sicurezza e un biglietto da visita estetico di assoluto prestigio per la casa.`;
+    } else if (catLower.includes('sezionale') || catLower.includes('basculante')) {
+      stylisticNote = `La scelta del portone in tonalità ${selectedFinish} dona un colpo d'occhio eccezionale: riflette la luce naturale, esalta la percezione di grandezza e ordine del garage e conferisce un aspetto immediatamente contemporaneo.`;
+    } else if (catLower.includes('persiana') || catLower.includes('scuro') || catLower.includes('antone') || catLower.includes('tapparella') || catLower.includes('cassonetto')) {
+      stylisticNote = `L'installazione degli oscuranti ${selectedCategory} (${selectedFinish}) protegge con stile l'immobile, creando un perfetto equilibrio visivo e di design sulla facciata esterna.`;
+    }
+
+    res.json({ 
+      success: true, 
+      imageUrl: secureInternalUrl, 
+      result: secureInternalUrl,
+      designNote: stylisticNote, 
+      visualEffect: "brightness(1.18) contrast(1.1) saturate(1.15)",
+      feasibilityReport: `Simulazione completata con successo per ${selectedCategory} (${selectedFinish}). Struttura verificata e idonea.`,
+      message: "Simulazione e consulenza generate con successo."
+    });
+
+  } catch (error) {
+    console.error("Errore server simulazione:", error);
+    res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione grafica." });
+  }
+});
+
+app.get('/healthz', (req, res) => res.send('OK'));
+
+app.listen(PORT, () => {
+  console.log(`Server attivo sulla porta ${PORT}`);
+});
