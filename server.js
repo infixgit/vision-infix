@@ -126,7 +126,7 @@ app.post('/api/visual-generate', async (req, res) => {
 
     if (catLower.includes('finestra') || catLower.includes('scorrevole') || catLower.includes('serramento')) {
       stylisticNote = `La configurazione del serramento in finitura ${selectedFinish} illumina gli spazi interni, migliora drasticamente il comfort visivo e dona un'eleganza pulita e moderna alla facciata.`;
-    } else.includes('porta interna') || catLower.includes('filomuro') || catLower.includes('pantografata')) {
+    } else if (catLower.includes('porta interna') || catLower.includes('filomuro') || catLower.includes('pantografata')) {
       stylisticNote = `La scelta della porta ${selectedCategory} (${selectedFinish}) si integra perfettamente con i volumi interni, esaltando la continuità dello spazio e la percezione di design ricercato.`;
     } else if (catLower.includes('portoncino') || catLower.includes('blindato')) {
       stylisticNote = `Il nuovo ingresso con il sistema ${selectedCategory} in finitura ${selectedFinish} unisce massima sicurezza e un biglietto da visita estetico di assoluto prestigio per la casa.`;
