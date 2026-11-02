@@ -96,7 +96,36 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// 3. ENDPOINT: SIMULAZIONE REALE CON OVERLAY DI CLOUDINARY
+// Helper per richieste HTTPS POST asincrone a Fal.ai
+function fetchHttpsJson(url, headers, bodyData) {
+  return new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const options = {
+      hostname: urlObj.hostname,
+      path: urlObj.pathname + urlObj.search,
+      method: 'POST',
+      headers: headers
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (res.statusCode >= 200 && res.statusCode < 300) resolve(parsed);
+          else reject(parsed);
+        } catch (e) {
+          reject(new Error("Risposta non JSON dal server AI."));
+        }
+      });
+    });
+    req.on('error', (err) => reject(err));
+    if (bodyData) req.write(JSON.stringify(bodyData));
+    req.end();
+  });
+}
+
+// 3. ENDPOINT: SIMULAZIONE REALE CON FAL.AI
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { finish, category, imageBase64, mimeType } = req.body;
@@ -105,42 +134,49 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
+    const falKey = process.env.FAL_KEY;
+    if (!falKey) {
+      return res.status(500).json({ error: "Configurazione FAL_KEY mancante su Render." });
+    }
+
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // Caricamento della foto reale dell'utente su Cloudinary
+    // Carichiamo l'immagine dell'utente su Cloudinary per ottenere un URL pubblico sicuro
     const uploadResponse = await cloudinary.uploader.upload(imageUri, {
       folder: 'visual_infix_simulazioni'
     });
+    const userImageUrl = uploadResponse.secure_url;
 
-    const userPublicId = uploadResponse.public_id;
+    const selectedCategory = category || 'serramento';
+    const selectedFinish = finish || 'PVC bianco moderno';
 
-    // Gestione dell'asset di catalogo da sovrapporre (overlay geometrico)
-    let productAssetId = 'visual_infix_catalog/serramento_standard'; 
+    const aiPrompt = `A modern high-quality ${selectedCategory} made of ${selectedFinish}, clean frame, perfect architecture design, photorealistic, 8k resolution, matching the home environment style.`;
+    const negativePrompt = `wooden frame, old window, deformed, bad lighting, blurry, low quality`;
+
+    // Endpoint ufficiale Fal.ai per Flux Image-to-Image / Inpainting
+    const falUrl = "https://fal.run/fal-ai/flux/schnell/image-to-image";
+    const headers = {
+      "Authorization": `Key ${falKey}`,
+      "Content-Type": "application/json"
+    };
     
-    const catLower = (category || '').toLowerCase();
-    if (catLower.includes('portoncino') || catLower.includes('blindato')) {
-      productAssetId = 'visual_infix_catalog/portoncino';
-    } else if (catLower.includes('sezionale')) {
-      productAssetId = 'visual_infix_catalog/sezionale';
+    const bodyData = {
+      image_url: userImageUrl,
+      prompt: aiPrompt,
+      negative_prompt: negativePrompt,
+      strength: 0.65,
+      sync_mode: true
+    };
+
+    const aiResponse = await fetchHttpsJson(falUrl, headers, bodyData);
+    
+    if (!aiResponse.images || aiResponse.images.length === 0) {
+      throw new Error("L'intelligenza artificiale non ha generato alcuna immagine.");
     }
 
-    // Generazione dell'URL con trasformazione e sovrapposizione geometrica tramite Cloudinary
-    const transformedImageUrl = cloudinary.url(userPublicId, {
-      secure: true,
-      transformation: [
-        { width: 1000, crop: "scale" },
-        { 
-          overlay: productAssetId,     
-          width: 400,                  
-          crop: "scale",
-          gravity: "center"            
-        }
-      ]
-    });
+    const transformedImageUrl = aiResponse.images[0].url;
 
-    const selectedCategory = category || 'Serramento / Finestra / Scorrevole';
-    const selectedFinish = finish || 'Standard';
-
+    const catLower = selectedCategory.toLowerCase();
     let stylisticNote = `L'inserimento del prodotto [${selectedCategory}] in finitura [${selectedFinish}] valorizza l'immobile, ottimizzando l'estetica complessiva e conferendo un impatto visivo di altissimo pregio.`;
 
     if (catLower.includes('finestra') || catLower.includes('scorrevole') || catLower.includes('serramento')) {
@@ -154,13 +190,13 @@ app.post('/api/visual-generate', async (req, res) => {
       imageUrl: transformedImageUrl, 
       result: transformedImageUrl,
       designNote: stylisticNote, 
-      feasibilityReport: `Simulazione geometrica completata con successo per ${selectedCategory} (${selectedFinish}). Struttura verificata tramite Cloudinary Overlay.`,
+      feasibilityReport: `Simulazione fotorealistica AI completata con successo per ${selectedCategory} (${selectedFinish}).`,
       message: "Simulazione generata con successo."
     });
 
   } catch (error) {
-    console.error("Errore server simulazione:", error);
-    res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione grafica." });
+    console.error("Errore server simulazione AI:", error);
+    res.status(500).json({ success: false, error: "Errore durante la generazione fotorealistica del serramento." });
   }
 });
 
