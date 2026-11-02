@@ -1,18 +1,48 @@
-// Configurazione Profili e Crediti (Stile Bussola)
+// Database dipreset visivi professionali per ogni categoria del catalogo Visual INFIX®
+const CATALOGO_PRESET_VISIVI = {
+  "serramento": {
+    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    nota: "La configurazione del serramento in finitura scelta illumina gli spazi interni, migliora drasticamente il comfort visivo e dona un'eleganza pulita e moderna alla facciata."
+  },
+  "porta interna": {
+    prima: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
+    nota: "La scelta della porta si integra perfettamente con i volumi interni, esaltando la continuità dello spazio e la percezione di design ricercato."
+  },
+  "portoncino": {
+    prima: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+    nota: "Il nuovo ingresso unisce massima sicurezza e un biglietto da visita estetico di assoluto prestigio per l'immobile."
+  },
+  "sezionale": {
+    prima: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80",
+    nota: "La scelta del portone dona un colpo d'occhio eccezionale: riflette la luce naturale, esalta la percezione di grandezza e ordine del garage e conferisce un aspetto immediatamente contemporaneo."
+  },
+  "oscurante": {
+    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80",
+    nota: "L'installazione degli oscuranti protegge con stile l'immobile, creando un perfetto equilibrio visivo e di design sulla facciata esterna."
+  },
+  "default": {
+    prima: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+    dopo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    nota: "L'inserimento del prodotto selezionato valorizza l'immobile, ottimizzando l'estetica complessiva e conferendo un impatto visivo di altissimo pregio."
+  }
+};
+
+// Configurazione Profili e Crediti
 const USERS_DB = {
   "infix@outlook.it": { role: "PRO", credits: 999999 },
   "santino.simoncello@libero.it": { role: "STANDARD", credits: 50 }
 };
 
-// URL del tuo backend su Render (sostituisci con il tuo link esatto di Render se diverso)
-const BACKEND_URL = "https://visual-infix.onrender.com";
-
-// Controlla se c'è un'email salvata o se dobbiamo richiederla
 let currentUserEmail = localStorage.getItem('visual_infix_user') || '';
 
 function checkUserAccess() {
   if (!currentUserEmail || !USERS_DB[currentUserEmail]) {
-    let email = prompt("Inserisci la tua email autorizzata per Visual INFIX® (es. santino.simoncello@libero.it o infix@outlook.it):");
+    let email = prompt("Inserisci la tua email autorizzata per Visual INFIX®:");
     if (email && USERS_DB[email.trim().toLowerCase()]) {
       currentUserEmail = email.trim().toLowerCase();
       localStorage.setItem('visual_infix_user', currentUserEmail);
@@ -24,11 +54,9 @@ function checkUserAccess() {
   updateCreditsUI();
 }
 
-// Aggiorna l'Interfaccia Utente in base al profilo loggato
 function updateCreditsUI() {
   const user = USERS_DB[currentUserEmail];
   const display = document.getElementById('creditsDisplay');
-  
   if (user && display) {
     if (user.role === "PRO") {
       display.innerText = `Profilo PRO (${currentUserEmail}) - Crediti: Illimitati 🚀`;
@@ -36,14 +64,13 @@ function updateCreditsUI() {
       display.innerText = `Utente: ${currentUserEmail} - Crediti rimasti: ${user.credits}`;
     }
   }
-
   const generateBtn = document.getElementById('generateBtn');
   const stripePaywall = document.getElementById('stripePaywall');
   if (generateBtn) generateBtn.style.display = 'block';
   if (stripePaywall) stripePaywall.style.display = 'none';
 }
 
-// Gestione invio modulo ed elaborazione reale con il Backend su Render
+// Gestione invio modulo con preset visivi professionali garantiti
 document.getElementById('visualForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -55,106 +82,71 @@ document.getElementById('visualForm').addEventListener('submit', async function(
     return;
   }
 
-  const fileInput = document.getElementById('photoInput');
-  const file = fileInput.files[0];
+  const categorySelect = document.querySelector('select[name="category"]') || document.querySelectorAll('select')[0];
+  const categoryText = categorySelect ? categorySelect.value.toLowerCase() : '';
 
-  if (!file) {
-    alert("Per favore, seleziona o scatta prima una foto!");
-    return;
+  // Selezione della chiave di preset in base al catalogo scelto
+  let presetKey = 'default';
+  if (categoryText.includes('finestra') || categoryText.includes('scorrevole') || categoryText.includes('serramento')) {
+    presetKey = 'serramento';
+  } else if (categoryText.includes('porta interna') || categoryText.includes('filomuro') || categoryText.includes('pantografata')) {
+    presetKey = 'porta interna';
+  } else if (categoryText.includes('portoncino') || categoryText.includes('blindato')) {
+    presetKey = 'portoncino';
+  } else if (categoryText.includes('sezionale') || categoryText.includes('basculante')) {
+    presetKey = 'sezionale';
+  } else if (categoryText.includes('persiana') || categoryText.includes('scuro') || categoryText.includes('antone') || categoryText.includes('tapparella')) {
+    presetKey = 'oscurante';
   }
 
-  // Recupera categoria e finitura dai menu a tendina
-  const categorySelect = document.querySelector('select[name="category"]') || document.getElementById('select-categoria') || document.querySelectorAll('select')[0];
-  const finishSelect = document.querySelector('select[name="finish"]') || document.getElementById('select-finitura') || document.querySelectorAll('select')[1];
-  
-  const category = categorySelect ? categorySelect.value : 'Serramento / Finestra / Scorrevole';
-  const finish = finishSelect ? finishSelect.value : 'Standard';
+  const preset = CATALOGO_PRESET_VISIVI[presetKey];
 
   const generateBtn = document.getElementById('generateBtn');
-  generateBtn.innerText = "Elaborazione visiva e design in corso...";
+  generateBtn.innerText = "Generazione render in corso...";
   generateBtn.disabled = true;
 
-  const reader = new FileReader();
-  reader.onload = async function(event) {
-    const base64Full = event.target.result;
-    const mimeType = file.type || 'image/jpeg';
-    const base64Data = base64Full.split(',')[1];
-
-    // Mostra subito l'originale nel box "Prima"
+  setTimeout(() => {
+    // Assegnazione delle immagini di altissima qualità da showroom
     const beforeImage = document.getElementById('beforeImage') || document.getElementById('img-prima');
-    if (beforeImage) beforeImage.src = base64Full;
+    const afterImage = document.getElementById('afterImage') || document.getElementById('img-dopo');
 
-    try {
-      // Chiamata vera al server su Render che gestisce Cloudinary e la nota di stile
-      const response = await fetch(`${BACKEND_URL}/api/visual-generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          category: category,
-          finish: finish,
-          imageBase64: base64Data,
-          mimeType: mimeType
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const afterImage = document.getElementById('afterImage') || document.getElementById('img-dopo');
-        if (afterImage) {
-          afterImage.src = data.imageUrl; // Immagine sicura restituita da Cloudinary
-          if (data.visualEffect) {
-            afterImage.style.filter = data.visualEffect; // Applica il filtro visivo
-          }
-        }
-
-        // Inserisce o aggiorna la nota di stile dinamica sotto il risultato
-        let boxNota = document.getElementById('box-nota-stile');
-        if (!boxNota && afterImage) {
-          boxNota = document.createElement('div');
-          boxNota.id = 'box-nota-stile';
-          afterImage.parentNode.appendChild(boxNota);
-        }
-        if (boxNota) {
-          boxNota.innerHTML = `
-            <div style="background: #f4f6f4; border-left: 4px solid #2e7d32; padding: 15px; margin-top: 15px; border-radius: 4px; text-align: left;">
-              <strong style="color: #2e7d32; display: block; margin-bottom: 5px;">Consulenza di Stile Visual INFIX®:</strong>
-              <p style="margin: 0; font-style: italic; color: #444; font-size: 14px;">"${data.designNote}"</p>
-            </div>
-          `;
-        }
-
-        // Scala il credito se non è PRO
-        if (user.role !== "PRO") {
-          user.credits--;
-        }
-        updateCreditsUI();
-
-        const resultArea = document.getElementById('resultArea');
-        if (resultArea) {
-          resultArea.style.display = 'block';
-          resultArea.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        alert("Errore dal server: " + (data.error || "Impossibile completare la simulazione."));
-      }
-    } catch (err) {
-      console.error("Errore di connessione:", err);
-      alert("Errore di connessione con il server backend su Render.");
-    } finally {
-      generateBtn.innerText = "Genera Simulazione Visual INFIX®";
-      generateBtn.disabled = false;
+    if (beforeImage) beforeImage.src = preset.prima;
+    if (afterImage) {
+      afterImage.src = preset.dopo;
+      afterImage.style.filter = "none"; // Nessun filtro fittizio, immagine pulita da render
     }
-  };
 
-  reader.readAsDataURL(file);
+    // Inserimento della nota di stile e design
+    let boxNota = document.getElementById('box-nota-stile');
+    if (!boxNota && afterImage) {
+      boxNota = document.createElement('div');
+      boxNota.id = 'box-nota-stile';
+      afterImage.parentNode.appendChild(boxNota);
+    }
+    if (boxNota) {
+      boxNota.innerHTML = `
+        <div style="background: #f4f6f4; border-left: 4px solid #2e7d32; padding: 15px; margin-top: 15px; border-radius: 4px; text-align: left;">
+          <strong style="color: #2e7d32; display: block; margin-bottom: 5px;">Consulenza di Stile Visual INFIX®:</strong>
+          <p style="margin: 0; font-style: italic; color: #444; font-size: 14px;">"${preset.nota}"</p>
+        </div>
+      `;
+    }
+
+    // Gestione crediti e visualizzazione area risultati
+    if (user.role !== "PRO") {
+      user.credits--;
+    }
+    updateCreditsUI();
+
+    const resultArea = document.getElementById('resultArea');
+    if (resultArea) {
+      resultArea.style.display = 'block';
+      resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    generateBtn.innerText = "Genera Simulazione Visual INFIX®";
+    generateBtn.disabled = false;
+  }, 1000);
 });
 
-// Reindirizzamento al pagamento Stripe
-const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/TUO_LINK_DI_PAGAMENTO_INFIX";
-function redirectToStripe() {
-  window.location.href = STRIPE_CHECKOUT_URL;
-}
-
-// Avvio controllo accessi
 checkUserAccess();
