@@ -2,21 +2,21 @@ const express = require('express');
 const cors = require('cors');
 const https = require('https');
 const cloudinary = require('cloudinary').v2;
- 
+
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
- 
+
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
- 
+
 // Configurazione Cloudinary
 cloudinary.config();
- 
+
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
- 
+
 // 1. ENDPOINT: INVIO OTP (via Brevo)
 app.post('/api/send-otp', (req, res) => {
   const { email } = req.body;
@@ -32,7 +32,7 @@ app.post('/api/send-otp', (req, res) => {
     code: otpCode,
     expiresAt: Date.now() + 10 * 60 * 1000
   });
-  
+
   const data = JSON.stringify({
     sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
     replyTo: { email: 'infixserramenti@gmail.com', name: 'Visual INFIX®' },
@@ -100,7 +100,7 @@ app.post('/api/verify-otp', (req, res) => {
 app.post('/api/visual-generate', async (req, res) => {
   try {
     const { userPrompt, finish, category, imageBase64, mimeType } = req.body;
- 
+
     if (!imageBase64) {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
@@ -112,14 +112,14 @@ app.post('/api/visual-generate', async (req, res) => {
       folder: 'visual_infix_simulazioni'
     });
 
-    // Applicazione trasformazione grafica visibile (es. effetto luminosità/contrasto)
+    // Trasformazione grafica evidente per testare l'aggiornamento dell'immagine "Dopo"
     const transformedUrl = cloudinary.url(uploadResponse.public_id, {
       transformation: [
-        { effect: "contrast:30", quality: "auto" }
+        { effect: "cartoonify", quality: "auto" }
       ],
       secure: true
     });
- 
+
     // Risposta strutturata esattamente come la richiede il frontend
     res.json({ 
       success: true, 
@@ -128,15 +128,15 @@ app.post('/api/visual-generate', async (req, res) => {
       feasibilityReport: `Verifica completata per ${category || 'Infisso'} con finitura ${finish || 'Standard'}. Intervento fattibile.`,
       message: "Simulazione generata con successo."
     });
- 
+
   } catch (error) {
     console.error("Errore server Cloudinary:", error);
     res.status(500).json({ success: false, error: "Errore durante l'elaborazione della simulazione grafica." });
   }
 });
- 
+
 app.get('/healthz', (req, res) => res.send('OK'));
- 
+
 app.listen(PORT, () => {
   console.log(`Server attivo sulla porta ${PORT}`);
 });
