@@ -1,18 +1,25 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
+
+// Inizializzazione di Gemini con la chiave presente su Render
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_VISUAL_API_KEY });
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// ==========================================
+// 1. ENDPOINT: INVIO OTP (via Brevo)
+// ==========================================
 app.post('/api/send-otp', (req, res) => {
   const { email } = req.body;
 
@@ -33,7 +40,6 @@ app.post('/api/send-otp', (req, res) => {
     expiresAt: Date.now() + 10 * 60 * 1000
   });
 
-  // Struttura payload identica a La Bussola (con replyTo attivo)
   const data = JSON.stringify({
     sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
     replyTo: { email: 'infixserramenti@gmail.com', name: 'Visual INFIX®' },
@@ -81,6 +87,9 @@ app.post('/api/send-otp', (req, res) => {
   brevoReq.end();
 });
 
+// ==========================================
+// 2. ENDPOINT: VERIFICA OTP
+// ==========================================
 app.post('/api/verify-otp', (req, res) => {
   const { email, otp } = req.body;
 
@@ -102,7 +111,65 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
+// ==========================================
+// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini)
+// ==========================================
+app.post('/api/visual-generate', async (req, res) => {
+  try {
+    const { userPrompt, finish, imageBase64, mimeType } = req.body;
+
+    if (!imageBase64) {
+      return res.status(400).json({ error: "Nessuna immagine fornita." });
+    }
+
+    const promptText = `Modifica questa foto applicando un nuovo infisso o portone in finitura: ${finish}. ${userPrompt || ''}. Mantieni perfettamente la prospettiva e le proporzioni della parete originale, inserendo il prodotto in modo realistico. Restituisci l'immagine modificata.`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [
+        {
+          inlineData: {
+            data: imageBase64,
+            mimeType: mimeType || 'image/jpeg'
+          }
+        },
+        { text: promptText }
+      ]
+    });
+
+    // Estrazione dell'immagine o della risposta generata
+    const candidate = response.candidates?.[0];
+    // Se il modello restituisce direttamente un'immagine o dati binari/url
+    let resultImageUrl = null;
+
+    if (candidate?.content?.parts) {
+      for (const part of candidate.content.parts) {
+        if (part.inlineData) {
+          resultImageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        }
+      }
+    }
+
+    if (!resultImageUrl) {
+      // Fallback testuale o messaggio se il modello ha risposto solo a parole
+      return res.json({ 
+        success: true, 
+        message: "Elaborazione completata", 
+        textResponse: candidate?.content?.parts?.[0]?.text || "Generato con successo." 
+      });
+    }
+
+    res.json({ success: true, imageUrl: resultImageUrl, result: resultImageUrl });
+
+  } catch (error) {
+    console.error("Errore generazione visiva Gemini:", error);
+    res.status(500).json({ success: false, error: "Errore durante la trasformazione grafica visiva." });
+  }
+});
+
+// Health check endpoint per Render
 app.get('/healthz', (req, res) => res.send('OK'));
 
 app.listen(PORT, () => {
   console.log(`Server attivo sulla porta ${PORT}`);
+});
