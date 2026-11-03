@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
-const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(cors());
@@ -9,9 +8,6 @@ app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
-
-// Inizializzazione di Gemini con la chiave presente su Render
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_VISUAL_API_KEY });
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -112,7 +108,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini)
+// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini via HTTPS nativo)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -122,47 +118,70 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
-    const promptText = `Modifica questa foto applicando un nuovo infisso o portone in finitura: ${finish}. ${userPrompt || ''}. Mantieni perfettamente la prospettiva e le proporzioni della parete originale, inserendo il prodotto in modo realistico. Restituisci l'immagine modificata.`;
+    const apiKey = process.env.GEMINI_VISUAL_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "GEMINI_VISUAL_API_KEY mancante su Render." });
+    }
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const promptText = `Modifica questa foto applicando un nuovo infisso o portone in finitura: ${finish}. ${userPrompt || ''}. Mantieni perfettamente la prospettiva e le proporzioni della parete originale, inserendo il prodotto in modo realistico.`;
+
+    const payload = JSON.stringify({
       contents: [
         {
-          inlineData: {
-            data: imageBase64,
-            mimeType: mimeType || 'image/jpeg'
-          }
-        },
-        { text: promptText }
+          parts: [
+            { text: promptText },
+            {
+              inline_data: {
+                mime_type: mimeType || 'image/jpeg',
+                data: imageBase64
+              }
+            }
+          ]
+        }
       ]
     });
 
-    // Estrazione dell'immagine o della risposta generata
-    const candidate = response.candidates?.[0];
-    // Se il modello restituisce direttamente un'immagine o dati binari/url
-    let resultImageUrl = null;
-
-    if (candidate?.content?.parts) {
-      for (const part of candidate.content.parts) {
-        if (part.inlineData) {
-          resultImageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-        }
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
       }
-    }
+    };
 
-    if (!resultImageUrl) {
-      // Fallback testuale o messaggio se il modello ha risposto solo a parole
-      return res.json({ 
-        success: true, 
-        message: "Elaborazione completata", 
-        textResponse: candidate?.content?.parts?.[0]?.text || "Generato con successo." 
+    const geminiReq = https.request(options, (geminiRes) => {
+      let body = '';
+      geminiRes.on('data', (chunk) => body += chunk);
+      geminiRes.on('end', () => {
+        try {
+          const responseJson = JSON.parse(body);
+          if (geminiRes.statusCode >= 200 && geminiRes.statusCode < 300) {
+            // Estrazione del testo o della risposta generata dal modello
+            const textResponse = responseJson.candidates?.[0]?.content?.parts?.[0]?.text || "Elaborazione completata.";
+            return res.json({ success: true, message: textResponse, result: textResponse });
+          } else {
+            console.error("Errore Gemini API:", body);
+            return res.status(500).json({ error: "Errore dal servizio di generazione visiva." });
+          }
+        } catch (e) {
+          console.error("Errore parsing risposta:", body);
+          return res.status(500).json({ error: "Errore interno nella risposta del server." });
+        }
       });
-    }
+    });
 
-    res.json({ success: true, imageUrl: resultImageUrl, result: resultImageUrl });
+    geminiReq.on('error', (error) => {
+      console.error("Errore di rete Gemini:", error);
+      return res.status(500).json({ error: "Errore di connessione al servizio di IA." });
+    });
+
+    geminiReq.write(payload);
+    geminiReq.end();
 
   } catch (error) {
-    console.error("Errore generazione visiva Gemini:", error);
+    console.error("Errore generale visual-generate:", error);
     res.status(500).json({ success: false, error: "Errore durante la trasformazione grafica visiva." });
   }
 });
