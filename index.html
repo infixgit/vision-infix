@@ -217,6 +217,7 @@
         </div>
     </div>
 
+    <!-- MODALE LOGIN TRADIZIONALE -->
     <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Accedi a Visual INFIX®</h3>
@@ -229,6 +230,21 @@
             <button onclick="eseguiLoginPassword()" style="background: #111; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Accedi</button>
             <button onclick="chiudiLoginModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
             <p id="login-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <!-- MODALE RESET PASSWORD AUTOMATICO -->
+    <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
+            <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso INFIX®</h3>
+            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP di sblocco.</p>
+            
+            <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
+            <input type="email" id="reset-email-input" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
+            
+            <button onclick="eseguiRichiestaReset()" id="reset-send-btn" style="background: #2e7d32; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Invia Codice OTP ✉️</button>
+            <button onclick="chiudiResetModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
+            <p id="reset-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
         </div>
     </div>
 
@@ -364,7 +380,62 @@
 
         function mostraLoginModal(e) { e.preventDefault(); document.getElementById('login-modal').style.display = 'flex'; }
         function chiudiLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-        function mostraResetPasswordModal(e) { e.preventDefault(); alert("Contatta l'assistenza INFIX® per il reset rapido della password."); }
+        
+        function mostraResetPasswordModal(e) { 
+            e.preventDefault(); 
+            document.getElementById('reset-modal').style.display = 'flex'; 
+        }
+
+        function chiudiResetModal() { 
+            document.getElementById('reset-modal').style.display = 'none'; 
+            document.getElementById('reset-msg').innerText = '';
+            document.getElementById('reset-email-input').value = '';
+        }
+
+        async function eseguiRichiestaReset() {
+            const email = document.getElementById('reset-email-input').value.trim().toLowerCase();
+            const msg = document.getElementById('reset-msg');
+            const btn = document.getElementById('reset-send-btn');
+
+            if (!email || !email.includes('@')) {
+                msg.style.color = 'red';
+                msg.innerText = "Inserisci un'email valida.";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Invio in corso... ⏳";
+
+            try {
+                const response = await fetch(`${RENDER_BACKEND_URL}/api/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    msg.style.color = 'green';
+                    msg.innerText = "Codice OTP inviato! Controlla la tua email.";
+                    setTimeout(() => {
+                        chiudiResetModal();
+                        document.getElementById('trial-email-input').value = email;
+                    }, 2000);
+                } else {
+                    msg.style.color = 'red';
+                    msg.innerText = data.error || "Errore durante l'invio dell'OTP.";
+                }
+            } catch (err) {
+                console.error(err);
+                msg.style.color = 'red';
+                msg.innerText = "Errore di connessione al server.";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Invia Codice OTP ✉️";
+            }
+        }
+
         function scrollToPacks() { window.scrollTo({ top: document.getElementById('stripePaywall').offsetTop, behavior: 'smooth' }); }
 
         function eseguiLoginPassword() {
@@ -385,7 +456,6 @@
             }
         }
 
-        // GESTIONE INVIO MODULO E CHIAMATA REALE AL BACKEND REPLICATE
         document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
