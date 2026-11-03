@@ -108,18 +108,21 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini aggiornato)
+// 3. ENDPOINT: TRASFORMAZIONE VISIVA
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
+  console.log(">>> Richiesta di generazione visiva ricevuta dal frontend...");
   try {
     const { userPrompt, finish, imageBase64, mimeType } = req.body;
 
     if (!imageBase64) {
+      console.log("Errore: Nessuna immagine fornita.");
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
     const apiKey = process.env.GEMINI_VISUAL_API_KEY;
     if (!apiKey) {
+      console.log("Errore: GEMINI_VISUAL_API_KEY mancante su Render.");
       return res.status(500).json({ error: "GEMINI_VISUAL_API_KEY mancante su Render." });
     }
 
@@ -143,8 +146,7 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      // Aggiornato al modello corretto suggerito dai log di errore
-      path: `/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,
+      path: `/v1beta/models/gemini-4-argon:generateContent?key=${apiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -154,26 +156,27 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const geminiReq = https.request(options, (geminiRes) => {
       let body = '';
-      geminiReq.on('data', (chunk) => body += chunk);
+      geminiRes.on('data', (chunk) => body += chunk);
       geminiRes.on('end', () => {
+        console.log(`Risposta Gemini ricevuta (Status ${geminiRes.statusCode})`);
         try {
           const responseJson = JSON.parse(body);
           if (geminiRes.statusCode >= 200 && geminiRes.statusCode < 300) {
             const textResponse = responseJson.candidates?.[0]?.content?.parts?.[0]?.text || "Elaborazione completata.";
             return res.json({ success: true, message: textResponse, result: textResponse });
           } else {
-            console.error("Errore Gemini API:", body);
+            console.error("Errore Gemini API dettagliato:", body);
             return res.status(500).json({ error: "Errore dal servizio di generazione visiva." });
           }
         } catch (e) {
-          console.error("Errore parsing risposta:", body);
+          console.error("Errore parsing risposta Gemini:", body);
           return res.status(500).json({ error: "Errore interno nella risposta del server." });
         }
       });
     });
 
     geminiReq.on('error', (error) => {
-      console.error("Errore di rete Gemini:", error);
+      console.error("Errore di rete durante la chiamata a Gemini:", error);
       return res.status(500).json({ error: "Errore di connessione al servizio di IA." });
     });
 
