@@ -108,7 +108,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini via HTTPS nativo)
+// 3. ENDPOINT: TRASFORMAZIONE VISIVA (Gemini aggiornato)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -143,7 +143,8 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      // Aggiornato al modello corretto suggerito dai log di errore
+      path: `/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -153,12 +154,11 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const geminiReq = https.request(options, (geminiRes) => {
       let body = '';
-      geminiRes.on('data', (chunk) => body += chunk);
+      geminiReq.on('data', (chunk) => body += chunk);
       geminiRes.on('end', () => {
         try {
           const responseJson = JSON.parse(body);
           if (geminiRes.statusCode >= 200 && geminiRes.statusCode < 300) {
-            // Estrazione del testo o della risposta generata dal modello
             const textResponse = responseJson.candidates?.[0]?.content?.parts?.[0]?.text || "Elaborazione completata.";
             return res.json({ success: true, message: textResponse, result: textResponse });
           } else {
