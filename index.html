@@ -68,7 +68,7 @@
                 🔹 <strong>Benvenuto in Visual INFIX®!</strong><br>
                 Il sistema genera un dossier tecnico professionale associato alla foto del tuo stato attuale.<br>
                 1. Inserisci la tua email e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, seleziona categoria avanzata e finitura per ottenere la consulenza tecnica IA mirata.
+                2. Carica la foto e seleziona il prodotto: il menu delle finiture si adatterà automaticamente!
             </div>
 
             <div id="free-trial-box">
@@ -136,54 +136,37 @@
             </div>
 
             <div class="form-group">
-                <label for="productSelect">🗂️ 2. Seleziona la Categoria e Specifiche INFIX®</label>
-                <select id="productSelect">
+                <label for="productSelect">🗂️ 2. Seleziona la Categoria Prodotto INFIX®</label>
+                <select id="productSelect" onchange="aggiornaFinitureDinamiche()">
                     <optgroup label="Serramenti & Vetrate Tecniche">
-                        <option value="Finestra 1 Anta - Taglio Termico Avanzato">Finestra 1 Anta - Taglio Termico Avanzato</option>
-                        <option value="Finestra 2 Ante - Basse Emissività">Finestra 2 Ante - Basse Emissività</option>
-                        <option value="Scorrevole Alzante Grandi Luce">Scorrevole Alzante Grandi Luce</option>
-                        <option value="Scorrevole Traslante">Scorrevole Traslante</option>
+                        <option value="finestra">Finestra / Portafinestra a Taglio Termico</option>
+                        <option value="scorrevole">Scorrevole Alzante / Traslante Grandi Dimensioni</option>
                     </optgroup>
-                    <optgroup label="Porte Interne di Design">
-                        <option value="Porta Interna Filomuro / Rasomuro">Porta Interna Filomuro / Rasomuro</option>
-                        <option value="Porta Interna Pantografata Classica/Moderna">Porta Interna Pantografata Classica/Moderna</option>
-                        <option value="Porta Interna Scorrevole Vetro/Alluminio">Porta Interna Scorrevole Vetro/Alluminio</option>
+                    <optgroup label="Porte Interne & Design">
+                        <option value="porta_interna">Porta Interna (Filomuro / Pantografata / Vetro)</option>
                     </optgroup>
                     <optgroup label="Portoncini & Ingressi Blindati">
-                        <option value="Portoncino in Alluminio a Taglio Termico">Portoncino in Alluminio a Taglio Termico</option>
-                        <option value="Portoncino in PVC Rinforzato">Portoncino in PVC Rinforzato</option>
-                        <option value="Portoncino Blindato Antieffrazione Classe 3">Portoncino Blindato Antieffrazione Classe 3</option>
-                        <option value="Portoncino Blindato Antieffrazione Classe 4">Portoncino Blindato Antieffrazione Classe 4</option>
+                        <option value="blindato">Portoncino Blindato di Sicurezza Classe 3 / 4</option>
+                        <option value="portoncino_ingresso">Portoncino d'Ingresso in Alluminio / PVC</option>
                     </optgroup>
-                    <optgroup label="Chiusure Garage & Grandi Vani">
-                        <option value="Portone Sezionale Coibentato Motorizzato">Portone Sezionale Coibentato Motorizzato</option>
-                        <option value="Portone Basculante in Acciaio Zincato/Verniciato">Portone Basculante in Acciaio Zincato/Verniciato</option>
+                    <optgroup label="Chiusure Garage">
+                        <option value="sezionale">Portone Sezionale Coibentato Motorizzato</option>
+                        <option value="basculante">Portone Basculante in Acciaio Verniciato</option>
                     </optgroup>
-                    <optgroup label="Oscuranti & Schermature Solari">
-                        <option value="Persiana in Alluminio con Alette Orientabili">Persiana in Alluminio con Alette Orientabili</option>
-                        <option value="Scurone Cieco Coibentato">Scurone Cieco Coibentato</option>
-                        <option value="Tapparella in Alluminio Estruso Antieffrazione">Tapparella in Alluminio Estruso Antieffrazione</option>
-                        <option value="Restauro Cassonetto con Kit Isolante Termoacustico">Restauro Cassonetto con Kit Isolante Termoacustico</option>
+                    <optgroup label="Oscuranti & Restauro">
+                        <option value="persiana">Persiana / Scurone (Alluminio / PVC / Legno)</option>
+                        <option value="tapparella">Tapparella Antieffrazione & Cassonetto Isolato</option>
                     </optgroup>
-                    <optgroup label="Protezioni & Accessori">
-                        <option value="Zanzariera Plissettata Senza Barriere">Zanzariera Plissettata Senza Barriere</option>
-                        <option value="Frangisole Orientabile Motorizzato">Frangisole Orientabile Motorizzato</option>
-                        <option value="Grata / Inferriata di Sicurezza Apribile">Grata / Inferriata di Sicurezza Apribile</option>
+                    <optgroup label="Protezioni">
+                        <option value="zanzariera_grata">Zanzariera Plissettata / Grata di Sicurezza</option>
                     </optgroup>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="finishSelect">🎨 3. Scegli Finitura / Colore INFIX®</label>
+                <label for="finishSelect" id="finishLabel">🎨 3. Scegli Finitura e Specifiche Tecniche</label>
                 <select id="finishSelect">
-                    <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
-                    <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
-                    <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
-                    <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
-                    <option value="Legno Effetto Noce">Legno Effetto Noce</option>
-                    <option value="Legno Effetto Rovere / Quercia">Legno Effetto Rovere / Quercia</option>
-                    <option value="Nero Opaco Moderno">Nero Opaco Moderno</option>
-                    <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
+                    <!-- Questo menu si aggiorna da solo via JS! -->
                 </select>
             </div>
 
@@ -224,7 +207,7 @@
         </div>
     </div>
 
-    <!-- MODALE LOGIN TRADIZIONALE -->
+    <!-- MODALI DI AUTENTICAZIONE -->
     <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Accedi a Visual INFIX®</h3>
@@ -237,11 +220,10 @@
         </div>
     </div>
 
-    <!-- MODALE RESET PASSWORD AUTOMATICO -->
     <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso INFIX®</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP di sblocco.</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email per ricevere un nuovo codice OTP.</p>
             
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
             <input type="email" id="reset-email-input" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
@@ -256,7 +238,76 @@
         const RENDER_BACKEND_URL = 'https://visual-infix.onrender.com';
         let currentOtpEmail = '';
 
+        // DIZIONARIO FINITURE TECNICHE DINAMICHE A CASCATA
+        const opzioniDinamiche = {
+            'finestra': [
+                'PVC Bianco Puro RAL 9010 (Triplo Vetro)',
+                'PVC Effetto Rovere Naturale / Noce',
+                'Alluminio Grigio Antracite RAL 7016 Taglio Termico',
+                'Legno/Alluminio Finitura Interna Rovere Sbiancato'
+            ],
+            'scorrevole': [
+                'Scorrevole Alzante Alluminio Nero Opaco RAL 9005',
+                'Scorrevole Traslante PVC Bianco Goffrato',
+                'Minimal Frame Tutto Vetro ad Incasso'
+            ],
+            'porta_interna': [
+                'Filomuro Mimetica Pitturabile / Pantografata',
+                'Essenza Legno Rovere Nodato / Noce Canaletto',
+                'Vetro Fumè con Telaio Alluminio Nero Slim',
+                'Laccato Opaco Bianco RAL 9010'
+            ],
+            'blindato': [
+                'Pannello Pantografato Classico Noce (Classe 3)',
+                'Pannello Alluminio Moderno Inserti Acciaio (Classe 4)',
+                'Blindato Rasomuro con Maniglione LED e Lettore Impronta',
+                'Pannello Coibentato Resistente Intemperie (Esterno)'
+            ],
+            'portoncino_ingresso': [
+                'Alluminio Taglio Termico con Vetro Satinato antisfondamento',
+                'PVC con Pannello Decorato Grigio Antracite'
+            ],
+            'sezionale': [
+                'Pannello Goffrato Legno Antracite RAL 7016 Motorizzato',
+                'Pannello Liscio Bianco RAL 9010 Coibentato 40mm',
+                'Pannello Effetto Legno Rovere Golden Oak'
+            ],
+            'basculante': [
+                'Acciaio Zincato Preverniciato Verde RAL 6005',
+                'Acciaio Con Fori di Aerazione e Predisposizione Motore'
+            ],
+            'persiana': [
+                'Persiana Alluminio Verde Persiana RAL 6005 Alette Orientabili',
+                'Persiana Blindata in Acciaio Antieffrazione',
+                'Scurone Coibentato Marrone RAL 8017'
+            ],
+            'tapparella': [
+                'Tapparella Alluminio Coibentato ad Alta Densità (RAL 7016)',
+                'Tapparella Acciaio Blindato con Blocchi Antisollevamento',
+                'Monoblocco Restauro Cassonetto con Polistirene Isolante'
+            ],
+            'zanzariera_grata': [
+                'Zanzariera Plissettata Basso Profilo 0mm Guidabile',
+                'Grata di Sicurezza Apribile a Snodo Verniciata a Polvere'
+            ]
+        };
+
+        function aggiornaFinitureDinamiche() {
+            const prod = document.getElementById('productSelect').value;
+            const finishSelect = document.getElementById('finishSelect');
+            finishSelect.innerHTML = '';
+
+            const opzioni = opzioniDinamiche[prod] || ['Standard INFIX'];
+            opzioni.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.textContent = opt;
+                finishSelect.appendChild(el);
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            aggiornaFinitureDinamiche(); // Inizializza il menu al caricamento
             const savedEmail = localStorage.getItem('infix_visual_user_email');
             const savedCredits = localStorage.getItem('infix_visual_credits');
 
@@ -384,28 +435,15 @@
 
         function mostraLoginModal(e) { e.preventDefault(); document.getElementById('login-modal').style.display = 'flex'; }
         function chiudiLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-        
-        function mostraResetPasswordModal(e) { 
-            e.preventDefault(); 
-            document.getElementById('reset-modal').style.display = 'flex'; 
-        }
-
-        function chiudiResetModal() { 
-            document.getElementById('reset-modal').style.display = 'none'; 
-            document.getElementById('reset-msg').innerText = '';
-            document.getElementById('reset-email-input').value = '';
-        }
+        function mostraResetPasswordModal(e) { e.preventDefault(); document.getElementById('reset-modal').style.display = 'flex'; }
+        function chiudiResetModal() { document.getElementById('reset-modal').style.display = 'none'; document.getElementById('reset-msg').innerText = ''; }
 
         async function eseguiRichiestaReset() {
             const email = document.getElementById('reset-email-input').value.trim().toLowerCase();
             const msg = document.getElementById('reset-msg');
             const btn = document.getElementById('reset-send-btn');
 
-            if (!email || !email.includes('@')) {
-                msg.style.color = 'red';
-                msg.innerText = "Inserisci un'email valida.";
-                return;
-            }
+            if (!email || !email.includes('@')) { msg.style.color = 'red'; msg.innerText = "Email non valida."; return; }
 
             btn.disabled = true;
             btn.innerText = "Invio in corso... ⏳";
@@ -416,24 +454,18 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email })
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
                     msg.style.color = 'green';
-                    msg.innerText = "Codice OTP inviato! Controlla la tua email.";
-                    setTimeout(() => {
-                        chiudiResetModal();
-                        document.getElementById('trial-email-input').value = email;
-                    }, 2000);
+                    msg.innerText = "Codice OTP inviato!";
+                    setTimeout(() => { chiudiResetModal(); document.getElementById('trial-email-input').value = email; }, 2000);
                 } else {
                     msg.style.color = 'red';
-                    msg.innerText = data.error || "Errore durante l'invio dell'OTP.";
+                    msg.innerText = data.error || "Errore invio OTP.";
                 }
             } catch (err) {
-                console.error(err);
                 msg.style.color = 'red';
-                msg.innerText = "Errore di connessione al server.";
+                msg.innerText = "Errore di connessione.";
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Invia Codice OTP ✉️";
@@ -471,7 +503,7 @@
                 if (isNaN(numCredits) || numCredits <= 0) {
                     document.getElementById('visualForm').style.display = 'none';
                     document.getElementById('stripePaywall').style.display = 'block';
-                    alert("Hai esaurito le simulazioni gratuite. Acquista dei crediti per continuare.");
+                    alert("Hai esaurito le simulazioni gratuite.");
                     return;
                 }
                 numCredits--;
@@ -487,9 +519,9 @@
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             const productSelect = document.getElementById('productSelect');
-            const product = productSelect.value;
+            const productText = productSelect.options[productSelect.selectedIndex].text;
             const finishSelect = document.getElementById('finishSelect');
-            const finish = finishSelect.value;
+            const finishText = finishSelect.value;
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             if (!file) {
@@ -516,8 +548,8 @@
                         body: JSON.stringify({
                             imageBase64: base64Data,
                             mimeType: mimeType,
-                            category: product,
-                            finish: finish,
+                            category: productText,
+                            finish: finishText,
                             userPrompt: customRequest
                         })
                     });
@@ -525,10 +557,10 @@
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        document.getElementById('resultSubtitle').innerText = `Categoria: ${product} | Finitura: ${finish}`;
+                        document.getElementById('resultSubtitle').innerText = `Prodotto: ${productText} | Opzione: ${finishText}`;
                         
                         if (customRequest) {
-                            document.getElementById('resultCustomNote').innerText = `Note cliente: "${customRequest}"`;
+                            document.getElementById('resultCustomNote').innerText = `Note: "${customRequest}"`;
                             document.getElementById('resultCustomNote').style.display = 'block';
                         } else {
                             document.getElementById('resultCustomNote').style.display = 'none';
