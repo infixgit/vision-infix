@@ -26,7 +26,7 @@ app.post('/api/send-otp', (req, res) => {
   const apiKey = process.env.BREVO_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: "API Key mancante su Render." });
+    return res.status(500).json({ error: "API Key di Brevo mancante su Render." });
   }
 
   const otpCode = generateOtp();
@@ -106,7 +106,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini AI)
+// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini AI Stabile)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -119,7 +119,7 @@ app.post('/api/visual-generate', async (req, res) => {
     const geminiApiKey = process.env.GEMINI_VISUAL_API_KEY || process.env.GEMINI_API_KEY;
 
     if (!geminiApiKey) {
-      return res.status(500).json({ error: "API Key di Gemini mancante nelle variabili d'ambiente." });
+      return res.status(500).json({ error: "API Key di Gemini mancante nelle variabili d'ambiente di Render." });
     }
 
     const payload = {
@@ -155,7 +155,7 @@ app.post('/api/visual-generate', async (req, res) => {
     
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+      path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -170,7 +170,17 @@ app.post('/api/visual-generate', async (req, res) => {
         try {
           const responseJson = JSON.parse(body);
           
-          if (responseJson.candidates && responseJson.candidates[0].content.parts[0].text) {
+          if (responseJson.error) {
+            console.error("Errore restituito da Google Gemini:", responseJson.error);
+            return res.status(500).json({ success: false, error: `Gemini API Error: ${responseJson.error.message}` });
+          }
+
+          if (responseJson.candidates && 
+              responseJson.candidates[0] && 
+              responseJson.candidates[0].content && 
+              responseJson.candidates[0].content.parts && 
+              responseJson.candidates[0].content.parts[0].text) {
+            
             const aiReportHtml = responseJson.candidates[0].content.parts[0].text;
             const originalImageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
@@ -181,15 +191,18 @@ app.post('/api/visual-generate', async (req, res) => {
               message: "Relazione tecnica generata con successo." 
             });
           } else {
-            return res.status(500).json({ success: false, error: "Risposta non valida da Gemini API." });
+            console.error("Struttura risposta Gemini non riconosciuta:", body);
+            return res.status(500).json({ success: false, error: "Formato risposta non valido da Gemini API." });
           }
         } catch (parseError) {
+          console.error("Errore parsing JSON da Gemini:", parseError, body);
           return res.status(500).json({ success: false, error: "Errore nel parsing della risposta di Gemini." });
         }
       });
     });
 
     geminiReq.on('error', (error) => {
+      console.error("Errore di rete HTTPS verso Gemini:", error);
       return res.status(500).json({ success: false, error: "Errore di connessione a Gemini API." });
     });
 
@@ -197,6 +210,7 @@ app.post('/api/visual-generate', async (req, res) => {
     geminiReq.end();
 
   } catch (error) {
+    console.error("Errore interno server:", error);
     return res.status(500).json({ success: false, error: "Errore durante l'elaborazione della consulenza visiva." });
   }
 });
