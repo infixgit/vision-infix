@@ -106,7 +106,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini 3.8 Flash)
+// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini API)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -153,10 +153,9 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const geminiData = JSON.stringify(payload);
     
-    // Aggiornato al modello gemini-3.8-flash richiesto dall'API
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      path: `/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiApiKey}`,
+      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
