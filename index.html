@@ -135,7 +135,7 @@
                 <input type="file" id="photoInput" accept="image/*" required>
             </div>
 
-            <!-- MENU A CASCATA LIVELLO 1: MACRO-CATEGORIA -->
+            <!-- LIVELLO 1: MACRO-CATEGORIA -->
             <div class="form-group">
                 <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria INFIX®</label>
                 <select id="macroCategorySelect" onchange="aggiornaSottoCategorie()" required>
@@ -148,7 +148,7 @@
                 </select>
             </div>
 
-            <!-- MENU A CASCATA LIVELLO 2: MODELLO SPECIFICO -->
+            <!-- LIVELLO 2: MODELLO SPECIFICO (SI ABILITA DOPO LA SCELTA SOPRA) -->
             <div class="form-group">
                 <label for="productSelect">🔍 3. Seleziona il Modello Specifico</label>
                 <select id="productSelect" disabled required>
@@ -156,7 +156,7 @@
                 </select>
             </div>
 
-            <!-- MENU FINITURA -->
+            <!-- LIVELLO 3: FINITURA -->
             <div class="form-group">
                 <label for="finishSelect">🎨 4. Scegli Finitura / Colore INFIX®</label>
                 <select id="finishSelect" required>
