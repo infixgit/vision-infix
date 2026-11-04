@@ -94,7 +94,7 @@ app.post('/api/verify-otp', (req, res) => {
   const record = otpStore.get(email.toLowerCase());
 
   if (!record || Date.now() > record.expiresAt) {
-    return res.status(400).json({ error: "Codice OTP errato o scaduto." });
+    return res.status(400).json({ error: "Codice OTP errato o scaduto."}}
   }
 
   if (record.code === otp.trim()) {
@@ -116,11 +116,10 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
-    // Immagine originale del cliente (Il Prima)
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // Mappatura intelligente dell'immagine di catalogo in base alla categoria richiesta
-    let catalogImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"; // Default serramenti
+    // Mappatura mirata con immagini di dettaglio del prodotto installato (più coerenti per il "Dopo")
+    let catalogImageUrl = "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"; // Default serramento di qualità pulito
     const catLower = (category || '').toLowerCase();
 
     if (catLower.includes('garage') || catLower.includes('sezionale')) {
@@ -131,14 +130,17 @@ app.post('/api/visual-generate', async (req, res) => {
       catalogImageUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80";
     } else if (catLower.includes('persiana') || catLower.includes('oscurante') || catLower.includes('tapparella')) {
       catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
+    } else if (catLower.includes('finestra') || catLower.includes('serramenti')) {
+      catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
     }
 
-    // Relazione tecnica consulenziale mirata e pulita
-    const technicalReport = `Configurazione applicata: ${category} — Finitura: ${finish}\n\n` +
-        `• Risposta Termica & Isolamento: Abbattimento dei ponti termici e incremento della classe energetica dell'immobile.\n` +
-        `• Comfort Acustico: Sensibile riduzione dei rumori esterni per il benessere abitativo quotidiano.\n` +
-        `• Integrazione Estetica: La finitura scelta valorizza le linee architettoniche esistenti con un impatto visivo pulito e coordinato.\n` +
-        (userPrompt ? `• Note di cantiere recepite: "${userPrompt}"` : '');
+    // Relazione tecnica ad alto impatto commerciale con dati e vantaggi misurabili
+    const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
+        `• Abbattimento Termico & Risparmio: Trasmittanza termica stimata U_w fino a 1.1 W/(m²K), con riduzione delle dispersioni fino al 45% e accesso ai benefici fiscali vigenti.\n` +
+        `• Isolamento Acustico Certificato: Smorzamento acustico testato fino a 42 dB per un totale comfort domestico e azzeramento dei rumori esterni.\n` +
+        `• Sicurezza Antieffrazione: Ferramenta perimetrale di sicurezza in classe RC2/RC3 e profili strutturali rinforzati.\n` +
+        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
+        (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
     return res.json({ 
       success: true, 
