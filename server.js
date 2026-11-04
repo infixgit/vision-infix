@@ -117,30 +117,21 @@ app.post('/api/visual-generate', async (req, res) => {
     }
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
-    const catLower = (category || '').toLowerCase();
-    const finishLower = (finish || '').toLowerCase();
 
-    // Mappatura mirata e coerente del "Dopo" in base al serramento scelto
-    let catalogImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"; // Default infisso di pregio
+    // Mappatura mirata con immagini di dettaglio del prodotto installato
+    let catalogImageUrl = "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"; 
+    const catLower = (category || '').toLowerCase();
 
     if (catLower.includes('garage') || catLower.includes('sezionale')) {
-      // Portone sezionale / garage
       catalogImageUrl = "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80";
     } else if (catLower.includes('blindato') || catLower.includes('portoncino')) {
-      // Portoncino / Ingresso blindato
       catalogImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80";
     } else if (catLower.includes('scorrevole') || catLower.includes('alzante')) {
-      // Vetrate scorrevoli grandi
       catalogImageUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80";
     } else if (catLower.includes('persiana') || catLower.includes('oscurante') || catLower.includes('tapparella')) {
-      // Oscuranti e persiane
       catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
-    } else if (finishLower.includes('legno') || finishLower.includes('noce') || finishLower.includes('rovere')) {
-      // Finestra con finitura effetto legno coerente
-      catalogImageUrl = "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80";
-    } else {
-      // Finestra standard bianca / RAL di altissima qualità
-      catalogImageUrl = "https://images.unsplash.com/photo-1527853787696-f7ae74f2f0f0?auto=format&fit=crop&w=800&q=80";
+    } else if (catLower.includes('finestra') || catLower.includes('serramenti')) {
+      catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
     }
 
     // Relazione tecnica ad alto impatto commerciale con dati e vantaggi misurabili
