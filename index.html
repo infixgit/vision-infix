@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual INFIX® - Consulente Tecnico Visivo Professionale</title>
+    <title>Visual INFIX® - Simulatore Visivo Professionale</title>
     
     <link rel="icon" href="bussola-infix-marchio-figurativo-momento di intervenire.jpg">
     <meta name="theme-color" content="#111111">
@@ -36,7 +36,7 @@
         .pack-btn.pro-unlimited { background: #007bff; }
 
         .auth-links { margin-top: 12px; display: flex; justify-content: center; gap: 15px; font-size: 12px; }
-        .auth-links a { color: #0056b3; text-decoration: underline; font-weight: bold; cursor: pointer; }
+        .auth-links a { color: #0056b3; text-decoration: underline; font-weight: bold; }
 
         .form-section { display: none; margin-top: 15px; flex-direction: column; gap: 15px; border-top: 2px solid #e9ecef; padding-top: 20px; box-sizing: border-box; width: 100%; }
         .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
@@ -51,8 +51,8 @@
 
         .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: center; box-sizing: border-box; width: 100%; }
         .comparison-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
-        .comparison-item { flex: 1; min-width: 280px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; text-align: left; }
-        .comparison-item h4 { margin: 0 0 8px 0; font-size: 14px; color: #111; text-align: center; }
+        .comparison-item { flex: 1; min-width: 280px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
+        .comparison-item h4 { margin: 0 0 8px 0; font-size: 14px; color: #111; }
         .comparison-item img { width: 100%; border-radius: 5px; max-height: 350px; object-fit: contain; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
@@ -62,13 +62,13 @@
         <div class="header">
             <img src="bussola-infix-marchio-figurativo-momento di intervenire.jpg" alt="Logo INFIX" class="logo">
             <h2>Visual INFIX®</h2>
-            <p>Consulente Tecnico e Diagnosi Visiva Avanzata per Serramenti e Finiture</p>
+            <p>Simulatore Grafico Professionale "Prima / Dopo" per Serramenti e Finiture</p>
             
             <div class="welcome-note">
-                🔹 <strong>Benvenuto in Visual INFIX®!</strong><br>
-                Il sistema genera un dossier tecnico professionale associato alla foto del tuo stato attuale.<br>
-                1. Inserisci la tua email e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto e seleziona il prodotto: il menu delle finiture si adatterà automaticamente!
+                👋 <strong>Benvenuto in Visual INFIX®!</strong><br>
+                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering dei serramenti e delle finiture INFIX®.<br>
+                1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
+                2. Carica la foto, scegli categoria, finitura e indica eventuali note per generare il confronto <strong>Prima / Dopo</strong>.
             </div>
 
             <div id="free-trial-box">
@@ -102,7 +102,7 @@
             </div>
 
             <div class="pro-banner">
-                <span>🔒 Consulenza Avanzata & Dossier B2B (Funzione PRO)</span>
+                <span>🔒 Visual AI & Simulazione Avanzata (Funzione PRO)</span>
                 <button onclick="scrollToPacks()">Scopri i Piani PRO</button>
             </div>
 
@@ -114,8 +114,8 @@
             </div>
 
             <div class="auth-links">
-                <a onclick="mostraLoginModal(event)">Hai già un account? Accedi qui</a>
-                <a onclick="mostraResetPasswordModal(event)" style="color: #d9534f;">Password dimenticata?</a>
+                <a href="#" onclick="mostraLoginModal(event)">Hai già un account? Accedi qui</a>
+                <a href="#" onclick="mostraResetPasswordModal(event)" style="color: #d9534f;">Password dimenticata?</a>
             </div>
 
             <div id="infix-user-status">
@@ -136,46 +136,56 @@
             </div>
 
             <div class="form-group">
-                <label for="productSelect">🗂️ 2. Seleziona la Categoria Prodotto INFIX®</label>
-                <select id="productSelect" onchange="aggiornaFinitureDinamiche()">
-                    <optgroup label="Serramenti & Vetrate Tecniche">
-                        <option value="finestra">Finestra / Portafinestra a Taglio Termico</option>
-                        <option value="scorrevole">Scorrevole Alzante / Traslante Grandi Dimensioni</option>
+                <label for="productSelect">🗂️ 2. Seleziona la Categoria INFIX®</label>
+                <select id="productSelect">
+                    <optgroup label="Serramenti & Vetrate">
+                        <option value="serramento">Serramento / Finestra / Scorrevole</option>
+                        <option value="porta_interna">Porta Interna (Pantografata / Filomuro / Scorrevole)</option>
                     </optgroup>
-                    <optgroup label="Porte Interne & Design">
-                        <option value="porta_interna">Porta Interna (Filomuro / Pantografata / Vetro)</option>
+                    <optgroup label="Portoncini & Ingressi">
+                        <option value="portoncino_alluminio">Portoncino d'Ingresso in Alluminio</option>
+                        <option value="portoncino_pvc">Portoncino d'Ingresso in PVC</option>
+                        <option value="blindato">Portoncino Blindato di Sicurezza</option>
                     </optgroup>
-                    <optgroup label="Portoncini & Ingressi Blindati">
-                        <option value="blindato">Portoncino Blindato di Sicurezza Classe 3 / 4</option>
-                        <option value="portoncino_ingresso">Portoncino d'Ingresso in Alluminio / PVC</option>
+                    <optgroup label="Chiusure Garage & Grandi Aperture">
+                        <option value="sezionale">Portone Sezionale</option>
+                        <option value="basculante">Portone Basculante</option>
                     </optgroup>
-                    <optgroup label="Chiusure Garage">
-                        <option value="sezionale">Portone Sezionale Coibentato Motorizzato</option>
-                        <option value="basculante">Portone Basculante in Acciaio Verniciato</option>
-                    </optgroup>
-                    <optgroup label="Oscuranti & Restauro">
+                    <optgroup label="Oscuranti & Schermature">
                         <option value="persiana">Persiana / Scurone (Alluminio / PVC / Legno)</option>
-                        <option value="tapparella">Tapparella Antieffrazione & Cassonetto Isolato</option>
+                        <option value="balcone">Antone / Balcone</option>
+                        <option value="tapparella">Tapparella / Avvolgibile (Alluminio / Acciaio / PVC)</option>
+                        <option value="cassonetto">Cassonetto Copriforo / Restauro Isolante</option>
                     </optgroup>
-                    <optgroup label="Protezioni">
-                        <option value="zanzariera_grata">Zanzariera Plissettata / Grata di Sicurezza</option>
+                    <optgroup label="Protezioni & Accessori">
+                        <option value="zanzariera">Zanzariera (Plissettata / Rullo / Incasso)</option>
+                        <option value="frangisole">Frangisole / Schermatura Solare</option>
+                        <option value="inferriata">Grata di Sicurezza / Inferriata</option>
                     </optgroup>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="finishSelect" id="finishLabel">🎨 3. Scegli Finitura e Specifiche Tecniche</label>
+                <label for="finishSelect">🎨 3. Scegli Finitura / Colore INFIX®</label>
                 <select id="finishSelect">
-                    <!-- Questo menu si aggiorna da solo via JS! -->
+                    <option value="ral9010">Bianco Puro RAL 9010</option>
+                    <option value="ral7016">Grigio Antracite RAL 7016</option>
+                    <option value="ral6005">Verde Persiana RAL 6005</option>
+                    <option value="ral8017">Marrone Testa di Moro RAL 8017</option>
+                    <option value="noce">Legno Effetto Noce</option>
+                    <option value="rovere">Legno Effetto Rovere / Quercia</option>
+                    <option value="nero">Nero Opaco Moderno</option>
+                    <option value="argento">Alluminio Anodizzato / Argento</option>
                 </select>
             </div>
 
+            <!-- CAMPO DI TESTO LIBERO PER RICHIESTE PERSONALIZZATE -->
             <div class="form-group">
                 <label for="customUserRequest">✏️ 4. Note o richiesta personalizzata (opzionale)</label>
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare..."></textarea>
             </div>
 
-            <button type="submit" class="btn-primary" id="generateBtn">Genera Consulenza Tecnica INFIX® 🚀</button>
+            <button type="submit" class="btn-primary" id="generateBtn">Genera Simulazione Visual INFIX® 🎨</button>
         </form>
 
         <div id="stripePaywall" class="stripe-packs-box">
@@ -190,29 +200,32 @@
         </div>
 
         <div id="resultArea" class="result-box">
-            <h3 style="margin-top:0; color:#111; font-size: 1.3rem;">Dossier di Consulenza Tecnica Visual INFIX®</h3>
+            <h3 style="margin-top:0; color:#111; font-size: 1.3rem;">Confronto Visual INFIX®</h3>
             <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold;"></p>
-            <p id="resultCustomNote" style="font-size: 12px; color: #444; font-style: italic; margin-top: 4px; display: none;"></p>
+            <p id="resultCustomNote" style="font-size: 12px; color: #444; font-style: italic; margin-top: 4px;"></p>
             
             <div class="comparison-grid">
                 <div class="comparison-item">
-                    <h4>Stato Attuale (Foto Originale)</h4>
+                    <h4>Stato Attuale (Prima)</h4>
                     <img id="beforeImage" alt="Foto Originale">
                 </div>
                 <div class="comparison-item">
-                    <h4>Relazione Tecnica & Soluzione (Gemini AI)</h4>
-                    <div id="afterImage"></div>
+                    <h4>Simulazione INFIX® (Dopo)</h4>
+                    <img id="afterImage" alt="Rendering Finitura">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODALI DI AUTENTICAZIONE -->
+    <!-- MODALE LOGIN TRADIZIONALE -->
     <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Accedi a Visual INFIX®</h3>
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
             <input type="email" id="login-email" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 12px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
+            
+            <label style="font-size: 12px; font-weight: bold; color: #444;">Password</label>
+            <input type="password" id="login-password" placeholder="La tua password" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
             
             <button onclick="eseguiLoginPassword()" style="background: #111; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Accedi</button>
             <button onclick="chiudiLoginModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
@@ -220,10 +233,11 @@
         </div>
     </div>
 
+    <!-- MODALE RESET PASSWORD AUTOMATICO -->
     <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso INFIX®</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email per ricevere un nuovo codice OTP.</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP di sblocco.</p>
             
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
             <input type="email" id="reset-email-input" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
@@ -238,76 +252,7 @@
         const RENDER_BACKEND_URL = 'https://visual-infix.onrender.com';
         let currentOtpEmail = '';
 
-        // DIZIONARIO FINITURE TECNICHE DINAMICHE A CASCATA
-        const opzioniDinamiche = {
-            'finestra': [
-                'PVC Bianco Puro RAL 9010 (Triplo Vetro)',
-                'PVC Effetto Rovere Naturale / Noce',
-                'Alluminio Grigio Antracite RAL 7016 Taglio Termico',
-                'Legno/Alluminio Finitura Interna Rovere Sbiancato'
-            ],
-            'scorrevole': [
-                'Scorrevole Alzante Alluminio Nero Opaco RAL 9005',
-                'Scorrevole Traslante PVC Bianco Goffrato',
-                'Minimal Frame Tutto Vetro ad Incasso'
-            ],
-            'porta_interna': [
-                'Filomuro Mimetica Pitturabile / Pantografata',
-                'Essenza Legno Rovere Nodato / Noce Canaletto',
-                'Vetro Fumè con Telaio Alluminio Nero Slim',
-                'Laccato Opaco Bianco RAL 9010'
-            ],
-            'blindato': [
-                'Pannello Pantografato Classico Noce (Classe 3)',
-                'Pannello Alluminio Moderno Inserti Acciaio (Classe 4)',
-                'Blindato Rasomuro con Maniglione LED e Lettore Impronta',
-                'Pannello Coibentato Resistente Intemperie (Esterno)'
-            ],
-            'portoncino_ingresso': [
-                'Alluminio Taglio Termico con Vetro Satinato antisfondamento',
-                'PVC con Pannello Decorato Grigio Antracite'
-            ],
-            'sezionale': [
-                'Pannello Goffrato Legno Antracite RAL 7016 Motorizzato',
-                'Pannello Liscio Bianco RAL 9010 Coibentato 40mm',
-                'Pannello Effetto Legno Rovere Golden Oak'
-            ],
-            'basculante': [
-                'Acciaio Zincato Preverniciato Verde RAL 6005',
-                'Acciaio Con Fori di Aerazione e Predisposizione Motore'
-            ],
-            'persiana': [
-                'Persiana Alluminio Verde Persiana RAL 6005 Alette Orientabili',
-                'Persiana Blindata in Acciaio Antieffrazione',
-                'Scurone Coibentato Marrone RAL 8017'
-            ],
-            'tapparella': [
-                'Tapparella Alluminio Coibentato ad Alta Densità (RAL 7016)',
-                'Tapparella Acciaio Blindato con Blocchi Antisollevamento',
-                'Monoblocco Restauro Cassonetto con Polistirene Isolante'
-            ],
-            'zanzariera_grata': [
-                'Zanzariera Plissettata Basso Profilo 0mm Guidabile',
-                'Grata di Sicurezza Apribile a Snodo Verniciata a Polvere'
-            ]
-        };
-
-        function aggiornaFinitureDinamiche() {
-            const prod = document.getElementById('productSelect').value;
-            const finishSelect = document.getElementById('finishSelect');
-            finishSelect.innerHTML = '';
-
-            const opzioni = opzioniDinamiche[prod] || ['Standard INFIX'];
-            opzioni.forEach(opt => {
-                const el = document.createElement('option');
-                el.value = opt;
-                el.textContent = opt;
-                finishSelect.appendChild(el);
-            });
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            aggiornaFinitureDinamiche(); // Inizializza il menu al caricamento
             const savedEmail = localStorage.getItem('infix_visual_user_email');
             const savedCredits = localStorage.getItem('infix_visual_credits');
 
@@ -435,15 +380,28 @@
 
         function mostraLoginModal(e) { e.preventDefault(); document.getElementById('login-modal').style.display = 'flex'; }
         function chiudiLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-        function mostraResetPasswordModal(e) { e.preventDefault(); document.getElementById('reset-modal').style.display = 'flex'; }
-        function chiudiResetModal() { document.getElementById('reset-modal').style.display = 'none'; document.getElementById('reset-msg').innerText = ''; }
+        
+        function mostraResetPasswordModal(e) { 
+            e.preventDefault(); 
+            document.getElementById('reset-modal').style.display = 'flex'; 
+        }
+
+        function chiudiResetModal() { 
+            document.getElementById('reset-modal').style.display = 'none'; 
+            document.getElementById('reset-msg').innerText = '';
+            document.getElementById('reset-email-input').value = '';
+        }
 
         async function eseguiRichiestaReset() {
             const email = document.getElementById('reset-email-input').value.trim().toLowerCase();
             const msg = document.getElementById('reset-msg');
             const btn = document.getElementById('reset-send-btn');
 
-            if (!email || !email.includes('@')) { msg.style.color = 'red'; msg.innerText = "Email non valida."; return; }
+            if (!email || !email.includes('@')) {
+                msg.style.color = 'red';
+                msg.innerText = "Inserisci un'email valida.";
+                return;
+            }
 
             btn.disabled = true;
             btn.innerText = "Invio in corso... ⏳";
@@ -454,18 +412,24 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email })
                 });
+
                 const data = await response.json();
+
                 if (response.ok) {
                     msg.style.color = 'green';
-                    msg.innerText = "Codice OTP inviato!";
-                    setTimeout(() => { chiudiResetModal(); document.getElementById('trial-email-input').value = email; }, 2000);
+                    msg.innerText = "Codice OTP inviato! Controlla la tua email.";
+                    setTimeout(() => {
+                        chiudiResetModal();
+                        document.getElementById('trial-email-input').value = email;
+                    }, 2000);
                 } else {
                     msg.style.color = 'red';
-                    msg.innerText = data.error || "Errore invio OTP.";
+                    msg.innerText = data.error || "Errore durante l'invio dell'OTP.";
                 }
             } catch (err) {
+                console.error(err);
                 msg.style.color = 'red';
-                msg.innerText = "Errore di connessione.";
+                msg.innerText = "Errore di connessione al server.";
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Invia Codice OTP ✉️";
@@ -503,7 +467,7 @@
                 if (isNaN(numCredits) || numCredits <= 0) {
                     document.getElementById('visualForm').style.display = 'none';
                     document.getElementById('stripePaywall').style.display = 'block';
-                    alert("Hai esaurito le simulazioni gratuite.");
+                    alert("Hai esaurito le simulazioni gratuite. Acquista dei crediti per continuare.");
                     return;
                 }
                 numCredits--;
@@ -519,9 +483,9 @@
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             const productSelect = document.getElementById('productSelect');
-            const productText = productSelect.options[productSelect.selectedIndex].text;
+            const product = productSelect.options[productSelect.selectedIndex].text;
             const finishSelect = document.getElementById('finishSelect');
-            const finishText = finishSelect.value;
+            const finish = finishSelect.options[finishSelect.selectedIndex].text;
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             if (!file) {
@@ -530,7 +494,7 @@
             }
 
             const generateBtn = document.getElementById('generateBtn');
-            generateBtn.innerText = "Gemini AI sta elaborando la consulenza tecnica... ⏳";
+            generateBtn.innerText = "Elaborazione intelligenza artificiale in corso... 🎨⏳";
             generateBtn.disabled = true;
 
             const reader = new FileReader();
@@ -548,37 +512,34 @@
                         body: JSON.stringify({
                             imageBase64: base64Data,
                             mimeType: mimeType,
-                            category: productText,
-                            finish: finishText,
-                            userPrompt: customRequest
+                            finish: finish,
+                            userPrompt: `Category: ${product}. ${customRequest}`
                         })
                     });
 
                     const data = await response.json();
 
-                    if (response.ok && data.success) {
-                        document.getElementById('resultSubtitle').innerText = `Prodotto: ${productText} | Opzione: ${finishText}`;
+                    if (response.ok && data.imageUrl) {
+                        document.getElementById('afterImage').src = data.imageUrl;
+                        document.getElementById('resultSubtitle').innerText = `Categoria: ${product} | Finitura: ${finish}`;
                         
                         if (customRequest) {
-                            document.getElementById('resultCustomNote').innerText = `Note: "${customRequest}"`;
+                            document.getElementById('resultCustomNote').innerText = `Note cliente: "${customRequest}"`;
                             document.getElementById('resultCustomNote').style.display = 'block';
                         } else {
                             document.getElementById('resultCustomNote').style.display = 'none';
                         }
 
-                        const afterContainer = document.getElementById('afterImage');
-                        afterContainer.innerHTML = `<div style="font-size: 13px; line-height: 1.6; color: #2d3748; max-height: 350px; overflow-y: auto; padding: 5px;">${data.reportHtml}</div>`;
-
                         document.getElementById('resultArea').style.display = 'block';
                         document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
                     } else {
-                        alert("Errore dal server di consulenza: " + (data.error || "Impossibile completare l'analisi."));
+                        alert("Errore dal server di generazione: " + (data.error || "Impossibile completare il rendering."));
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("Errore di connessione durante la generazione della consulenza tecnica con l'IA.");
+                    alert("Errore di connessione durante la generazione grafica con l'IA.");
                 } finally {
-                    generateBtn.innerText = "Genera Consulenza Tecnica INFIX® 🚀";
+                    generateBtn.innerText = "Genera Simulazione Visual INFIX® 🎨";
                     generateBtn.disabled = false;
                 }
             };
