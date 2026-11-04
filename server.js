@@ -94,7 +94,7 @@ app.post('/api/verify-otp', (req, res) => {
   const record = otpStore.get(email.toLowerCase());
 
   if (!record || Date.now() > record.expiresAt) {
-    return res.status(400).json({ error: "Codice OTP errato o scaduto."}}
+    return res.status(400).json({ error: "Codice OTP errato o scaduto." });
   }
 
   if (record.code === otp.trim()) {
@@ -118,8 +118,8 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // Mappatura mirata con immagini di dettaglio del prodotto installato (più coerenti per il "Dopo")
-    let catalogImageUrl = "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"; // Default serramento di qualità pulito
+    // Mappatura mirata con immagini di dettaglio del prodotto installato
+    let catalogImageUrl = "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"; 
     const catLower = (category || '').toLowerCase();
 
     if (catLower.includes('garage') || catLower.includes('sezionale')) {
