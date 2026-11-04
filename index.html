@@ -135,53 +135,51 @@
                 <input type="file" id="photoInput" accept="image/*" required>
             </div>
 
+            <!-- MENU A CASCATA DINAMICO (LIVELLO 1: MACRO-CATEGORIA) -->
             <div class="form-group">
-                <label for="productSelect">🗂️ 2. Seleziona la Categoria INFIX®</label>
-                <select id="productSelect">
-                    <optgroup label="Serramenti & Vetrate">
-                        <option value="serramento">Serramento / Finestra / Scorrevole</option>
-                        <option value="porta_interna">Porta Interna (Pantografata / Filomuro / Scorrevole)</option>
-                    </optgroup>
-                    <optgroup label="Portoncini & Ingressi">
-                        <option value="portoncino_alluminio">Portoncino d'Ingresso in Alluminio</option>
-                        <option value="portoncino_pvc">Portoncino d'Ingresso in PVC</option>
-                        <option value="blindato">Portoncino Blindato di Sicurezza</option>
-                    </optgroup>
-                    <optgroup label="Chiusure Garage & Grandi Aperture">
-                        <option value="sezionale">Portone Sezionale</option>
-                        <option value="basculante">Portone Basculante</option>
-                    </optgroup>
-                    <optgroup label="Oscuranti & Schermature">
-                        <option value="persiana">Persiana / Scurone (Alluminio / PVC / Legno)</option>
-                        <option value="balcone">Antone / Balcone</option>
-                        <option value="tapparella">Tapparella / Avvolgibile (Alluminio / Acciaio / PVC)</option>
-                        <option value="cassonetto">Cassonetto Copriforo / Restauro Isolante</option>
-                    </optgroup>
-                    <optgroup label="Protezioni & Accessori">
-                        <option value="zanzariera">Zanzariera (Plissettata / Rullo / Incasso)</option>
-                        <option value="frangisole">Frangisole / Schermatura Solare</option>
-                        <option value="inferriata">Grata di Sicurezza / Inferriata</option>
-                    </optgroup>
+                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria INFIX®</label>
+                <select id="macroCategorySelect" onchange="aggiornaSottoCategorie()" required>
+                    <option value="">-- Scegli la Macro-Categoria --</option>
+                    <option value="serramenti">Serramenti & Vetrate</option>
+                    <option value="portoncini">Portoncini & Ingressi</option>
+                    <option value="garage">Chiusure Garage & Grandi Aperture</option>
+                    <option value="oscuranti">Oscuranti & Schermature</option>
+                    <option value="protezioni">Protezioni & Accessori</option>
                 </select>
             </div>
 
+            <!-- MENU A CASCATA DINAMICO (LIVELLO 2: MODELLO / ARTICOLO SPECIFICO) -->
             <div class="form-group">
-                <label for="finishSelect">🎨 3. Scegli Finitura / Colore INFIX®</label>
-                <select id="finishSelect">
-                    <option value="ral9010">Bianco Puro RAL 9010</option>
-                    <option value="ral7016">Grigio Antracite RAL 7016</option>
-                    <option value="ral6005">Verde Persiana RAL 6005</option>
-                    <option value="ral8017">Marrone Testa di Moro RAL 8017</option>
-                    <option value="noce">Legno Effetto Noce</option>
-                    <option value="rovere">Legno Effetto Rovere / Quercia</option>
-                    <option value="nero">Nero Opaco Moderno</option>
-                    <option value="argento">Alluminio Anodizzato / Argento</option>
+                <label for="productSelect">🔍 3. Seleziona il Modello / Articolo Specifico</label>
+                <select id="productSelect" disabled required>
+                    <option value="">-- Prima seleziona la macro-categoria sopra --</option>
+                </select>
+            </div>
+
+            <!-- MENU A CASCATA DINAMICO (LIVELLO 3: FINITURA / COLORE) -->
+            <div class="form-group">
+                <label for="finishSelect">🎨 4. Scegli Finitura / Colore / Materiale INFIX®</label>
+                <select id="finishSelect" required>
+                    <optgroup label="Standard & RAL">
+                        <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
+                        <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
+                        <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
+                        <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
+                        <option value="Nero Opaco Moderno">Nero Opaco Moderno</option>
+                        <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
+                    </optgroup>
+                    <optgroup label="Effetto Legno / Pregiati">
+                        <option value="Legno Effetto Noce Scuro">Legno Effetto Noce Scuro</option>
+                        <option value="Legno Effetto Rovere Naturale">Legno Effetto Rovere Naturale</option>
+                        <option value="Legno Effetto Douglas / Ciliegio">Legno Effetto Douglas / Ciliegio</option>
+                        <option value="Effetto Cor-ten / Ruggine">Effetto Cor-ten / Ruggine</option>
+                    </optgroup>
                 </select>
             </div>
 
             <!-- CAMPO DI TESTO LIBERO PER RICHIESTE PERSONALIZZATE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 4. Note o richiesta personalizzata (opzionale)</label>
+                <label for="customUserRequest">✏️ 5. Note o richiesta personalizzata (opzionale)</label>
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare..."></textarea>
             </div>
 
@@ -251,6 +249,65 @@
     <script>
         const RENDER_BACKEND_URL = 'https://visual-infix.onrender.com';
         let currentOtpEmail = '';
+
+        // Dizionario dei sotto-prodotti per i menu a cascata intelligenti B2B
+        const cataloghiProdottiINFIX = {
+            serramenti: [
+                { val: "finestra_battente_1", text: "Finestra / Portafinestra a 1 Anta a Battente" },
+                { val: "finestra_battente_2", text: "Finestra / Portafinestra a 2 Ante a Battente" },
+                { val: "scorrevole_alzante", text: "Scorrevole Alzante in Alluminio / PVC" },
+                { val: "scorrevole_traslante", text: "Scorrevole Traslante Paral" },
+                { val: "porta_interna_filomuro", text: "Porta Interna Filomuro / Rasomuro" },
+                { val: "porta_interna_pantografata", text: "Porta Interna Classica / Pantografata" },
+                { val: "porta_interna_scorrevole", text: "Porta Interna Scorrevole (Interno/Esterno Muro)" }
+            ],
+            portoncini: [
+                { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso in Alluminio con Inserto Vetro" },
+                { val: "portoncino_pvc_pannello", text: "Portoncino d'Ingresso in PVC bugnato / isolato" },
+                { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
+                { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata di Sicurezza - Classe 4 con Fiancoluce" },
+                { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" }
+            ],
+            garage: [
+                { val: "portone_sezionale_coibentato", text: "Portone Sezionale Box Coibentato a Pannelli" },
+                { val: "portone_basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato / Legno" }
+            ],
+            oscuranti: [
+                { val: "persiana_alluminio_orientabile", text: "Persiana in Alluminio con Alette Orientabili" },
+                { val: "scurone_legno_cieco", text: "Scurone Antone Cieco in Legno o Alluminio" },
+                { val: "tapparella_alluminio_coibentato", text: "Tapparella Avvolgibile in Alluminio Coibentato Antieffrazione" },
+                { val: "cassonetto_restauro_isolante", text: "Cassonetto Copriforo per Restauro Termico-Acustico" }
+            ],
+            protezioni: [
+                { val: "zanzariera_plissettata", text: "Zanzariera Plissettata a Ridotta Ingressione" },
+                { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Motorizzata" },
+                { val: "grata_inferriata_sicurezza", text: "Grata di Sicurezza / Inferriata fissa o apribile" }
+            ]
+        };
+
+        function aggiornaSottoCategorie() {
+            const macroSelect = document.getElementById('macroCategorySelect');
+            const productSelect = document.getElementById('productSelect');
+            const categoriaScelta = macroSelect.value;
+
+            productSelect.innerHTML = '';
+
+            if (!categoriaScelta || !cataloghiProdottiINFIX[categoriaScelta]) {
+                productSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
+                productSelect.disabled = true;
+                return;
+            }
+
+            const listaArticoli = cataloghiProdottiINFIX[categoriaScelta];
+            listaArticoli.forEach(articolo => {
+                const opt = document.createElement('option');
+                opt.value = articolo.val;
+                opt.text = articolo.text;
+                productSelect.appendChild(opt);
+            });
+
+            productSelect.disabled = false;
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('infix_visual_user_email');
@@ -482,10 +539,16 @@
 
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
+            
+            const macroSelect = document.getElementById('macroCategorySelect');
+            const macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
+            
             const productSelect = document.getElementById('productSelect');
-            const product = productSelect.options[productSelect.selectedIndex].text;
+            const productText = productSelect.options[productSelect.selectedIndex].text;
+            
             const finishSelect = document.getElementById('finishSelect');
-            const finish = finishSelect.options[finishSelect.selectedIndex].text;
+            const finishText = finishSelect.options[finishSelect.selectedIndex].text;
+            
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             if (!file) {
@@ -512,8 +575,9 @@
                         body: JSON.stringify({
                             imageBase64: base64Data,
                             mimeType: mimeType,
-                            finish: finish,
-                            userPrompt: `Category: ${product}. ${customRequest}`
+                            category: `${macroCategoryText} -> ${productText}`,
+                            finish: finishText,
+                            userPrompt: customRequest
                         })
                     });
 
@@ -521,7 +585,7 @@
 
                     if (response.ok && data.imageUrl) {
                         document.getElementById('afterImage').src = data.imageUrl;
-                        document.getElementById('resultSubtitle').innerText = `Categoria: ${product} | Finitura: ${finish}`;
+                        document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
                         
                         if (customRequest) {
                             document.getElementById('resultCustomNote').innerText = `Note cliente: "${customRequest}"`;
