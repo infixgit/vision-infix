@@ -33,7 +33,7 @@ app.post('/api/send-otp', (req, res) => {
   
   otpStore.set(email.toLowerCase(), {
     code: otpCode,
-    expiresAt: Date.now() + 10 * 60 * 1000
+    expiresAt: Date.Now() + 10 * 60 * 1000
   });
 
   const data = JSON.stringify({
@@ -117,21 +117,26 @@ app.post('/api/visual-generate', async (req, res) => {
     }
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
-
-    // Mappatura mirata con immagini di dettaglio del prodotto installato
-    let catalogImageUrl = "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"; 
     const catLower = (category || '').toLowerCase();
 
-    if (catLower.includes('garage') || catLower.includes('sezionale')) {
+    // Mappatura completa e puntuale per tutto il catalogo B2B (Serramenti, Portoncini, Garage, Oscuranti, Protezioni)
+    let catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80"; // Default serramento
+
+    if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
+      // Chiusure Garage & Grandi Aperture
       catalogImageUrl = "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80";
-    } else if (catLower.includes('blindato') || catLower.includes('portoncino')) {
+    } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
+      // Portoncini & Ingressi
       catalogImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80";
-    } else if (catLower.includes('scorrevole') || catLower.includes('alzante')) {
+    } else if (catLower.includes('scorrevole') || catLower.includes('alzante') || catLower.includes('traslante')) {
+      // Grandi vetrate scorrevoli
       catalogImageUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80";
-    } else if (catLower.includes('persiana') || catLower.includes('oscurante') || catLower.includes('tapparella')) {
+    } else if (catLower.includes('persiana') || catLower.includes('oscurante') || catLower.includes('tapparella') || catLower.includes('scurone') || catLower.includes('cassonetto')) {
+      // Oscuranti & Schermature
       catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
-    } else if (catLower.includes('finestra') || catLower.includes('serramenti')) {
-      catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
+    } else if (catLower.includes('zanzariera') || catLower.includes('frangisole') || catLower.includes('grata') || catLower.includes('inferriata')) {
+      // Protezioni & Accessori
+      catalogImageUrl = "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80";
     }
 
     // Relazione tecnica ad alto impatto commerciale con dati e vantaggi misurabili
