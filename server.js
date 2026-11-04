@@ -106,7 +106,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini AI Stabile)
+// 3. ENDPOINT: CONSULENZA TECNICA E DIAGNOSI VISIVA (Gemini AI Pro)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -129,7 +129,7 @@ app.post('/api/visual-generate', async (req, res) => {
             {
               text: `Sei l'esperto tecnico senior di INFIX®, un ingegnere edile e consulente di altissimo livello specializzato in serramenti, porte blindate, portoni sezionali e isolamento dell'involucro edilizio. 
               Un professionista/cliente ha caricato la foto di un vano o di un infisso attuale. 
-              Categoria selezionata per la nuova proposta: "${category || 'Serramento/Porta'}".
+              Categoria specifica selezionata per la nuova proposta: "${category || 'Serramento/Porta'}".
               Finitura scelta: "${finish || 'Standard'}".
               Note aggiuntive del cliente: "${userPrompt || 'Nessuna nota'}".
 
@@ -153,9 +153,10 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const geminiData = JSON.stringify(payload);
     
+    // Aggiornato al modello gemini-1.5-pro stabile e universalmente supportato
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
+      path: `/v1beta/models/gemini-1.5-pro:generateContent?key=${geminiApiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
