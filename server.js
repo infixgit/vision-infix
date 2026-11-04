@@ -119,21 +119,26 @@ app.post('/api/visual-generate', async (req, res) => {
     // Immagine originale del cliente (Il Prima)
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
 
-    // Selezione dell'immagine di catalogo mirata in base alla categoria scelta
-    let catalogImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"; // Default serramenti di pregio
-    
-    if (category && category.toLowerCase().includes('garage')) {
+    // Mappatura intelligente dell'immagine di catalogo in base alla categoria richiesta
+    let catalogImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"; // Default serramenti
+    const catLower = (category || '').toLowerCase();
+
+    if (catLower.includes('garage') || catLower.includes('sezionale')) {
       catalogImageUrl = "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80";
-    } else if (category && category.toLowerCase().includes('blindato')) {
+    } else if (catLower.includes('blindato') || catLower.includes('portoncino')) {
       catalogImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80";
+    } else if (catLower.includes('scorrevole') || catLower.includes('alzante')) {
+      catalogImageUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80";
+    } else if (catLower.includes('persiana') || catLower.includes('oscurante') || catLower.includes('tapparella')) {
+      catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
     }
 
-    // Generazione della relazione tecnica e dei pregi del nuovo prodotto
-    const technicalReport = `Soluzione selezionata: ${category} con finitura ${finish}.\n` +
-        `• Miglioramento Termico-Acustico: Ottimizzazione dell'isolamento con abbattimento dei ponti termici.\n` +
-        `• Sicurezza e Antieffrazione: Struttura rinforzata progettata per garantire alti standard protettivi.\n` +
-        `• Estetica e Design: Perfetta integrazione visiva nel contesto esistente con finitura di pregio.\n` +
-        (userPrompt ? `• Note specifiche gestite: "${userPrompt}"` : '');
+    // Relazione tecnica consulenziale mirata e pulita
+    const technicalReport = `Configurazione applicata: ${category} — Finitura: ${finish}\n\n` +
+        `• Risposta Termica & Isolamento: Abbattimento dei ponti termici e incremento della classe energetica dell'immobile.\n` +
+        `• Comfort Acustico: Sensibile riduzione dei rumori esterni per il benessere abitativo quotidiano.\n` +
+        `• Integrazione Estetica: La finitura scelta valorizza le linee architettoniche esistenti con un impatto visivo pulito e coordinato.\n` +
+        (userPrompt ? `• Note di cantiere recepite: "${userPrompt}"` : '');
 
     return res.json({ 
       success: true, 
@@ -145,7 +150,7 @@ app.post('/api/visual-generate', async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, error: "Errore durante la trasformazione grafica visiva." });
+    return res.status(500).json({ success: false, error: "Errore durante l'elaborazione tecnica." });
   }
 });
 
