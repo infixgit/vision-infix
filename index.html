@@ -68,7 +68,7 @@
                 🔹 <strong>Benvenuto in Visual INFIX®!</strong><br>
                 Il sistema genera un dossier tecnico professionale associato alla foto del tuo stato attuale.<br>
                 1. Inserisci la tua email e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, seleziona categoria e finitura per ottenere la consulenza tecnica IA mirata.
+                2. Carica la foto, seleziona categoria avanzata e finitura per ottenere la consulenza tecnica IA mirata.
             </div>
 
             <div id="free-trial-box">
@@ -136,31 +136,39 @@
             </div>
 
             <div class="form-group">
-                <label for="productSelect">🗂️ 2. Seleziona la Categoria INFIX®</label>
+                <label for="productSelect">🗂️ 2. Seleziona la Categoria e Specifiche INFIX®</label>
                 <select id="productSelect">
-                    <optgroup label="Serramenti & Vetrate">
-                        <option value="serramento">Serramento / Finestra / Scorrevole</option>
-                        <option value="porta_interna">Porta Interna (Pantografata / Filomuro / Scorrevole)</option>
+                    <optgroup label="Serramenti & Vetrate Tecniche">
+                        <option value="Finestra 1 Anta - Taglio Termico Avanzato">Finestra 1 Anta - Taglio Termico Avanzato</option>
+                        <option value="Finestra 2 Ante - Basse Emissività">Finestra 2 Ante - Basse Emissività</option>
+                        <option value="Scorrevole Alzante Grandi Luce">Scorrevole Alzante Grandi Luce</option>
+                        <option value="Scorrevole Traslante">Scorrevole Traslante</option>
                     </optgroup>
-                    <optgroup label="Portoncini & Ingressi">
-                        <option value="portoncino_alluminio">Portoncino d'Ingresso in Alluminio</option>
-                        <option value="portoncino_pvc">Portoncino d'Ingresso in PVC</option>
-                        <option value="blindato">Portoncino Blindato di Sicurezza</option>
+                    <optgroup label="Porte Interne di Design">
+                        <option value="Porta Interna Filomuro / Rasomuro">Porta Interna Filomuro / Rasomuro</option>
+                        <option value="Porta Interna Pantografata Classica/Moderna">Porta Interna Pantografata Classica/Moderna</option>
+                        <option value="Porta Interna Scorrevole Vetro/Alluminio">Porta Interna Scorrevole Vetro/Alluminio</option>
                     </optgroup>
-                    <optgroup label="Chiusure Garage & Grandi Aperture">
-                        <option value="sezionale">Portone Sezionale</option>
-                        <option value="basculante">Portone Basculante</option>
+                    <optgroup label="Portoncini & Ingressi Blindati">
+                        <option value="Portoncino in Alluminio a Taglio Termico">Portoncino in Alluminio a Taglio Termico</option>
+                        <option value="Portoncino in PVC Rinforzato">Portoncino in PVC Rinforzato</option>
+                        <option value="Portoncino Blindato Antieffrazione Classe 3">Portoncino Blindato Antieffrazione Classe 3</option>
+                        <option value="Portoncino Blindato Antieffrazione Classe 4">Portoncino Blindato Antieffrazione Classe 4</option>
                     </optgroup>
-                    <optgroup label="Oscuranti & Schermature">
-                        <option value="persiana">Persiana / Scurone (Alluminio / PVC / Legno)</option>
-                        <option value="balcone">Antone / Balcone</option>
-                        <option value="tapparella">Tapparella / Avvolgibile (Alluminio / Acciaio / PVC)</option>
-                        <option value="cassonetto">Cassonetto Copriforo / Restauro Isolante</option>
+                    <optgroup label="Chiusure Garage & Grandi Vani">
+                        <option value="Portone Sezionale Coibentato Motorizzato">Portone Sezionale Coibentato Motorizzato</option>
+                        <option value="Portone Basculante in Acciaio Zincato/Verniciato">Portone Basculante in Acciaio Zincato/Verniciato</option>
+                    </optgroup>
+                    <optgroup label="Oscuranti & Schermature Solari">
+                        <option value="Persiana in Alluminio con Alette Orientabili">Persiana in Alluminio con Alette Orientabili</option>
+                        <option value="Scurone Cieco Coibentato">Scurone Cieco Coibentato</option>
+                        <option value="Tapparella in Alluminio Estruso Antieffrazione">Tapparella in Alluminio Estruso Antieffrazione</option>
+                        <option value="Restauro Cassonetto con Kit Isolante Termoacustico">Restauro Cassonetto con Kit Isolante Termoacustico</option>
                     </optgroup>
                     <optgroup label="Protezioni & Accessori">
-                        <option value="zanzariera">Zanzariera (Plissettata / Rullo / Incasso)</option>
-                        <option value="frangisole">Frangisole / Schermatura Solare</option>
-                        <option value="inferriata">Grata di Sicurezza / Inferriata</option>
+                        <option value="Zanzariera Plissettata Senza Barriere">Zanzariera Plissettata Senza Barriere</option>
+                        <option value="Frangisole Orientabile Motorizzato">Frangisole Orientabile Motorizzato</option>
+                        <option value="Grata / Inferriata di Sicurezza Apribile">Grata / Inferriata di Sicurezza Apribile</option>
                     </optgroup>
                 </select>
             </div>
@@ -168,14 +176,14 @@
             <div class="form-group">
                 <label for="finishSelect">🎨 3. Scegli Finitura / Colore INFIX®</label>
                 <select id="finishSelect">
-                    <option value="ral9010">Bianco Puro RAL 9010</option>
-                    <option value="ral7016">Grigio Antracite RAL 7016</option>
-                    <option value="ral6005">Verde Persiana RAL 6005</option>
-                    <option value="ral8017">Marrone Testa di Moro RAL 8017</option>
-                    <option value="noce">Legno Effetto Noce</option>
-                    <option value="rovere">Legno Effetto Rovere / Quercia</option>
-                    <option value="nero">Nero Opaco Moderno</option>
-                    <option value="argento">Alluminio Anodizzato / Argento</option>
+                    <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
+                    <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
+                    <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
+                    <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
+                    <option value="Legno Effetto Noce">Legno Effetto Noce</option>
+                    <option value="Legno Effetto Rovere / Quercia">Legno Effetto Rovere / Quercia</option>
+                    <option value="Nero Opaco Moderno">Nero Opaco Moderno</option>
+                    <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
                 </select>
             </div>
 
@@ -479,9 +487,9 @@
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             const productSelect = document.getElementById('productSelect');
-            const product = productSelect.options[productSelect.selectedIndex].text;
+            const product = productSelect.value;
             const finishSelect = document.getElementById('finishSelect');
-            const finish = finishSelect.options[finishSelect.selectedIndex].text;
+            const finish = finishSelect.value;
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             if (!file) {
