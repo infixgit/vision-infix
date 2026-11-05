@@ -33,7 +33,7 @@ app.post('/api/send-otp', (req, res) => {
   
   otpStore.set(email.toLowerCase(), {
     code: otpCode,
-    expiresAt: Date.Now() + 10 * 60 * 1000
+    expiresAt: Date.now() + 10 * 60 * 1000
   });
 
   const data = JSON.stringify({
