@@ -41,7 +41,7 @@
         .form-section { display: none; margin-top: 15px; flex-direction: column; gap: 15px; border-top: 2px solid #e9ecef; padding-top: 20px; box-sizing: border-box; width: 100%; }
         .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
         .form-group label { font-size: 13px; font-weight: 600; color: #2d3748; }
-        .form-group select, .form-group input[type="file"], .form-group textarea { padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; background: #fff; color: #2d3748; box-sizing: border-box; width: 100%; font-family: inherit; }
+        .form-group select, .form-group input[type="file"], .form-group textarea, .form-group input[type="text"] { padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; background: #fff; color: #2d3748; box-sizing: border-box; width: 100%; font-family: inherit; }
 
         button.btn-primary { background: #111; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; width: 100%; }
         button.btn-primary:hover { background: #333; }
@@ -145,21 +145,32 @@
                     <option value="garage">Chiusure Garage & Grandi Aperture</option>
                     <option value="oscuranti">Oscuranti & Schermature</option>
                     <option value="protezioni">Protezioni & Accessori</option>
+                    <option value="altro_macro">Altro / Progetto Personalizzato</option>
                 </select>
+            </div>
+            
+            <div class="form-group" id="customMacroContainer" style="display: none;">
+                <label for="customMacroInput">✏️ Specifica Macro-Categoria personalizzata</label>
+                <input type="text" id="customMacroInput" placeholder="Es. Facciata continua, Veranda speciale...">
             </div>
 
             <!-- LIVELLO 2: MODELLO SPECIFICO -->
             <div class="form-group">
                 <label for="productSelect">🔍 3. Seleziona il Modello Specifico</label>
-                <select id="productSelect" disabled required>
+                <select id="productSelect" onchange="verificaAltroProdotto()" disabled required>
                     <option value="">-- Prima seleziona la macro-categoria sopra --</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="customProductContainer" style="display: none;">
+                <label for="customProductInput">✏️ Specifica Modello personalizzato</label>
+                <input type="text" id="customProductInput" placeholder="Es. Infisso triplo vetro asimmetrico, Forma ad arco...">
             </div>
 
             <!-- LIVELLO 3: FINITURA -->
             <div class="form-group">
                 <label for="finishSelect">🎨 4. Scegli Finitura / Colore INFIX®</label>
-                <select id="finishSelect" required>
+                <select id="finishSelect" onchange="verificaAltraFinitura()" required>
                     <optgroup label="Standard & RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
                         <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
@@ -174,13 +185,19 @@
                         <option value="Legno Effetto Douglas / Ciliegio">Legno Effetto Douglas / Ciliegio</option>
                         <option value="Effetto Cor-ten / Ruggine">Effetto Cor-ten / Ruggine</option>
                     </optgroup>
+                    <option value="altro_finitura">➕ Altro colore / Finitura personalizzata (es. RAL 9001)...</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="customFinishContainer" style="display: none;">
+                <label for="customFinishInput">✏️ Specifica Colore / Finitura (es. RAL 9001, essenza speciale)</label>
+                <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema / Effetto legno spazzolato bianco">
             </div>
 
             <!-- NOTE PERSONALIZZATE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 5. Note o richiesta personalizzata (opzionale)</label>
-                <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare..."></textarea>
+                <label for="customUserRequest">✏️ 5. Note o richiesta personalizzata di cantiere (opzionale)</label>
+                <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare, soglia ribassata..."></textarea>
             </div>
 
             <button type="submit" class="btn-primary" id="generateBtn">Genera Simulazione Visual INFIX® 🎨</button>
@@ -260,42 +277,60 @@
             serramenti: [
                 { val: "finestra_battente_1", text: "Finestra / Portafinestra a 1 Anta a Battente" },
                 { val: "finestra_battente_2", text: "Finestra / Portafinestra a 2 Ante a Battente" },
-                { val: "scorrevole_alzante", text: "Scorrevole Alzante in Alluminio / PVC" },
+                { val: "finestra_vasistas_ribalta", text: "Finestra con Apertura Vasistas / Ribalta" },
+                { val: "scorrevole_alzante", text: "Scorrevole Alzante in Alluminio / PVC (Grandi Vetrate)" },
                 { val: "scorrevole_traslante", text: "Scorrevole Traslante Paral" },
-                { val: "porta_interna_filomuro", text: "Porta Interna Filomuro / Rasomuro" },
+                { val: "porta_interna_filomuro", text: "Porta Interna Filomuro / Rasomuro di Design" },
                 { val: "porta_interna_pantografata", text: "Porta Interna Classica / Pantografata" },
-                { val: "porta_interna_scorrevole", text: "Porta Interna Scorrevole (Interno/Esterno Muro)" }
+                { val: "porta_interna_scorrevole", text: "Porta Interna Scorrevole (Interno/Esterno Muro)" },
+                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
             ],
             portoncini: [
                 { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso in Alluminio con Inserto Vetro" },
                 { val: "portoncino_pvc_pannello", text: "Portoncino d'Ingresso in PVC bugnato / isolato" },
                 { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
                 { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata di Sicurezza - Classe 4 con Fiancoluce" },
-                { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" }
+                { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" },
+                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
             ],
             garage: [
                 { val: "portone_sezionale_coibentato", text: "Portone Sezionale Box Coibentato a Pannelli" },
-                { val: "portone_basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato / Legno" }
+                { val: "portone_basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato / Legno" },
+                { val: "chiusura_libro_industriale", text: "Chiusura a Libro o Serranda Avvolgibile Coibentata" },
+                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
             ],
             oscuranti: [
                 { val: "persiana_alluminio_orientabile", text: "Persiana in Alluminio con Alette Orientabili" },
                 { val: "scurone_legno_cieco", text: "Scurone Antone Cieco in Legno o Alluminio" },
                 { val: "tapparella_alluminio_coibentato", text: "Tapparella Avvolgibile in Alluminio Coibentato Antieffrazione" },
-                { val: "cassonetto_restauro_isolante", text: "Cassonetto Copriforo per Restauro Termico-Acustico" }
+                { val: "cassonetto_restauro_isolante", text: "Cassonetto Copriforo per Restauro Termico-Acustico" },
+                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
             ],
             protezioni: [
                 { val: "zanzariera_plissettata", text: "Zanzariera Plissettata a Ridotta Ingressione" },
                 { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Motorizzata" },
-                { val: "grata_inferriata_sicurezza", text: "Grata di Sicurezza / Inferriata fissa o apribile" }
+                { val: "grata_inferriata_sicurezza", text: "Grata di Sicurezza / Inferriata fissa o apribile" },
+                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
             ]
         };
 
         function aggiornaSottoCategorie() {
             const macroSelect = document.getElementById('macroCategorySelect');
             const productSelect = document.getElementById('productSelect');
+            const customMacroContainer = document.getElementById('customMacroContainer');
             const categoriaScelta = macroSelect.value;
 
             productSelect.innerHTML = '';
+            customMacroContainer.style.display = 'none';
+            document.getElementById('customProductContainer').style.display = 'none';
+
+            if (categoriaScelta === 'altro_macro') {
+                customMacroContainer.style.display = 'flex';
+                productSelect.innerHTML = '<option value="personalizzato">Altro prodotto personalizzato</option>';
+                productSelect.disabled = false;
+                document.getElementById('customProductContainer').style.display = 'flex';
+                return;
+            }
 
             if (!categoriaScelta || !cataloghiProdottiINFIX[categoriaScelta]) {
                 productSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
@@ -312,6 +347,26 @@
             });
 
             productSelect.disabled = false;
+        }
+
+        function verificaAltroProdotto() {
+            const productSelect = document.getElementById('productSelect');
+            const customProductContainer = document.getElementById('customProductContainer');
+            if (productSelect.value === 'altro_prodotto') {
+                customProductContainer.style.display = 'flex';
+            } else {
+                customProductContainer.style.display = 'none';
+            }
+        }
+
+        function verificaAltraFinitura() {
+            const finishSelect = document.getElementById('finishSelect');
+            const customFinishContainer = document.getElementById('customFinishContainer');
+            if (finishSelect.value === 'altro_finitura') {
+                customFinishContainer.style.display = 'flex';
+            } else {
+                customFinishContainer.style.display = 'none';
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -546,13 +601,25 @@
             const file = fileInput.files[0];
             
             const macroSelect = document.getElementById('macroCategorySelect');
-            const macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
+            let macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
+            if (macroSelect.value === 'altro_macro') {
+                const customMacro = document.getElementById('customMacroInput').value.trim();
+                if (customMacro) macroCategoryText = customMacro;
+            }
             
             const productSelect = document.getElementById('productSelect');
-            const productText = productSelect.options[productSelect.selectedIndex].text;
+            let productText = productSelect.options[productSelect.selectedIndex].text;
+            if (productSelect.value === 'altro_prodotto') {
+                const customProd = document.getElementById('customProductInput').value.trim();
+                if (customProd) productText = customProd;
+            }
             
             const finishSelect = document.getElementById('finishSelect');
-            const finishText = finishSelect.options[finishSelect.selectedIndex].text;
+            let finishText = finishSelect.options[finishSelect.selectedIndex].text;
+            if (finishSelect.value === 'altro_finitura') {
+                const customFinish = document.getElementById('customFinishInput').value.trim();
+                if (customFinish) finishText = customFinish;
+            }
             
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
