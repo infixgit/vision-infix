@@ -159,31 +159,25 @@ app.post('/api/visual-generate', async (req, res) => {
 
     if (process.env.GEMINI_API_KEY) {
       try {
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: [
-            {
-              inlineData: {
-                data: cleanBase64,
-                mimeType: mimeType || 'image/jpeg'
-              }
-            },
-            {
-              text: `Agisci come motore di rendering B2B per serramenti. Modifica questa foto dello stato attuale applicando rigorosamente la categoria: ${category} con la finitura: ${finish}. Note di cantiere: ${userPrompt || 'Nessuna'}. Mantieni identica la prospettiva, le pareti e lo sfondo della foto originale, modificando unicamente gli infissi/serramenti con il nuovo colore e materiale richiesto, senza inserire alcun arredamento estraneo.`
-            }
-          ]
+        // Utilizziamo Imagen 3 per la generazione e manipolazione visiva professionale basata sull'immagine originale
+        const imagePrompt = `Fotografia di interni/esterni di un cantiere reale. Modifica questa foto applicando rigorosamente la categoria: ${category} con la finitura/colore esatto: ${finish}. Note di cantiere: ${userPrompt || 'Nessuna'}. Mantieni identica la prospettiva, le pareti e lo sfondo della foto originale, modificando unicamente gli infissi e serramenti con il nuovo materiale richiesto, senza inserire arredamenti estranei. Rendering fotorealistico 8K.`;
+
+        const imageResponse = await ai.models.generateImages({
+          model: 'imagen-3.0-generate-002',
+          prompt: imagePrompt,
+          config: {
+            numberOfImages: 1,
+            outputMimeType: 'image/jpeg',
+            aspectRatio: '1:1',
+          },
         });
 
-        // Estrazione dell'immagine elaborata se restituita dal modello
-        if (response.candidates && response.candidates[0].content.parts) {
-          for (const part of response.candidates[0].content.parts) {
-            if (part.inlineData && part.inlineData.data) {
-              generatedImageUrl = `data:${part.inlineData.mimeType || 'image/jpeg'};base64,${part.inlineData.data}`;
-            }
-          }
+        if (imageResponse && imageResponse.generatedImages && imageResponse.generatedImages[0]) {
+          const imageBytes = imageResponse.generatedImages[0].image.imageBytes;
+          generatedImageUrl = `data:image/jpeg;base64,${imageBytes}`;
         }
       } catch (aiErr) {
-        console.error("Errore durante la generazione visiva con IA:", aiErr.message);
+        console.error("Errore durante la generazione visiva con Imagen:", aiErr.message);
       }
     }
 
