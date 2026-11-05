@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(cors());
@@ -8,6 +9,9 @@ app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
+
+// Inizializzazione SDK Google Gen AI
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -117,39 +121,28 @@ app.post('/api/visual-generate', async (req, res) => {
     }
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
+    const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
-    // Mappatura pulita e rigorosa per categoria (SENZA arredi estranei o divani)
-    let catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80"; // Default serramento
     let technicalSpecs = "";
 
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
-      // Chiusure Garage & Grandi Aperture
-      catalogImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
       technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
           `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
           `• Ingombro Ottimizzato: Scorrimento a soffitto senza invasione dello spazio esterno.`;
     } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
-      // Portoncini & Ingressi
-      catalogImageUrl = "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80";
       technicalSpecs = `• Sicurezza Antieffrazione: Struttura in acciaio rinforzato certificata in Classe 3 o Classe 4 antieffrazione.\n` +
           `• Isolamento Termoacustico: Valori di abbattimento acustico fino a 43 dB e guarnizioni tagliafreddo perimetrali.\n` +
           `• Design e Finitura: Pannelli coordinati ${finish} resistenti agli agenti atmosferici severi.`;
     } else if (catLower.includes('scorrevole') || catLower.includes('alzante') || catLower.includes('traslante')) {
-      // Grandi vetrate scorrevoli
-      catalogImageUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80";
       technicalSpecs = `• Luminosità & Trasmittanza: Grandi superfici vetrate con profili slim e U_w ottimizzato fino a 0.9 W/(m²K).\n` +
           `• Scorrimento Ergonomico: Meccanismo alzante o traslante per ante di grandi dimensioni movimentabili con minimo sforzo.\n` +
           `• Tenuta Superiore: Classificazione AEV ai vertici della categoria.`;
     } else if (catLower.includes('zanzariera') || catLower.includes('frangisole') || catLower.includes('grata') || catLower.includes('inferriata')) {
-      // Protezioni & Accessori
-      catalogImageUrl = "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80";
       technicalSpecs = `• Funzionalità & Protezione: Sistema schermante o di sicurezza progettato su misura per integrarsi perfettamente con il serramento esistente.\n` +
           `• Durabilità: Reti plissettate ad alta visibilità o tondini in acciaio antitaglio protetti contro la corrosione.\n` +
           `• Comfort Visivo e Aerazione: Regolazione ottimale della luce solare e del passaggio d'aria.`;
     } else {
-      // Serramenti & Vetrate / Oscuranti standard
-      catalogImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80";
       technicalSpecs = `• Abbattimento Termico & Risparmio: Trasmittanza termica stimata U_w fino a 1.1 W/(m²K), con riduzione delle dispersioni fino al 45%.\n` +
           `• Isolamento Acustico Certificato: Smorzamento acustico testato fino a 42 dB per il comfort domestico.\n` +
           `• Sicurezza Antieffrazione: Ferramenta perimetrale in classe RC2/RC3.`;
@@ -161,9 +154,42 @@ app.post('/api/visual-generate', async (req, res) => {
         `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
+    // Elaborazione visiva tramite Google Gemini (generazione del "Dopo")
+    let generatedImageUrl = imageUri; // Fallback di sicurezza sullo stato attuale
+
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: [
+            {
+              inlineData: {
+                data: cleanBase64,
+                mimeType: mimeType || 'image/jpeg'
+              }
+            },
+            {
+              text: `Agisci come motore di rendering B2B per serramenti. Modifica questa foto dello stato attuale applicando rigorosamente la categoria: ${category} con la finitura: ${finish}. Note di cantiere: ${userPrompt || 'Nessuna'}. Mantieni identica la prospettiva, le pareti e lo sfondo della foto originale, modificando unicamente gli infissi/serramenti con il nuovo colore e materiale richiesto, senza inserire alcun arredamento estraneo.`
+            }
+          ]
+        });
+
+        // Estrazione dell'immagine elaborata se restituita dal modello
+        if (response.candidates && response.candidates[0].content.parts) {
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData && part.inlineData.data) {
+              generatedImageUrl = `data:${part.inlineData.mimeType || 'image/jpeg'};base64,${part.inlineData.data}`;
+            }
+          }
+        }
+      } catch (aiErr) {
+        console.error("Errore durante la generazione visiva con IA:", aiErr.message);
+      }
+    }
+
     return res.json({ 
       success: true, 
-      imageUrl: catalogImageUrl, 
+      imageUrl: generatedImageUrl, 
       result: imageUri,
       dossier: technicalReport,
       message: "Generazione completata con successo." 
