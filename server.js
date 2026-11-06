@@ -119,6 +119,7 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
+    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
 
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
@@ -145,11 +146,12 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
         technicalSpecs + `\n` +
-        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progetta per integrarsi senza opere murarie invasive.\n` +
+        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
-    let generatedImageUrl = imageUri; // Fallback iniziale
+    let generatedImageUrl = imageUri; // Fallback di sicurezza nativo
 
+    // Esecuzione protetta della chiamata IA per evitare blocchi in caricamento
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await ai.models.generateContent({
@@ -162,7 +164,7 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `Genera una versione modificata di questa fotografia in cui i serramenti o portoni esistenti sono sostituiti con la categoria: "${category}" e la finitura: "${finish}". Restituisci esclusivamente l'immagine elaborata.`
+              text: `Genera una versione modificata di questa fotografia applicando la categoria: "${category}" e la finitura: "${finish}". Restituisci l'immagine elaborata.`
             }
           ]
         });
@@ -176,7 +178,7 @@ app.post('/api/visual-generate', async (req, res) => {
           }
         }
       } catch (aiErr) {
-        console.error("Errore elaborazione visiva:", aiErr.message);
+        console.error("Nota IA non bloccante:", aiErr.message);
       }
     }
 
@@ -194,6 +196,7 @@ app.post('/api/visual-generate', async (req, res) => {
   }
 });
 
+// Health check endpoint per Render
 app.get('/healthz', (req, res) => res.send('OK'));
 
 app.listen(PORT, () => {
