@@ -118,27 +118,40 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
+    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
-      technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K).\n• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa.`;
+      technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
+          `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
+          `• Ingombro Ottimizzato: Scorrimento a soffitto senza invasione dello spazio esterno.`;
     } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
-      technicalSpecs = `• Sicurezza Antieffrazione: Struttura in acciaio rinforzato certificata in Classe 3 o Classe 4.\n• Isolamento Termoacustico: Abbattimento acustico fino a 43 dB.`;
+      technicalSpecs = `• Sicurezza Antieffrazione: Struttura in acciaio rinforzato certificata in Classe 3 o Classe 4 antieffrazione.\n` +
+          `• Isolamento Termoacustico: Valori di abbattimento acustico fino a 43 dB e guarnizioni tagliafreddo perimetrali.\n` +
+          `• Design e Finitura: Pannelli coordinati ${finish} resistenti agli agenti atmosferici severi.`;
     } else if (catLower.includes('scorrevole') || catLower.includes('alzante') || catLower.includes('traslante')) {
-      technicalSpecs = `• Luminosità & Trasmittanza: Grandi superfici vetrate con profili slim e U_w ottimizzato fino a 0.9 W/(m²K).\n• Scorrimento Ergonomico: Movimentazione agevolata per ante di grandi dimensioni.`;
+      technicalSpecs = `• Luminosità & Trasmittanza: Grandi superfici vetrate con profili slim e U_w ottimizzato fino a 0.9 W/(m²K).\n` +
+          `• Scorrimento Ergonomico: Meccanismo alzante o traslante per ante di grandi dimensioni movimentabili con minimo sforzo.\n` +
+          `• Tenuta Superiore: Classificazione AEV ai vertici della categoria.`;
+    } else if (catLower.includes('zanzariera') || catLower.includes('frangisole') || catLower.includes('grata') || catLower.includes('inferriata')) {
+      technicalSpecs = `• Funzionalità & Protezione: Sistema schermante o di sicurezza progettato su misura per integrarsi perfettamente con il serramento esistente.\n` +
+          `• Durabilità: Reti plissettate ad alta visibilità o tondini in acciaio antitaglio protetti contro la corrosione.\n` +
+          `• Comfort Visivo e Aerazione: Regolazione ottimale della luce solare e del passaggio d'aria.`;
     } else {
-      technicalSpecs = `• Abbattimento Termico & Risparmio: Trasmittanza termica stimata U_w fino a 1.1 W/(m²K), riduzione dispersioni fino al 45%.\n• Isolamento Acustico Certificato: Smorzamento fino a 42 dB.`;
+      technicalSpecs = `• Abbattimento Termico & Risparmio: Trasmittanza termica stimata U_w fino a 1.1 W/(m²K), con riduzione delle dispersioni fino al 45%.\n` +
+          `• Isolamento Acustico Certificato: Smorzamento acustico testato fino a 42 dB per il comfort domestico.\n` +
+          `• Sicurezza Antieffrazione: Ferramenta perimetrale in classe RC2/RC3.`;
     }
 
     const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
         technicalSpecs + `\n` +
-        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV.\n` +
+        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
-    let generatedImageUrl = imageUri;
+    let generatedImageUrl = imageUri; // Fallback di sicurezza
 
     if (process.env.GEMINI_API_KEY) {
       try {
-        // Utilizziamo gemini-2.5-flash impostando una generazione mirata di immagini/modifica visiva
+        // Richiesta strutturata per forzare la manipolazione visiva identica all'interfaccia di AI Studio
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
           contents: [
@@ -149,12 +162,12 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `You are an expert architectural visualization AI. Task: Edit this exact room photo to visually install the new product category: "${category}" with the precise finish/color: "${finish}". Additional notes: "${userPrompt || 'None'}". CRITICAL INSTRUCTIONS: Output ONLY the modified image in JPEG format. Keep the exact same room structure, walls, floor, perspective, and background from the input photo. Replace ONLY the windows/doors with the new INFIX product. Do not add any foreign furniture or change anything else.`
+              text: `Act as a professional architectural image editing engine. Modify this exact room photo by replacing the existing windows/doors with the new product: category "${category}", exact finish/color "${finish}". Additional user instructions: "${userPrompt || 'None'}". CRITICAL RULES: Keep the exact same room structure, walls, floor, perspective, and background. Change ONLY the color and material of the window frames and doors to match "${finish}". Do not add any foreign furniture.`
             }
           ]
         });
 
-        // Controlliamo se il modello ha restituito una parte immagine binaria
+        // Estrazione dell'immagine elaborata se restituita dal modello
         if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
           for (const part of response.candidates[0].content.parts) {
             if (part.inlineData && part.inlineData.data) {
@@ -164,7 +177,7 @@ app.post('/api/visual-generate', async (req, res) => {
           }
         }
       } catch (aiErr) {
-        console.error("Errore generazione visiva gemini-2.5-flash:", aiErr.message);
+        console.error("Errore durante l'elaborazione visiva:", aiErr.message);
       }
     }
 
