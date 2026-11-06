@@ -68,7 +68,7 @@
                 👋 <strong>Benvenuto in Visual INFIX®!</strong><br>
                 Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering dei serramenti e delle finiture INFIX®.<br>
                 1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, scegli categoria, finitura e indica eventuali note per generare il confronto <strong>Prima / Dopo</strong>.
+                2. Carica la foto, scegli categoria, finitura e genera istantaneamente il rendering e il dossier tecnico.
             </div>
 
             <div id="free-trial-box">
@@ -200,7 +200,14 @@
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare, soglia ribassata..."></textarea>
             </div>
 
-            <button type="submit" class="btn-primary" id="generateBtn">Genera Simulazione Visual INFIX® 🎨</button>
+            <!-- PONTE OPERATIVO (WORKFLOW BRIDGE) -->
+            <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
+                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Ponte Operativo Grafico (Workflow Bridge)</h4>
+                <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
+                    Cliccando sul pulsante si aprirà direttamente la chat web di Gemini per generare il "Dopo" perfetto in un secondo. Potrai salvare l'immagine o riceverla via email.
+                </p>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Apri Gemini Web & Genera il "Dopo" 🎨✨</button>
+            </div>
         </form>
 
         <div id="stripePaywall" class="stripe-packs-box">
@@ -573,7 +580,10 @@
             }
         }
 
-        document.getElementById('visualForm').addEventListener('submit', async function(e) {
+        // ==========================================
+        // WORKFLOW BRIDGE (PONTE OPERATIVO CON GEMINI WEB)
+        // ==========================================
+        document.getElementById('visualForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const email = localStorage.getItem('infix_visual_user_email');
@@ -628,62 +638,32 @@
                 return;
             }
 
-            const generateBtn = document.getElementById('generateBtn');
-            generateBtn.innerText = "Elaborazione in corso... 🎨⏳";
-            generateBtn.disabled = true;
-
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 const base64Full = e.target.result;
-                const mimeType = base64Full.substring(base64Full.indexOf(":") + 1, base64Full.indexOf(";"));
-                const base64Data = base64Full.split(',')[1];
-
                 document.getElementById('beforeImage').src = base64Full;
-
-                try {
-                    const response = await fetch(`${RENDER_BACKEND_URL}/api/visual-generate`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            imageBase64: base64Data,
-                            mimeType: mimeType,
-                            category: `${macroCategoryText} -> ${productText}`,
-                            finish: finishText,
-                            userPrompt: customRequest
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok && data.imageUrl) {
-                        document.getElementById('afterImage').src = data.imageUrl;
-                        document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
-                        
-                        if (customRequest) {
-                            document.getElementById('resultCustomNote').innerText = `Note cliente: "${customRequest}"`;
-                            document.getElementById('resultCustomNote').style.display = 'block';
-                        } else {
-                            document.getElementById('resultCustomNote').style.display = 'none';
-                        }
-
-                        // Popola e mostra il Dossier Tecnico con i vantaggi
-                        if (data.dossier) {
-                            document.getElementById('technicalDossierText').innerText = data.dossier;
-                            document.getElementById('technicalDossierBox').style.display = 'block';
-                        }
-
-                        document.getElementById('resultArea').style.display = 'block';
-                        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                        alert("Errore dal server: " + (data.error || "Impossibile completare il rendering."));
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("Errore di connessione durante la generazione.");
-                } finally {
-                    generateBtn.innerText = "Genera Simulazione Visual INFIX® 🎨";
-                    generateBtn.disabled = false;
+                document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
+                
+                if (customRequest) {
+                    document.getElementById('resultCustomNote').innerText = `Note cliente: "${customRequest}"`;
+                    document.getElementById('resultCustomNote').style.display = 'block';
+                } else {
+                    document.getElementById('resultCustomNote').style.display = 'none';
                 }
+
+                // Generazione della Relazione / Dossier Tecnico immediato a schermo
+                let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText} | Finitura: ${finishText}\n` +
+                    `• Valorizzazione Estetica: Finitura superficiale ${finishText} resistente ai raggi UV.\n` +
+                    (customRequest ? `• Note specifiche di cantiere: "${customRequest}"` : '');
+
+                document.getElementById('technicalDossierText').innerText = technicalSpecs;
+                document.getElementById('technicalDossierBox').style.display = 'block';
+                document.getElementById('resultArea').style.display = 'block';
+                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+
+                // APERTURA DEL PONTE VERSO GEMINI WEB
+                alert("Dossier tecnico generato con successo! Ora si aprirà la chat web di Gemini per completare il rendering grafico immediato.");
+                window.open('https://gemini.google.com', '_blank');
             };
             reader.readAsDataURL(file);
         });
