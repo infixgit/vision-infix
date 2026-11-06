@@ -8,7 +8,18 @@ app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 3000;
+
+// Mappe in memoria per OTP e gestione test gratuiti
 const otpStore = new Map();
+const freeTrialStore = new Map();
+
+const MAX_FREE_TESTS = 2; // Impostato a 2 test gratuiti per utente
+
+// Whitelist email di controllo/amministrazione (test illimitati)
+const ADMIN_EMAILS = [
+  'infixserramenti@gmail.com'
+  // Aggiungi qui altre tue email di test se necessario
+];
 
 // Inizializzazione SDK Google Gen AI
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
@@ -33,8 +44,9 @@ app.post('/api/send-otp', (req, res) => {
   }
 
   const otpCode = generateOtp();
+  const lowerEmail = email.toLowerCase().trim();
   
-  otpStore.set(email.toLowerCase(), {
+  otpStore.set(lowerEmail, {
     code: otpCode,
     expiresAt: Date.now() + 10 * 60 * 1000
   });
@@ -42,7 +54,7 @@ app.post('/api/send-otp', (req, res) => {
   const data = JSON.stringify({
     sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
     replyTo: { email: 'infixserramenti@gmail.com', name: 'Visual INFIX®' },
-    to: [{ email: email.trim() }],
+    to: [{ email: lowerEmail }],
     subject: 'Codice di verifica OTP - Visual INFIX®',
     htmlContent: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
       <h2>Visual INFIX® - Verifica Email</h2>
@@ -91,28 +103,66 @@ app.post('/api/verify-otp', (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) return res.status(400).json({ error: "Dati mancanti." });
 
-  const record = otpStore.get(email.toLowerCase());
+  const lowerEmail = email.toLowerCase().trim();
+  const record = otpStore.get(lowerEmail);
+
   if (!record || Date.now() > record.expiresAt) {
     return res.status(400).json({ error: "Codice OTP errato o scaduto." });
   }
 
   if (record.code === otp.trim()) {
-    otpStore.delete(email.toLowerCase());
-    return res.json({ success: true, message: "Verificato con successo!" });
+    otpStore.delete(lowerEmail);
+
+    // Se è un'email amministrativa/controllo, ha accesso illimitato
+    if (ADMIN_EMAILS.includes(lowerEmail)) {
+      return res.json({ success: true, message: "Verificato (Admin/Controllo)!", remainingTests: 999 });
+    }
+
+    if (!freeTrialStore.has(lowerEmail)) {
+      freeTrialStore.set(lowerEmail, 0);
+    }
+
+    const currentUsage = freeTrialStore.get(lowerEmail);
+    const remaining = MAX_FREE_TESTS - currentUsage;
+
+    return res.json({ 
+      success: true, 
+      message: "Verificato con successo!",
+      remainingTests: remaining > 0 ? remaining : 0
+    });
   } else {
     return res.status(400).json({ error: "Codice OTP errato." });
   }
 });
 
 // ==========================================
-// 3. ENDPOINT: TRASFORMAZIONE VISIVA & DOSSIER TECNICO
+// 3. ENDPOINT: TRASFORMAZIONE VISIVA, DOSSIER & INVIO EMAIL BREVO
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
-    const { category, finish, userPrompt, imageBase64, mimeType } = req.body;
+    const { email, category, finish, userPrompt, imageBase64, mimeType } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
+    }
+
+    const lowerEmail = (email || '').toLowerCase().trim();
+    const isAdmin = ADMIN_EMAILS.includes(lowerEmail);
+    let remainingTests = 999;
+
+    // Controllo test gratuiti solo per utenti esterni
+    if (!isAdmin) {
+      const currentUsage = freeTrialStore.get(lowerEmail) || 0;
+
+      if (currentUsage >= MAX_FREE_TESTS) {
+        return res.status(403).json({ 
+          success: false, 
+          error: "Hai esaurito i test gratuiti a disposizione. Passa alla versione a pagamento per continuare." 
+        });
+      }
+
+      freeTrialStore.set(lowerEmail, currentUsage + 1);
+      remainingTests = MAX_FREE_TESTS - (currentUsage + 1);
     }
 
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
@@ -151,7 +201,7 @@ app.post('/api/visual-generate', async (req, res) => {
 
     let generatedImageUrl = imageUri; // Fallback di sicurezza nativo
 
-    // Esecuzione protetta della chiamata IA per evitare blocchi in caricamento
+    // Esecuzione protetta della chiamata IA
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await ai.models.generateContent({
@@ -182,11 +232,55 @@ app.post('/api/visual-generate', async (req, res) => {
       }
     }
 
+    // INVIO EMAIL ISTANTANEO CON BREVO (INCLUSO ALLEGATO DEL "DOPO")
+    const brevoApiKey = process.env.BREVO_API_KEY;
+    if (brevoApiKey && lowerEmail) {
+      const pureBase64Image = generatedImageUrl.replace(/^data:image\/\w+;base64,/, '');
+      
+      const brevoData = JSON.stringify({
+        sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
+        to: [{ email: lowerEmail }],
+        subject: `Visual INFIX® - Dossier & Rendering (${category})`,
+        htmlContent: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #2e7d32;">Visual INFIX® - Dossier & Rendering</h2>
+          <p>Gentile cliente, ecco il riepilogo della simulazione e la relazione tecnica per il tuo intervento:</p>
+          <div style="background: #f4f4f9; padding: 15px; border-radius: 6px; white-space: pre-line; font-size: 13px;">${technicalReport}</div>
+          <p style="margin-top: 15px; font-size: 12px; color: #666;">Trovi l'immagine di simulazione del "Dopo" allegata direttamente a questa email.</p>
+        </div>`,
+        attachment: [
+          {
+            content: pureBase64Image,
+            name: "Visual-INFIX-Dopo.jpg"
+          }
+        ]
+      });
+
+      const brevoOptions = {
+        hostname: 'api.brevo.com',
+        path: '/v3/smtp/email',
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': brevoApiKey,
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(brevoData)
+        }
+      };
+
+      const emailReq = https.request(brevoOptions, (emailRes) => {
+        // Gestione silenziosa o di log dell'invio email
+      });
+      emailReq.on('error', (e) => console.error("Errore invio email Brevo:", e));
+      emailReq.write(brevoData);
+      emailReq.end();
+    }
+
     return res.json({ 
       success: true, 
       imageUrl: generatedImageUrl, 
       result: imageUri,
       dossier: technicalReport,
+      remainingTests: isAdmin ? 'Illimitati' : remainingTests,
       message: "Generazione completata con successo." 
     });
 
