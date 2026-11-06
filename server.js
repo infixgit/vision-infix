@@ -33,6 +33,7 @@ app.post('/api/send-otp', (req, res) => {
   }
 
   const otpCode = generateOtp();
+  
   otpStore.set(email.toLowerCase(), {
     code: otpCode,
     expiresAt: Date.now() + 10 * 60 * 1000
@@ -88,9 +89,13 @@ app.post('/api/send-otp', (req, res) => {
 // ==========================================
 app.post('/api/verify-otp', (req, res) => {
   const { email, otp } = req.body;
-  if (!email || !otp) return res.status(400).json({ error: "Dati mancanti." });
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Dati mancanti." });
+  }
 
   const record = otpStore.get(email.toLowerCase());
+
   if (!record || Date.now() > record.expiresAt) {
     return res.status(400).json({ error: "Codice OTP errato o scaduto." });
   }
@@ -118,8 +123,8 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
-    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
+
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
       technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
           `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
@@ -151,9 +156,9 @@ app.post('/api/visual-generate', async (req, res) => {
 
     if (process.env.GEMINI_API_KEY) {
       try {
-        // Richiesta strutturata per forzare la manipolazione visiva identica all'interfaccia di AI Studio
+        // Utilizziamo il modello aggiornato gemini-3.8-flash richiesto dall'API
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-3.8-flash',
           contents: [
             {
               inlineData: {
@@ -167,7 +172,6 @@ app.post('/api/visual-generate', async (req, res) => {
           ]
         });
 
-        // Estrazione dell'immagine elaborata se restituita dal modello
         if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
           for (const part of response.candidates[0].content.parts) {
             if (part.inlineData && part.inlineData.data) {
@@ -195,6 +199,7 @@ app.post('/api/visual-generate', async (req, res) => {
   }
 });
 
+// Health check endpoint per Render
 app.get('/healthz', (req, res) => res.send('OK'));
 
 app.listen(PORT, () => {
