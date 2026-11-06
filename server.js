@@ -33,6 +33,7 @@ app.post('/api/send-otp', (req, res) => {
   }
 
   const otpCode = generateOtp();
+  
   otpStore.set(email.toLowerCase(), {
     code: otpCode,
     expiresAt: Date.now() + 10 * 60 * 1000
@@ -118,8 +119,8 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
-    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
+
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
       technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
           `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
@@ -144,10 +145,10 @@ app.post('/api/visual-generate', async (req, res) => {
 
     const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
         technicalSpecs + `\n` +
-        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
+        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progetta per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
-    let generatedImageUrl = imageUri; // Fallback di sicurezza
+    let generatedImageUrl = imageUri; // Fallback iniziale
 
     if (process.env.GEMINI_API_KEY) {
       try {
@@ -161,7 +162,7 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `Photo editing task: Modify this image by replacing the old garage doors, windows, or gates with the new product category: "${category}", finished in exact color/style: "${finish}". Additional notes: "${userPrompt || 'None'}". Instructions: Keep the exact same building structure, walls, background, and lighting. Replace ONLY the doors/windows with the requested new installation and color. Return the generated modified image.`
+              text: `Genera una versione modificata di questa fotografia in cui i serramenti o portoni esistenti sono sostituiti con la categoria: "${category}" e la finitura: "${finish}". Restituisci esclusivamente l'immagine elaborata.`
             }
           ]
         });
@@ -175,7 +176,7 @@ app.post('/api/visual-generate', async (req, res) => {
           }
         }
       } catch (aiErr) {
-        console.error("Errore durante l'elaborazione visiva:", aiErr.message);
+        console.error("Errore elaborazione visiva:", aiErr.message);
       }
     }
 
