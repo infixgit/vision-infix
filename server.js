@@ -33,7 +33,6 @@ app.post('/api/send-otp', (req, res) => {
   }
 
   const otpCode = generateOtp();
-  
   otpStore.set(email.toLowerCase(), {
     code: otpCode,
     expiresAt: Date.now() + 10 * 60 * 1000
@@ -89,13 +88,9 @@ app.post('/api/send-otp', (req, res) => {
 // ==========================================
 app.post('/api/verify-otp', (req, res) => {
   const { email, otp } = req.body;
-
-  if (!email || !otp) {
-    return res.status(400).json({ error: "Dati mancanti." });
-  }
+  if (!email || !otp) return res.status(400).json({ error: "Dati mancanti." });
 
   const record = otpStore.get(email.toLowerCase());
-
   if (!record || Date.now() > record.expiresAt) {
     return res.status(400).json({ error: "Codice OTP errato o scaduto." });
   }
@@ -123,8 +118,8 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
+    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
-
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
       technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
           `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
@@ -156,7 +151,6 @@ app.post('/api/visual-generate', async (req, res) => {
 
     if (process.env.GEMINI_API_KEY) {
       try {
-        // Utilizziamo il modello aggiornato gemini-3.8-flash richiesto dall'API
         const response = await ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents: [
@@ -167,7 +161,7 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `Act as a professional architectural image editing engine. Modify this exact room photo by replacing the existing windows/doors with the new product: category "${category}", exact finish/color "${finish}". Additional user instructions: "${userPrompt || 'None'}". CRITICAL RULES: Keep the exact same room structure, walls, floor, perspective, and background. Change ONLY the color and material of the window frames and doors to match "${finish}". Do not add any foreign furniture.`
+              text: `Photo editing task: Modify this image by replacing the old garage doors, windows, or gates with the new product category: "${category}", finished in exact color/style: "${finish}". Additional notes: "${userPrompt || 'None'}". Instructions: Keep the exact same building structure, walls, background, and lighting. Replace ONLY the doors/windows with the requested new installation and color. Return the generated modified image.`
             }
           ]
         });
@@ -199,7 +193,6 @@ app.post('/api/visual-generate', async (req, res) => {
   }
 });
 
-// Health check endpoint per Render
 app.get('/healthz', (req, res) => res.send('OK'));
 
 app.listen(PORT, () => {
