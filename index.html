@@ -66,9 +66,9 @@
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering professionale di serramenti e finiture.<br>
+                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering professionale di serramenti e finiture[cite: 1].<br>
                 1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, seleziona categoria e i parametri specifici per generare il dossier e il prompt ottimizzato.
+                2. Carica la foto, seleziona categoria, materiale e finitura per generare la simulazione automatica.
             </div>
 
             <div id="free-trial-box">
@@ -154,7 +154,7 @@
                 <input type="text" id="customMacroInput" placeholder="Es. Facciata continua, Veranda speciale...">
             </div>
 
-            <!-- LIVELLO 2: MODELLO SPECIFICO (DINAMICO) -->
+            <!-- LIVELLO 2: MODELLO SPECIFICO -->
             <div class="form-group">
                 <label for="productSelect">🔍 3. Seleziona il Modello Specifico</label>
                 <select id="productSelect" onchange="verificaAltroProdotto()" disabled required>
@@ -167,7 +167,7 @@
                 <input type="text" id="customProductInput" placeholder="Es. Infisso triplo vetro asimmetrico, Forma ad arco...">
             </div>
 
-            <!-- LIVELLO 3: MATERIALE TELAIO / STRUTTURA (DINAMICO) -->
+            <!-- LIVELLO 3: MATERIALE TELAIO -->
             <div class="form-group">
                 <label for="materialSelect" id="materialLabel">🧱 4. Seleziona il Materiale Strutturale</label>
                 <select id="materialSelect" onchange="verificaAltroMateriale()" disabled required>
@@ -180,7 +180,7 @@
                 <input type="text" id="customMaterialInput" placeholder="Es. Alluminio-Legno con fibra di vetro...">
             </div>
 
-            <!-- LIVELLO 4: TIPOLOGIA VETRO / PANNELLO (DINAMICO) -->
+            <!-- LIVELLO 4: TIPOLOGIA VETRO / PANNELLO -->
             <div class="form-group">
                 <label for="glassSelect" id="glassLabel">🪟 5. Tipologia Vetro o Inserto Pannello</label>
                 <select id="glassSelect" onchange="verificaAltroVetro()" disabled required>
@@ -226,13 +226,13 @@
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare, soglia ribassata..."></textarea>
             </div>
 
-            <!-- PONTE OPERATIVO (WORKFLOW BRIDGE) -->
+            <!-- PULSANTE DI GENERAZIONE NATIVO -->
             <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Ponte Operativo Grafico (Workflow Bridge)</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Generazione Automatica Infix®</h4>
                 <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
-                    Genera il dossier tecnico e prepara il prompt ottimizzato copiato automaticamente negli appunti.
+                    Elabora la simulazione visiva e la relazione tecnica direttamente tramite il server.
                 </p>
-                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier & Copia Prompt 🎨✨</button>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Simulazione & Dossier 🎨✨</button>
             </div>
         </form>
 
@@ -263,29 +263,10 @@
                 </div>
             </div>
 
-            <!-- GUIDA & DOSSIER TECNICO -->
+            <!-- DOSSIER TECNICO -->
             <div id="technicalDossierBox" style="display: none; margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; text-align: left; box-sizing: border-box; width: 100%;">
-                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Relazione Tecnica & Guida Workflow Bridge</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Relazione Tecnica & Dossier INFIX®</h4>
                 <p id="technicalDossierText" style="font-size: 13px; color: #111318; font-weight: 500; margin: 0; line-height: 1.5; white-space: pre-line;"></p>
-                
-                <!-- BOX ANTEPRIMA PROMPT PRONTO -->
-                <div style="margin-top: 12px; background: #fff; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px;">
-                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT TECNICO MULTI-SPECIFICA NEGLI APPUNTI:</div>
-                    <div id="promptPreviewText" style="font-size: 12px; color: #0d47a1; font-family: monospace; word-break: break-all;"></div>
-                </div>
-
-                <!-- GUIDA OPERATIVA -->
-                <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
-                    <strong>Flusso Operativo Consigliato:</strong><br>
-                    1. Clicca su "Apri Gemini Web" (assicurati di aver effettuato l'accesso con il tuo account Google su Gemini).<br>
-                    2. Incolla (Ctrl+V) il prompt copiato e trascina la foto del cantiere.<br>
-                    3. La tua scheda di <strong>Vision INFIX®</strong> rimane sempre aperta in questa pagina per effettuare nuove configurazioni!
-                </div>
-
-                <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
-                    <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web in Nuova Scheda 🚀</a>
-                </div>
             </div>
         </div>
     </div>
@@ -324,9 +305,7 @@
     <script>
         const RENDER_BACKEND_URL = 'https://vision-infix.onrender.com';
         let currentOtpEmail = '';
-        let ultimoPromptGenerato = '';
 
-        // ECOSISTEMA DATI DINAMICI PER TUTTE LE MACRO-CATEGORIE
         const configuratoreDinamico = {
             serramenti: {
                 prodotti: [
@@ -473,7 +452,6 @@
             const customMacroContainer = document.getElementById('customMacroContainer');
             const categoriaScelta = macroSelect.value;
 
-            // Reset campi e container custom
             productSelect.innerHTML = '';
             materialSelect.innerHTML = '';
             glassSelect.innerHTML = '';
@@ -485,15 +463,12 @@
 
             if (categoriaScelta === 'altro_macro') {
                 customMacroContainer.style.display = 'flex';
-                
                 productSelect.innerHTML = '<option value="personalizzato">Altro prodotto personalizzato</option>';
                 materialSelect.innerHTML = '<option value="personalizzato">Altro materiale personalizzato</option>';
                 glassSelect.innerHTML = '<option value="personalizzato">Altra specifica personalizzata</option>';
-                
                 productSelect.disabled = false;
                 materialSelect.disabled = false;
                 glassSelect.disabled = false;
-                
                 document.getElementById('customProductContainer').style.display = 'flex';
                 document.getElementById('customMaterialContainer').style.display = 'flex';
                 document.getElementById('customGlassContainer').style.display = 'flex';
@@ -504,7 +479,6 @@
                 productSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 materialSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 glassSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
-                
                 productSelect.disabled = true;
                 materialSelect.disabled = true;
                 glassSelect.disabled = true;
@@ -513,7 +487,6 @@
 
             const datiCategoria = configuratoreDinamico[categoriaScelta];
 
-            // 1. Popola Modelli
             datiCategoria.prodotti.forEach(item => {
                 const opt = document.createElement('option');
                 opt.value = item.val;
@@ -522,7 +495,6 @@
             });
             productSelect.disabled = false;
 
-            // 2. Popola Materiali
             materialLabel.innerText = datiCategoria.materialiLabel;
             datiCategoria.materiali.forEach(mat => {
                 const opt = document.createElement('option');
@@ -532,7 +504,6 @@
             });
             materialSelect.disabled = false;
 
-            // 3. Popola Vetri/Inserti
             glassLabel.innerText = datiCategoria.vetriLabel;
             datiCategoria.vetri.forEach(vtr => {
                 const opt = document.createElement('option');
@@ -769,9 +740,9 @@
         }
 
         // ==========================================
-        // WORKFLOW BRIDGE (CONFIGURATORE AVANZATO)
+        // WORKFLOW NATIVO INFIX®: CHIAMATA AL BACKEND
         // ==========================================
-        document.getElementById('visualForm').addEventListener('submit', function(e) {
+        document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const email = localStorage.getItem('infix_visual_user_email');
@@ -798,105 +769,91 @@
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             
-            // MACRO-CATEGORIA
-            const macroSelect = document.getElementById('macroCategorySelect');
-            let macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
-            if (macroSelect.value === 'altro_macro') {
-                const customMacro = document.getElementById('customMacroInput').value.trim();
-                if (customMacro) macroCategoryText = customMacro;
-            }
-            
-            // MODELLO SPECIFICO
-            const productSelect = document.getElementById('productSelect');
-            let productText = productSelect.options[productSelect.selectedIndex].text;
-            if (productSelect.value === 'altro_prodotto') {
-                const customProd = document.getElementById('customProductInput').value.trim();
-                if (customProd) productText = customProd;
-            }
-
-            // MATERIALE TELAIO
-            const materialSelect = document.getElementById('materialSelect');
-            let materialText = materialSelect.value;
-            if (materialSelect.value === 'altro_materiale') {
-                const customMat = document.getElementById('customMaterialInput').value.trim();
-                if (customMat) materialText = customMat;
-            }
-
-            // VETRO
-            const glassSelect = document.getElementById('glassSelect');
-            let glassText = glassSelect.value;
-            if (glassSelect.value === 'altro_vetro') {
-                const customGlass = document.getElementById('customGlassInput').value.trim();
-                if (customGlass) glassText = customGlass;
-            }
-            
-            // FINITURA TELAIO
-            const finishSelect = document.getElementById('finishSelect');
-            let finishText = finishSelect.options[finishSelect.selectedIndex].text;
-            if (finishSelect.value === 'altro_finitura') {
-                const customFinish = document.getElementById('customFinishInput').value.trim();
-                if (customFinish) finishText = customFinish;
-            }
-            
-            const customRequest = document.getElementById('customUserRequest').value.trim();
-
             if (!file) {
                 alert("Per favore, seleziona o scatta prima una foto!");
                 return;
             }
 
+            const macroSelect = document.getElementById('macroCategorySelect');
+            let macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
+            
+            const productSelect = document.getElementById('productSelect');
+            let productText = productSelect.options[productSelect.selectedIndex].text;
+
+            const materialSelect = document.getElementById('materialSelect');
+            let materialText = materialSelect.value;
+
+            const glassSelect = document.getElementById('glassSelect');
+            let glassText = glassSelect.value;
+            
+            const finishSelect = document.getElementById('finishSelect');
+            let finishText = finishSelect.options[finishSelect.selectedIndex].text;
+            
+            const customRequest = document.getElementById('customUserRequest').value.trim();
+
+            const submitBtn = document.getElementById('generateBtn');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Elaborazione in corso sul server IA... ⏳";
+
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const base64Full = e.target.result;
                 document.getElementById('beforeImage').src = base64Full;
-                document.getElementById('afterImage').src = base64Full;
                 
-                document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroCategoryText} / ${productText} | Materiale: ${materialText} | Specifica: ${glassText} | Finitura: ${finishText}`;
-                
-                if (customRequest) {
-                    document.getElementById('resultCustomNote').innerText = `Note cantiere: "${customRequest}"`;
-                    document.getElementById('resultCustomNote').style.display = 'block';
-                } else {
-                    document.getElementById('resultCustomNote').style.display = 'none';
+                const mimeType = file.type || 'image/jpeg';
+                const base64Data = base64Full.split(',')[1];
+
+                const categoriaCompleta = `${macroCategoryText} - ${productText} (${materialText}, ${glassText})`;
+                const promptDettagliato = customRequest ? customRequest : "Modifica il serramento applicando le specifiche tecniche richieste.";
+
+                try {
+                    const response = await fetch(`${RENDER_BACKEND_URL}/api/visual-generate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            category: categoriaCompleta,
+                            finish: finishText,
+                            userPrompt: promptDettagliato,
+                            imageBase64: base64Data,
+                            mimeType: mimeType
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        document.getElementById('afterImage').src = data.imageUrl;
+                        
+                        document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
+                        
+                        if (customRequest) {
+                            document.getElementById('resultCustomNote').innerText = `Note cantiere: "${customRequest}"`;
+                            document.getElementById('resultCustomNote').style.display = 'block';
+                        } else {
+                            document.getElementById('resultCustomNote').style.display = 'none';
+                        }
+
+                        document.getElementById('technicalDossierText').innerText = data.dossier;
+                        
+                        document.getElementById('technicalDossierBox').style.display = 'block';
+                        document.getElementById('resultArea').style.display = 'block';
+                        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert(data.error || "Errore durante la generazione della simulazione sul server.");
+                        document.getElementById('afterImage').src = base64Full;
+                    }
+                } catch (err) {
+                    console.error("Errore di connessione:", err);
+                    alert("Impossibile contattare il server di elaborazione. Riprova tra poco.");
+                    document.getElementById('afterImage').src = base64Full;
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
                 }
-
-                // PROMPT MULTI-CATEGORIA RIGOROSO
-                ultimoPromptGenerato = `Modifica esclusivamente il vano del serramento/elemento nella foto allegata sostituendo l'elemento originale con "${productText}" della categoria "${macroCategoryText}". ` +
-                    `Specifiche tecniche: Materiale principale: "${materialText}", Tamponamento/Vetro: "${glassText}", Finitura superficiale/Colore: "${finishText}". ` +
-                    `ATTENZIONE RIGOROSA: Non modificare, ridipingere, pulire o alterare in alcun modo i muri, l'intonaco, la pavimentazione, i tetti, i pilastri, le luci o lo sfondo circostante dell'edificio reale. Mantieni intatta la foto originale in ogni dettaglio esterno all'elemento. ` +
-                    (customRequest ? `Note aggiuntive di cantiere: ${customRequest}` : '');
-
-                let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
-                    `• Materiale Strutturale: ${materialText}\n` +
-                    `• Specifica Tamponamento / Vetro: ${glassText}\n` +
-                    `• Finitura / Colore Telaio: ${finishText}\n` +
-                    `• Valorizzazione Estetica: Trattamento superficiale ${finishText} ad alta durabilità e resistenza UV.\n` +
-                    (customRequest ? `• 📝 Note di cantiere: "${customRequest}"\n` : '');
-
-                document.getElementById('technicalDossierText').innerText = technicalSpecs;
-                document.getElementById('promptPreviewText').innerText = ultimoPromptGenerato;
-                
-                document.getElementById('technicalDossierBox').style.display = 'block';
-                document.getElementById('resultArea').style.display = 'block';
-                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-
-                // Copia automatica negli appunti
-                navigator.clipboard.writeText(ultimoPromptGenerato).catch(() => {});
             };
             reader.readAsDataURL(file);
         });
-
-        function copiaPromptAppunti() {
-            if (ultimoPromptGenerato) {
-                navigator.clipboard.writeText(ultimoPromptGenerato).then(() => {
-                    alert("Prompt copiato negli appunti con successo! Ora puoi inpalletarlo in Gemini.");
-                }).catch(() => {
-                    alert("Impossibile copiare automaticamente.");
-                });
-            } else {
-                alert("Nessun prompt generato. Compila il form e genera prima il dossier.");
-            }
-        }
 
         function avviaCheckout(planKey) {
             const stripeLinks = {
