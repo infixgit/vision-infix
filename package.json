@@ -1,7 +1,7 @@
 {
-  "name": "visual-infix-server",
+  "name": "vision-infix-server",
   "version": "1.0.0",
-  "description": "Server B2B Visual INFIX",
+  "description": "Server B2B Vision INFIX",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
