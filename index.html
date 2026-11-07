@@ -68,7 +68,7 @@
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
                 Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering professionale di serramenti e finiture.<br>
                 1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, seleziona categoria, finitura e genera istantaneamente il rendering e il dossier tecnico.
+                2. Carica la foto, seleziona categoria e i parametri specifici per generare il dossier e il prompt ottimizzato.
             </div>
 
             <div id="free-trial-box">
@@ -138,7 +138,7 @@
             <!-- LIVELLO 1: MACRO-CATEGORIA -->
             <div class="form-group">
                 <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria</label>
-                <select id="macroCategorySelect" onchange="aggiornaSottoCategorie()" required>
+                <select id="macroCategorySelect" onchange="gestisciCascataMenu()" required>
                     <option value="">-- Seleziona la Macro-Categoria --</option>
                     <option value="serramenti">Serramenti & Vetrate</option>
                     <option value="portoncini">Portoncini & Ingressi</option>
@@ -154,7 +154,7 @@
                 <input type="text" id="customMacroInput" placeholder="Es. Facciata continua, Veranda speciale...">
             </div>
 
-            <!-- LIVELLO 2: MODELLO SPECIFICO -->
+            <!-- LIVELLO 2: MODELLO SPECIFICO (DINAMICO) -->
             <div class="form-group">
                 <label for="productSelect">🔍 3. Seleziona il Modello Specifico</label>
                 <select id="productSelect" onchange="verificaAltroProdotto()" disabled required>
@@ -167,11 +167,37 @@
                 <input type="text" id="customProductInput" placeholder="Es. Infisso triplo vetro asimmetrico, Forma ad arco...">
             </div>
 
-            <!-- LIVELLO 3: FINITURA -->
+            <!-- LIVELLO 3: MATERIALE TELAIO / STRUTTURA (DINAMICO) -->
             <div class="form-group">
-                <label for="finishSelect">🎨 4. Scegli Finitura / Colore</label>
+                <label for="materialSelect" id="materialLabel">🧱 4. Seleziona il Materiale Strutturale</label>
+                <select id="materialSelect" onchange="verificaAltroMateriale()" disabled required>
+                    <option value="">-- Prima seleziona la macro-categoria sopra --</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="customMaterialContainer" style="display: none;">
+                <label for="customMaterialInput">✏️ Specifica Materiale personalizzato</label>
+                <input type="text" id="customMaterialInput" placeholder="Es. Alluminio-Legno con fibra di vetro...">
+            </div>
+
+            <!-- LIVELLO 4: TIPOLOGIA VETRO / PANNELLO (DINAMICO) -->
+            <div class="form-group">
+                <label for="glassSelect" id="glassLabel">🪟 5. Tipologia Vetro o Inserto Pannello</label>
+                <select id="glassSelect" onchange="verificaAltroVetro()" disabled required>
+                    <option value="">-- Prima seleziona la macro-categoria sopra --</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="customGlassContainer" style="display: none;">
+                <label for="customGlassInput">✏️ Specifica Finitura/Vetro personalizzato</label>
+                <input type="text" id="customGlassInput" placeholder="Es. Vetro blindato stratificato anti-sfondamento...">
+            </div>
+
+            <!-- LIVELLO 5: FINITURA / COLORE TELAIO -->
+            <div class="form-group">
+                <label for="finishSelect">🎨 6. Scegli Finitura / Colore Superficiale</label>
                 <select id="finishSelect" onchange="verificaAltraFinitura()" required>
-                    <optgroup label="Standard & RAL">
+                    <optgroup label="Standard & Tinte RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
                         <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
                         <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
@@ -196,7 +222,7 @@
 
             <!-- NOTE PERSONALIZZATE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 5. Note o richiesta personalizzata di cantiere (opzionale)</label>
+                <label for="customUserRequest">✏️ 7. Note o richiesta personalizzata di cantiere (opzionale)</label>
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare, soglia ribassata..."></textarea>
             </div>
 
@@ -244,21 +270,20 @@
                 
                 <!-- BOX ANTEPRIMA PROMPT PRONTO -->
                 <div style="margin-top: 12px; background: #fff; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px;">
-                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT TECNICO ANTICONTESTO NEGLI APPUNTI:</div>
+                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT TECNICO MULTI-SPECIFICA NEGLI APPUNTI:</div>
                     <div id="promptPreviewText" style="font-size: 12px; color: #0d47a1; font-family: monospace; word-break: break-all;"></div>
                 </div>
 
-                <!-- GUIDA OPERATIVA SCHEDE MULTIPLE -->
+                <!-- GUIDA OPERATIVA -->
                 <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
-                    <strong>Flusso Operativo Consigliato (Multischeda):</strong><br>
-                    1. Clicca su "Apri Gemini Web" (si aprirà in una scheda a fianco).<br>
-                    2. Incolla (Ctrl+V) il prompt e trascina la foto del cantiere.<br>
-                    3. La tua scheda di <strong>Vision INFIX®</strong> resta sempre aperta qui sotto: potrai tornarci in un click per generare nuovi dossier!
+                    <strong>Flusso Operativo Consigliato:</strong><br>
+                    1. Clicca su "Apri Gemini Web" (assicurati di aver effettuato l'accesso con il tuo account Google su Gemini).<br>
+                    2. Incolla (Ctrl+V) il prompt copiato e trascina la foto del cantiere.<br>
+                    3. La tua scheda di <strong>Vision INFIX®</strong> rimane sempre aperta in questa pagina per effettuare nuove configurazioni!
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
-                    <!-- Apertura in nuova scheda per non perdere mai l'app -->
                     <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web in Nuova Scheda 🚀</a>
                 </div>
             </div>
@@ -301,100 +326,241 @@
         let currentOtpEmail = '';
         let ultimoPromptGenerato = '';
 
-        const cataloghiProdottiINFIX = {
-            serramenti: [
-                { val: "finestra_battente_1", text: "Finestra / Portafinestra a 1 Anta a Battente" },
-                { val: "finestra_battente_2", text: "Finestra / Portafinestra a 2 Ante a Battente" },
-                { val: "finestra_vasistas_ribalta", text: "Finestra con Apertura Vasistas / Ribalta" },
-                { val: "scorrevole_alzante", text: "Scorrevole Alzante in Alluminio / PVC (Grandi Vetrate)" },
-                { val: "scorrevole_traslante", text: "Scorrevole Traslante Paral" },
-                { val: "porta_interna_filomuro", text: "Porta Interna Filomuro / Rasomuro di Design" },
-                { val: "porta_interna_pantografata", text: "Porta Interna Classica / Pantografata" },
-                { val: "porta_interna_scorrevole", text: "Porta Interna Scorrevole (Interno/Esterno Muro)" },
-                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
-            ],
-            portoncini: [
-                { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso in Alluminio con Inserto Vetro" },
-                { val: "portoncino_pvc_pannello", text: "Portoncino d'Ingresso in PVC bugnato / isolato" },
-                { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
-                { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata di Sicurezza - Classe 4 con Fiancoluce" },
-                { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" },
-                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
-            ],
-            garage: [
-                { val: "portone_sezionale_coibentato", text: "Portone Sezionale Box Coibentato a Pannelli" },
-                { val: "portone_basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato / Legno" },
-                { val: "chiusura_libro_industriale", text: "Chiusura a Libro o Serranda Avvolgibile Coibentata" },
-                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
-            ],
-            oscuranti: [
-                { val: "persiana_alluminio_orientabile", text: "Persiana in Alluminio con Alette Orientabili" },
-                { val: "scurone_legno_cieco", text: "Scurone Antone Cieco in Legno o Alluminio" },
-                { val: "tapparella_alluminio_coibentato", text: "Tapparella Avvolgibile in Alluminio Coibentato Antieffrazione" },
-                { val: "cassonetto_restauro_isolante", text: "Cassonetto Copriforo per Restauro Termico-Acustico" },
-                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
-            ],
-            protezioni: [
-                { val: "zanzariera_plissettata", text: "Zanzariera Plissettata a Ridotta Ingressione" },
-                { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Motorizzata" },
-                { val: "grata_inferriata_sicurezza", text: "Grata di Sicurezza / Inferriata fissa o apribile" },
-                { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
-            ]
+        // ECOSISTEMA DATI DINAMICI PER TUTTE LE MACRO-CATEGORIE
+        const configuratoreDinamico = {
+            serramenti: {
+                prodotti: [
+                    { val: "finestra_battente_1", text: "Finestra / Portafinestra a 1 Anta a Battente" },
+                    { val: "finestra_battente_2", text: "Finestra / Portafinestra a 2 Ante a Battente" },
+                    { val: "finestra_vasistas", text: "Finestra con Apertura Vasistas / Ribalta" },
+                    { val: "scorrevole_alzante", text: "Scorrevole Alzante (Grandi Vetrate)" },
+                    { val: "scorrevole_traslante", text: "Scorrevole Traslante Parallelo" },
+                    { val: "porta_filomuro", text: "Porta Interna Filomuro di Design" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Materiale Profilo / Telaio Serramento",
+                materiali: [
+                    "PVC ad alto isolamento termico",
+                    "Alluminio a Taglio Termico",
+                    "Legno Naturale (Massello / Lamellare)",
+                    "Legno-Alluminio (Interno Legno / Esterno Alluminio)",
+                    "Acciaio / Acciaio Inox / Corten",
+                    "altro_materiale"
+                ],
+                vetriLabel: "🪟 5. Tipologia & Finitura Vetro",
+                vetri: [
+                    "Doppio Vetro Trasparente Basso Emissivo con Gas Argon",
+                    "Triplo Vetro Acustico / Sicurezza Trasparente",
+                    "Vetro Satinato / Opaco Privacy",
+                    "Vetro Fumé / Controllo Solare Riflettente",
+                    "Vetro Sabbiato Decorativo / Cinchillà",
+                    "altro_vetro"
+                ]
+            },
+            portoncini: {
+                prodotti: [
+                    { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso con Inserto Vetro" },
+                    { val: "portoncino_cieco_bugnato", text: "Portoncino d'Ingresso Cieco / Bugnato" },
+                    { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
+                    { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata Classe 4 con Fiancoluce" },
+                    { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Struttura & Rivestimento Portoncino",
+                materiali: [
+                    "Struttura Blindata in Acciaio zincato",
+                    "Profilo Alluminio a Taglio Termico ad alta sicurezza",
+                    "Profilo PVC rinforzato in acciaio",
+                    "Legno Massello di Pregio",
+                    "altro_materiale"
+                ],
+                vetriLabel: "🚪 5. Inserto centrale / Fiancoluce",
+                vetri: [
+                    "Vetro Blindato Antisfondamento Trasparente",
+                    "Vetro Blindato Satinato Privacy",
+                    "Inserto Vetro Fumé con Grata di Sicurezza",
+                    "Pannello Cieco Coibentato (Senza Vetro)",
+                    "altro_vetro"
+                ]
+            },
+            garage: {
+                prodotti: [
+                    { val: "sezionale_coibentato", text: "Portone Sezionale Box Coibentato a Pannelli" },
+                    { val: "basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato" },
+                    { val: "basculante_legno", text: "Portone Basculante con Rivestimento Legno" },
+                    { val: "serranda_avvolgibile", text: "Serranda Avvolgibile Coibentata / Industriale" },
+                    { val: "chiusura_libro", text: "Chiusura a Libro con o senza Guida a Terra" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Struttura & Finitura Pannelli Garage",
+                materiali: [
+                    "Pannelli Coibentati 40mm in Acciaio Galvanizzato",
+                    "Acciaio Mono-lamiera Zinco-verniciato",
+                    "Legno Okoumé / Pino / Abete Trattato",
+                    "Alluminio Estruso ad alta resistenza",
+                    "altro_materiale"
+                ],
+                vetriLabel: "🪟 5. Inserti Trasparenti / Oblò Garage",
+                vetri: [
+                    "Senza Oblò (Pannello completamente cieco)",
+                    "Oblò Rettangolari in Policarbonato Trasparente",
+                    "Oblò Tondi in Vetro Acrilico Satinato",
+                    "Sezione Rettangolare Vetrata Panorama",
+                    "altro_vetro"
+                ]
+            },
+            oscuranti: {
+                prodotti: [
+                    { val: "persiana_orientabile", text: "Persiana con Alette Orientabili" },
+                    { val: "persiana_fissa", text: "Persiana a Stecca Fissa Storica" },
+                    { val: "scurone_cieco", text: "Scurone Antone Cieco a Doghe Verticali" },
+                    { val: "tapparella_coibentata", text: "Tapparella Avvolgibile Coibentata" },
+                    { val: "tapparella_blindata", text: "Tapparella Avvolgibile Blindata in Acciaio" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Materiale Oscurante",
+                materiali: [
+                    "Alluminio Verniciato a Polvere",
+                    "PVC ad alta stabilità termica",
+                    "Legno Naturale Trattato per Esterni",
+                    "Acciaio Coibentato Antieffrazione",
+                    "altro_materiale"
+                ],
+                vetriLabel: "⚙️ 5. Tipologia Funzionale / Telaio",
+                vetri: [
+                    "Montaggio con Telaio di Cassa perimetrale",
+                    "Montaggio Cardini Diretti a Muro",
+                    "Cassonetto Termoacustico Monoblocco",
+                    "Guida di Scorrimento Incassata",
+                    "altro_vetro"
+                ]
+            },
+            protezioni: {
+                prodotti: [
+                    { val: "zanzariera_plissettata", text: "Zanzariera Plissettata a Guida Bassa" },
+                    { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Motorizzata" },
+                    { val: "grata_sicurezza_apribile", text: "Grata di Sicurezza Apribile con Snodo" },
+                    { val: "inferriata_fissa", text: "Inferriata Fissa a Muro" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Materiale Protezione / Grata",
+                materiali: [
+                    "Acciaio Pieno Trattato Anticorrosione",
+                    "Alluminio Estruso Anodizzato",
+                    "Rete in Fibra di Vetro / Rete Inox Antistrappo",
+                    "altro_materiale"
+                ],
+                vetriLabel: "🎨 5. Dettagli Costruttivi / Motivo",
+                vetri: [
+                    "Design Quadro Moderno Minimalista",
+                    "Motivo Classico a Sbarre con Ovoli / Ricci",
+                    "Telo Zanzariera Nero ad alta visibilità",
+                    "Telo Zanzariera Grigio Standard",
+                    "altro_vetro"
+                ]
+            }
         };
 
-        function aggiornaSottoCategorie() {
+        function gestisciCascataMenu() {
             const macroSelect = document.getElementById('macroCategorySelect');
             const productSelect = document.getElementById('productSelect');
+            const materialSelect = document.getElementById('materialSelect');
+            const glassSelect = document.getElementById('glassSelect');
+            
+            const materialLabel = document.getElementById('materialLabel');
+            const glassLabel = document.getElementById('glassLabel');
+
             const customMacroContainer = document.getElementById('customMacroContainer');
             const categoriaScelta = macroSelect.value;
 
+            // Reset campi e container custom
             productSelect.innerHTML = '';
+            materialSelect.innerHTML = '';
+            glassSelect.innerHTML = '';
+
             customMacroContainer.style.display = 'none';
             document.getElementById('customProductContainer').style.display = 'none';
+            document.getElementById('customMaterialContainer').style.display = 'none';
+            document.getElementById('customGlassContainer').style.display = 'none';
 
             if (categoriaScelta === 'altro_macro') {
                 customMacroContainer.style.display = 'flex';
+                
                 productSelect.innerHTML = '<option value="personalizzato">Altro prodotto personalizzato</option>';
+                materialSelect.innerHTML = '<option value="personalizzato">Altro materiale personalizzato</option>';
+                glassSelect.innerHTML = '<option value="personalizzato">Altra specifica personalizzata</option>';
+                
                 productSelect.disabled = false;
+                materialSelect.disabled = false;
+                glassSelect.disabled = false;
+                
                 document.getElementById('customProductContainer').style.display = 'flex';
+                document.getElementById('customMaterialContainer').style.display = 'flex';
+                document.getElementById('customGlassContainer').style.display = 'flex';
                 return;
             }
 
-            if (!categoriaScelta || !cataloghiProdottiINFIX[categoriaScelta]) {
+            if (!categoriaScelta || !configuratoreDinamico[categoriaScelta]) {
                 productSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
+                materialSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
+                glassSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
+                
                 productSelect.disabled = true;
+                materialSelect.disabled = true;
+                glassSelect.disabled = true;
                 return;
             }
 
-            const listaArticoli = cataloghiProdottiINFIX[categoriaScelta];
-            listaArticoli.forEach(articolo => {
+            const datiCategoria = configuratoreDinamico[categoriaScelta];
+
+            // 1. Popola Modelli
+            datiCategoria.prodotti.forEach(item => {
                 const opt = document.createElement('option');
-                opt.value = articolo.val;
-                opt.text = articolo.text;
+                opt.value = item.val;
+                opt.text = item.text;
                 productSelect.appendChild(opt);
             });
-
             productSelect.disabled = false;
+
+            // 2. Popola Materiali
+            materialLabel.innerText = datiCategoria.materialiLabel;
+            datiCategoria.materiali.forEach(mat => {
+                const opt = document.createElement('option');
+                opt.value = mat;
+                opt.text = mat === 'altro_materiale' ? '➕ Altro materiale personalizzato...' : mat;
+                materialSelect.appendChild(opt);
+            });
+            materialSelect.disabled = false;
+
+            // 3. Popola Vetri/Inserti
+            glassLabel.innerText = datiCategoria.vetriLabel;
+            datiCategoria.vetri.forEach(vtr => {
+                const opt = document.createElement('option');
+                opt.value = vtr;
+                opt.text = vtr === 'altro_vetro' ? '➕ Altra specifica personalizzata...' : vtr;
+                glassSelect.appendChild(opt);
+            });
+            glassSelect.disabled = false;
         }
 
         function verificaAltroProdotto() {
             const productSelect = document.getElementById('productSelect');
-            const customProductContainer = document.getElementById('customProductContainer');
-            if (productSelect.value === 'altro_prodotto') {
-                customProductContainer.style.display = 'flex';
-            } else {
-                customProductContainer.style.display = 'none';
-            }
+            document.getElementById('customProductContainer').style.display = (productSelect.value === 'altro_prodotto') ? 'flex' : 'none';
+        }
+
+        function verificaAltroMateriale() {
+            const materialSelect = document.getElementById('materialSelect');
+            document.getElementById('customMaterialContainer').style.display = (materialSelect.value === 'altro_materiale') ? 'flex' : 'none';
+        }
+
+        function verificaAltroVetro() {
+            const glassSelect = document.getElementById('glassSelect');
+            document.getElementById('customGlassContainer').style.display = (glassSelect.value === 'altro_vetro') ? 'flex' : 'none';
         }
 
         function verificaAltraFinitura() {
             const finishSelect = document.getElementById('finishSelect');
-            const customFinishContainer = document.getElementById('customFinishContainer');
-            if (finishSelect.value === 'altro_finitura') {
-                customFinishContainer.style.display = 'flex';
-            } else {
-                customFinishContainer.style.display = 'none';
-            }
+            document.getElementById('customFinishContainer').style.display = (finishSelect.value === 'altro_finitura') ? 'flex' : 'none';
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -603,7 +769,7 @@
         }
 
         // ==========================================
-        // WORKFLOW BRIDGE (PONTE OPERATIVO CON GUIDA)
+        // WORKFLOW BRIDGE (CONFIGURATORE AVANZATO)
         // ==========================================
         document.getElementById('visualForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -632,6 +798,7 @@
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             
+            // MACRO-CATEGORIA
             const macroSelect = document.getElementById('macroCategorySelect');
             let macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
             if (macroSelect.value === 'altro_macro') {
@@ -639,13 +806,31 @@
                 if (customMacro) macroCategoryText = customMacro;
             }
             
+            // MODELLO SPECIFICO
             const productSelect = document.getElementById('productSelect');
             let productText = productSelect.options[productSelect.selectedIndex].text;
             if (productSelect.value === 'altro_prodotto') {
                 const customProd = document.getElementById('customProductInput').value.trim();
                 if (customProd) productText = customProd;
             }
+
+            // MATERIALE TELAIO
+            const materialSelect = document.getElementById('materialSelect');
+            let materialText = materialSelect.value;
+            if (materialSelect.value === 'altro_materiale') {
+                const customMat = document.getElementById('customMaterialInput').value.trim();
+                if (customMat) materialText = customMat;
+            }
+
+            // VETRO
+            const glassSelect = document.getElementById('glassSelect');
+            let glassText = glassSelect.value;
+            if (glassSelect.value === 'altro_vetro') {
+                const customGlass = document.getElementById('customGlassInput').value.trim();
+                if (customGlass) glassText = customGlass;
+            }
             
+            // FINITURA TELAIO
             const finishSelect = document.getElementById('finishSelect');
             let finishText = finishSelect.options[finishSelect.selectedIndex].text;
             if (finishSelect.value === 'altro_finitura') {
@@ -666,7 +851,7 @@
                 document.getElementById('beforeImage').src = base64Full;
                 document.getElementById('afterImage').src = base64Full;
                 
-                document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
+                document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroCategoryText} / ${productText} | Materiale: ${materialText} | Specifica: ${glassText} | Finitura: ${finishText}`;
                 
                 if (customRequest) {
                     document.getElementById('resultCustomNote').innerText = `Note cantiere: "${customRequest}"`;
@@ -675,13 +860,16 @@
                     document.getElementById('resultCustomNote').style.display = 'none';
                 }
 
-                // PROMPT ANTI-MODIFICA CONTESTO RIGOROSO
-                ultimoPromptGenerato = `Modifica esclusivamente il vano del serramento/portone nella foto allegata sostituendo l'elemento originale con "${productText}" della categoria "${macroCategoryText}" e applicando la finitura "${finishText}". ` +
-                    `ATTENZIONE RIGOROSA: Non modificare, ridipingere, pulire o alterare in alcun modo i muri, l'intonaco, la pavimentazione, i tetti, i pilastri, le luci o lo sfondo circostante dell'edificio reale. Mantieni intatta la foto originale in ogni dettaglio esterno al serramento/portone. ` +
+                // PROMPT MULTI-CATEGORIA RIGOROSO
+                ultimoPromptGenerato = `Modifica esclusivamente il vano del serramento/elemento nella foto allegata sostituendo l'elemento originale con "${productText}" della categoria "${macroCategoryText}". ` +
+                    `Specifiche tecniche: Materiale principale: "${materialText}", Tamponamento/Vetro: "${glassText}", Finitura superficiale/Colore: "${finishText}". ` +
+                    `ATTENZIONE RIGOROSA: Non modificare, ridipingere, pulire o alterare in alcun modo i muri, l'intonaco, la pavimentazione, i tetti, i pilastri, le luci o lo sfondo circostante dell'edificio reale. Mantieni intatta la foto originale in ogni dettaglio esterno all'elemento. ` +
                     (customRequest ? `Note aggiuntive di cantiere: ${customRequest}` : '');
 
                 let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
-                    `• Finitura Selezionata: ${finishText}\n` +
+                    `• Materiale Strutturale: ${materialText}\n` +
+                    `• Specifica Tamponamento / Vetro: ${glassText}\n` +
+                    `• Finitura / Colore Telaio: ${finishText}\n` +
                     `• Valorizzazione Estetica: Trattamento superficiale ${finishText} ad alta durabilità e resistenza UV.\n` +
                     (customRequest ? `• 📝 Note di cantiere: "${customRequest}"\n` : '');
 
@@ -692,7 +880,7 @@
                 document.getElementById('resultArea').style.display = 'block';
                 document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
 
-                // Copia automatica silenziosa negli appunti
+                // Copia automatica negli appunti
                 navigator.clipboard.writeText(ultimoPromptGenerato).catch(() => {});
             };
             reader.readAsDataURL(file);
@@ -701,7 +889,7 @@
         function copiaPromptAppunti() {
             if (ultimoPromptGenerato) {
                 navigator.clipboard.writeText(ultimoPromptGenerato).then(() => {
-                    alert("Prompt copiato negli appunti con successo! Ora puoi incollarlo in Gemini.");
+                    alert("Prompt copiato negli appunti con successo! Ora puoi inpalletarlo in Gemini.");
                 }).catch(() => {
                     alert("Impossibile copiare automaticamente.");
                 });
