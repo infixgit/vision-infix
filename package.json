@@ -1,6 +1,7 @@
 {
   "name": "vision-infix-server",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "Server B2B Vision INFIX",
   "main": "server.js",
   "scripts": {
