@@ -119,7 +119,6 @@ app.post('/api/visual-generate', async (req, res) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
 
-    // Specifiche tecniche complete e dettagliate
     let technicalSpecs = "";
 
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
@@ -149,13 +148,13 @@ app.post('/api/visual-generate', async (req, res) => {
         `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
-    let generatedImageUrl = imageUri; // Fallback di sicurezza nativo
+    let generatedImageUrl = imageUri;
 
-    // Esecuzione protetta della chiamata IA per evitare blocchi in caricamento
+    // Chiamata IA corretta con gemini-2.5-flash
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-3.8-flash',
+          model: 'gemini-2.5-flash',
           contents: [
             {
               inlineData: {
