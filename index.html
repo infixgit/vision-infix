@@ -204,9 +204,9 @@
             <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
                 <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Ponte Operativo Grafico (Workflow Bridge)</h4>
                 <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
-                    Cliccando sul pulsante genererai il dossier tecnico e il prompt ottimizzato pronto per la generazione del "Dopo".
+                    Genera il dossier tecnico e prepara il prompt ottimizzato copiato automaticamente negli appunti.
                 </p>
-                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier & Prepara il "Dopo" 🎨✨</button>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier & Copia Prompt 🎨✨</button>
             </div>
         </form>
 
@@ -237,13 +237,26 @@
                 </div>
             </div>
 
-            <!-- DOSSIER TECNICO & CONSIGLIO -->
+            <!-- GUIDA & DOSSIER TECNICO -->
             <div id="technicalDossierBox" style="display: none; margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; text-align: left; box-sizing: border-box; width: 100%;">
-                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Relazione Tecnica & Prompt Workflow Bridge</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Relazione Tecnica & Guida Workflow Bridge</h4>
                 <p id="technicalDossierText" style="font-size: 13px; color: #111318; font-weight: 500; margin: 0; line-height: 1.5; white-space: pre-line;"></p>
                 
+                <!-- BOX ANTEPRIMA PROMPT PRONTO -->
+                <div style="margin-top: 12px; background: #fff; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT PRONTO NEGLI APPUNTI:</div>
+                    <div id="promptPreviewText" style="font-size: 12px; color: #0d47a1; font-family: monospace; word-break: break-all;"></div>
+                </div>
+
+                <!-- GUIDA RAPIDA E PULSANTI -->
+                <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
+                    <strong>Come procedere in 1 secondo:</strong><br>
+                    1. Clicca su "Apri Gemini Web" e incolla (Ctrl+V) il prompt copiato nella chat.<br>
+                    2. Trascina o allega la foto del cantiere ("Prima") nella chat di Gemini per generare il rendering perfetto.
+                </div>
+
                 <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia Prompt negli Appunti 📋</button>
+                    <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
                     <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web 🚀</a>
                 </div>
             </div>
@@ -587,7 +600,7 @@
         }
 
         // ==========================================
-        // WORKFLOW BRIDGE (PONTE OPERATIVO PULITO)
+        // WORKFLOW BRIDGE (PONTE OPERATIVO CON GUIDA)
         // ==========================================
         document.getElementById('visualForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -665,10 +678,11 @@
                 let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
                     `• Finitura Selezionata: ${finishText}\n` +
                     `• Valorizzazione Estetica: Trattamento superficiale ${finishText} ad alta durabilità e resistenza UV.\n` +
-                    (customRequest ? `• 📝 Note di cantiere: "${customRequest}"\n` : '') +
-                    `• Prompt Workflow Bridge pronto per l'uso.`;
+                    (customRequest ? `• 📝 Note di cantiere: "${customRequest}"\n` : '');
 
                 document.getElementById('technicalDossierText').innerText = technicalSpecs;
+                document.getElementById('promptPreviewText').innerText = ultimoPromptGenerato;
+                
                 document.getElementById('technicalDossierBox').style.display = 'block';
                 document.getElementById('resultArea').style.display = 'block';
                 document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
