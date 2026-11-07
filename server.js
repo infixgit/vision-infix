@@ -40,12 +40,12 @@ app.post('/api/send-otp', (req, res) => {
   });
 
   const data = JSON.stringify({
-    sender: { name: 'Visual INFIX®', email: 'infixserramenti@gmail.com' },
-    replyTo: { email: 'infixserramenti@gmail.com', name: 'Visual INFIX®' },
+    sender: { name: 'Vision INFIX®', email: 'infixserramenti@gmail.com' },
+    replyTo: { email: 'infixserramenti@gmail.com', name: 'Vision INFIX®' },
     to: [{ email: email.trim() }],
-    subject: 'Codice di verifica OTP - Visual INFIX®',
+    subject: 'Codice di verifica OTP - Vision INFIX®',
     htmlContent: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-      <h2>Visual INFIX® - Verifica Email</h2>
+      <h2>Vision INFIX® - Verifica Email</h2>
       <p>Codice di sblocco richiesto per la prova gratuita:</p>
       <h1 style="color: #2e7d32; letter-spacing: 4px; font-size: 32px;">${otpCode}</h1>
       <p style="font-size: 12px; color: #666;">Il codice scade tra 10 minuti.</p>
