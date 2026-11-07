@@ -66,9 +66,9 @@
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering dei serramenti e delle finiture INFIX®.<br>
+                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering professionale di serramenti e finiture.<br>
                 1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, scegli categoria, finitura e genera istantaneamente il rendering e il dossier tecnico.
+                2. Carica la foto, seleziona categoria, finitura e genera istantaneamente il rendering e il dossier tecnico.
             </div>
 
             <div id="free-trial-box">
@@ -137,7 +137,7 @@
 
             <!-- LIVELLO 1: MACRO-CATEGORIA -->
             <div class="form-group">
-                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria INFIX®</label>
+                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria</label>
                 <select id="macroCategorySelect" onchange="aggiornaSottoCategorie()" required>
                     <option value="">-- Seleziona la Macro-Categoria --</option>
                     <option value="serramenti">Serramenti & Vetrate</option>
@@ -169,7 +169,7 @@
 
             <!-- LIVELLO 3: FINITURA -->
             <div class="form-group">
-                <label for="finishSelect">🎨 4. Scegli Finitura / Colore INFIX®</label>
+                <label for="finishSelect">🎨 4. Scegli Finitura / Colore</label>
                 <select id="finishSelect" onchange="verificaAltraFinitura()" required>
                     <optgroup label="Standard & RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
@@ -232,7 +232,7 @@
                     <img id="beforeImage" alt="Foto Originale">
                 </div>
                 <div class="comparison-item">
-                    <h4>Simulazione INFIX® (Dopo)</h4>
+                    <h4>Simulazione (Dopo)</h4>
                     <img id="afterImage" alt="Rendering Finitura">
                 </div>
             </div>
@@ -252,12 +252,14 @@
                 <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
                     <strong>Come procedere in 1 secondo:</strong><br>
                     1. Clicca su "Apri Gemini Web" e incolla (Ctrl+V) il prompt copiato nella chat.<br>
-                    2. Trascina o allega la foto del cantiere ("Prima") nella chat di Gemini per generare il rendering perfetto.
+                    2. Trascina o allega la foto del cantiere ("Prima") nella chat di Gemini per generare il rendering perfetto.<br>
+                    3. Torna comodamente a Vision INFIX® cliccando sul pulsante dedicato qui sotto.
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
                     <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web 🚀</a>
+                    <a href="https://infixgit.github.io/vision-infix/" style="background: #343a40; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">🔄 Torna a Vision INFIX®</a>
                 </div>
             </div>
         </div>
@@ -282,7 +284,7 @@
     <!-- MODALE RESET PASSWORD -->
     <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
-            <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso INFIX®</h3>
+            <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso</h3>
             <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP di sblocco.</p>
             
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
@@ -673,8 +675,8 @@
                     document.getElementById('resultCustomNote').style.display = 'none';
                 }
 
-                // Generazione Prompt per Workflow Bridge
-                ultimoPromptGenerato = `Genera il rendering del "Dopo" applicando la finitura "${finishText}" al modello "${productText}" (${macroCategoryText}) visto nello stato attuale della foto allegata. ${customRequest ? 'Note di cantiere: ' + customRequest : ''}`;
+                // Generazione Prompt Diretto ad Alta Precisione Strutturale
+                ultimoPromptGenerato = `Modifica la foto allegata sostituendo il modello/elemento originale con "${productText}" della categoria "${macroCategoryText}" applicando la finitura "${finishText}". Mantieni inalterato l'edificio originale, lo sfondo e la prospettiva. ${customRequest ? 'Note aggiuntive di cantiere: ' + customRequest : ''}`;
 
                 let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
                     `• Finitura Selezionata: ${finishText}\n` +
