@@ -450,19 +450,8 @@
             if (!privacy) { errorMsg.innerText = "Devi accettare l'informativa sulla privacy."; errorMsg.style.display = 'block'; return; }
 
             errorMsg.style.display = 'none';
-
-            // BYPASS DI EMERGENZA PER ADMIN (se Render è in standby)
-            if (email === 'infix@outlook.it' || email === 'santino.simoncello@libero.it') {
-                currentOtpEmail = email;
-                document.getElementById('sent-email-label').innerText = email + ' (Admin Bypass)';
-                document.getElementById('step-email-container').style.display = 'none';
-                document.getElementById('step-otp-container').style.display = 'flex';
-                document.getElementById('otp-input').value = '123456'; // precompilato per comodità
-                return;
-            }
-
             sendBtn.disabled = true;
-            sendBtn.innerText = "Invio OTP tramite Render... ⏳";
+            sendBtn.innerText = "Invio OTP in corso... ⏳";
 
             try {
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/send-otp`, {
@@ -478,17 +467,15 @@
                     document.getElementById('sent-email-label').innerText = email;
                     document.getElementById('step-email-container').style.display = 'none';
                     document.getElementById('step-otp-container').style.display = 'flex';
+                    document.getElementById('otp-input').value = '';
                 } else {
                     errorMsg.innerText = data.error || "Errore durante l'invio dell'OTP.";
                     errorMsg.style.display = 'block';
                 }
             } catch (err) {
                 console.error(err);
-                // Fallback automatico in caso di errore di rete su Render
-                currentOtpEmail = email;
-                document.getElementById('sent-email-label').innerText = email + ' (Modalità Offline)';
-                document.getElementById('step-email-container').style.display = 'none';
-                document.getElementById('step-otp-container').style.display = 'flex';
+                errorMsg.innerText = "Impossibile contattare il server sicuro. Riprova tra poco.";
+                errorMsg.style.display = 'block';
             } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerText = "Invia Codice OTP ✉️";
@@ -506,17 +493,6 @@
                 return;
             }
 
-            // Bypass admin o offline
-            if (currentOtpEmail === 'infix@outlook.it' || currentOtpEmail === 'santino.simoncello@libero.it' || otp === '123456') {
-                let initialCredits = (currentOtpEmail.toLowerCase() === 'infix@outlook.it') ? 'PRO Illimitato' : '50';
-                let existingCredits = localStorage.getItem('infix_visual_credits');
-                if (localStorage.getItem('infix_visual_user_email') === currentOtpEmail && existingCredits !== null) {
-                    initialCredits = existingCredits;
-                }
-                attivaSessioneUtente(currentOtpEmail, initialCredits);
-                return;
-            }
-
             try {
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/verify-otp`, {
                     method: 'POST',
@@ -527,7 +503,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    let initialCredits = (currentOtpEmail.toLowerCase() === 'infix@outlook.it') ? 'PRO Illimitato' : '2';
+                    let initialCredits = (currentOtpEmail.toLowerCase() === 'infix@outlook.it') ? 'PRO Illimitato' : ((currentOtpEmail.toLowerCase() === 'santino.simoncello@libero.it') ? '50' : '2');
                     let existingCredits = localStorage.getItem('infix_visual_credits');
                     if (localStorage.getItem('infix_visual_user_email') === currentOtpEmail && existingCredits !== null) {
                         initialCredits = existingCredits;
@@ -540,8 +516,9 @@
                 }
             } catch (err) {
                 console.error(err);
-                // Accesso di emergenza se il server non risponde
-                attivaSessioneUtente(currentOtpEmail, '2');
+                errorMsg.style.color = '#dc3545';
+                errorMsg.innerText = "Errore di connessione al server di verifica.";
+                errorMsg.style.display = 'block';
             }
         }
 
@@ -595,12 +572,8 @@
                 }
             } catch (err) {
                 console.error(err);
-                msg.style.color = 'green';
-                msg.innerText = "Richiesta registrata (modalità offline).";
-                setTimeout(() => {
-                    chiudiResetModal();
-                    document.getElementById('trial-email-input').value = email;
-                }, 2000);
+                msg.style.color = 'red';
+                msg.innerText = "Errore di connessione al server.";
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Invia Codice OTP ✉️";
@@ -691,7 +664,7 @@
                 document.getElementById('beforeImage').src = base64Full;
                 document.getElementById('afterImage').src = base64Full;
                 
-                document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productTest} | Finitura: ${finishText}`;
+                document.getElementById('resultSubtitle').innerText = `Categoria: ${macroCategoryText} / ${productText} | Finitura: ${finishText}`;
                 
                 if (customRequest) {
                     document.getElementById('resultCustomNote').innerText = `Note cantiere: "${customRequest}"`;
