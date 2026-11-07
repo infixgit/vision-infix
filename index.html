@@ -244,22 +244,22 @@
                 
                 <!-- BOX ANTEPRIMA PROMPT PRONTO -->
                 <div style="margin-top: 12px; background: #fff; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px;">
-                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT PRONTO NEGLI APPUNTI:</div>
+                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT TECNICO ANTICONTESTO NEGLI APPUNTI:</div>
                     <div id="promptPreviewText" style="font-size: 12px; color: #0d47a1; font-family: monospace; word-break: break-all;"></div>
                 </div>
 
-                <!-- GUIDA RAPIDA E PULSANTI -->
+                <!-- GUIDA OPERATIVA SCHEDE MULTIPLE -->
                 <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
-                    <strong>Come procedere in 1 secondo:</strong><br>
-                    1. Clicca su "Apri Gemini Web" e incolla (Ctrl+V) il prompt copiato nella chat.<br>
-                    2. Trascina o allega la foto del cantiere ("Prima") nella chat di Gemini per generare il rendering perfetto.<br>
-                    3. Torna comodamente a Vision INFIX® cliccando sul pulsante dedicato qui sotto.
+                    <strong>Flusso Operativo Consigliato (Multischeda):</strong><br>
+                    1. Clicca su "Apri Gemini Web" (si aprirà in una scheda a fianco).<br>
+                    2. Incolla (Ctrl+V) il prompt e trascina la foto del cantiere.<br>
+                    3. La tua scheda di <strong>Vision INFIX®</strong> resta sempre aperta qui sotto: potrai tornarci in un click per generare nuovi dossier!
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
-                    <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web 🚀</a>
-                    <a href="https://infixgit.github.io/vision-infix/" style="background: #343a40; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">🔄 Torna a Vision INFIX®</a>
+                    <!-- Apertura in nuova scheda per non perdere mai l'app -->
+                    <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web in Nuova Scheda 🚀</a>
                 </div>
             </div>
         </div>
@@ -675,8 +675,10 @@
                     document.getElementById('resultCustomNote').style.display = 'none';
                 }
 
-                // Generazione Prompt Diretto ad Alta Precisione Strutturale
-                ultimoPromptGenerato = `Modifica la foto allegata sostituendo il modello/elemento originale con "${productText}" della categoria "${macroCategoryText}" applicando la finitura "${finishText}". Mantieni inalterato l'edificio originale, lo sfondo e la prospettiva. ${customRequest ? 'Note aggiuntive di cantiere: ' + customRequest : ''}`;
+                // PROMPT ANTI-MODIFICA CONTESTO RIGOROSO
+                ultimoPromptGenerato = `Modifica esclusivamente il vano del serramento/portone nella foto allegata sostituendo l'elemento originale con "${productText}" della categoria "${macroCategoryText}" e applicando la finitura "${finishText}". ` +
+                    `ATTENZIONE RIGOROSA: Non modificare, ridipingere, pulire o alterare in alcun modo i muri, l'intonaco, la pavimentazione, i tetti, i pilastri, le luci o lo sfondo circostante dell'edificio reale. Mantieni intatta la foto originale in ogni dettaglio esterno al serramento/portone. ` +
+                    (customRequest ? `Note aggiuntive di cantiere: ${customRequest}` : '');
 
                 let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
                     `• Finitura Selezionata: ${finishText}\n` +
