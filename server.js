@@ -109,7 +109,7 @@ app.post('/api/verify-otp', (req, res) => {
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
-    const { category, model, material, glass, finish, userPrompt, imageBase64, mimeType } = req.body;
+    const { category, finish, userPrompt, imageBase64, mimeType } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
@@ -128,7 +128,7 @@ app.post('/api/visual-generate', async (req, res) => {
     } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
       technicalSpecs = `• Sicurezza Antieffrazione: Struttura in acciaio rinforzato certificata in Classe 3 o Classe 4 antieffrazione.\n` +
           `• Isolamento Termoacustico: Valori di abbattimento acustico fino a 43 dB e guarnizioni tagliafreddo perimetrali.\n` +
-          `• Design e Finitura: Pannelli coordinati ${finish || 'standard'} resistenti agli agenti atmosferici severi.`;
+          `• Design e Finitura: Pannelli coordinati ${finish} resistenti agli agenti atmosferici severi.`;
     } else if (catLower.includes('scorrevole') || catLower.includes('alzante') || catLower.includes('traslante')) {
       technicalSpecs = `• Luminosità & Trasmittanza: Grandi superfici vetrate con profili slim e U_w ottimizzato fino a 0.9 W/(m²K).\n` +
           `• Scorrimento Ergonomico: Meccanismo alzante o traslante per ante di grandi dimensioni movimentabili con minimo sforzo.\n` +
@@ -143,39 +143,41 @@ app.post('/api/visual-generate', async (req, res) => {
           `• Sicurezza Antieffrazione: Ferramenta perimetrale in classe RC2/RC3.`;
     }
 
-    const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish || 'Standard'}\n\n` +
+    const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
         technicalSpecs + `\n` +
-        `• Valorizzazione Estetica: Finitura superficiale ${finish || 'standard'} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
+        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
         (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
 
     let generatedImageUrl = imageUri;
 
-    // Chiamata corretta per la generazione/modifica dell'immagine basata su Imagen 3
+    // Chiamata IA corretta con gemini-2.5-flash
     if (process.env.GEMINI_API_KEY) {
       try {
-        const promptModifica = `Modifica esclusivamente la finestra o l'apertura esistente nella foto allegata sostituendo il vecchio infisso con un "${model || category}" in "${material || 'PVC ad alto isolamento termico'}", con vetro "${glass || 'standard'}" e finitura superficiale "${finish || 'standard'}". Mantieni intatti e inalterati lo sfondo, i muri, l'intonaco, la prospettiva e l'edificio originale della foto. Non generare immagini affiancate o doppie. ${userPrompt ? 'Note aggiuntive: ' + userPrompt : ''}`;
-
-        const response = await ai.models.generateImages({
-          model: 'imagen-3.0-generate-002',
-          prompt: promptModifica,
-          image: {
-            inlineData: {
-              data: cleanBase64,
-              mimeType: mimeType || 'image/jpeg'
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: [
+            {
+              inlineData: {
+                data: cleanBase64,
+                mimeType: mimeType || 'image/jpeg'
+              }
+            },
+            {
+              text: `Genera una versione modificata di questa fotografia applicando la categoria: "${category}" e la finitura: "${finish}". Restituisci l'immagine elaborata.`
             }
-          },
-          config: {
-            numberOfImages: 1,
-            outputMimeType: 'image/jpeg',
-          },
+          ]
         });
 
-        if (response && response.generatedImages && response.generatedImages.length > 0) {
-          const base64Bytes = response.generatedImages[0].image.base64Bytes;
-          generatedImageUrl = `data:image/jpeg;base64,${base64Bytes}`;
+        if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData && part.inlineData.data) {
+              generatedImageUrl = `data:${part.inlineData.mimeType || 'image/jpeg'};base64,${part.inlineData.data}`;
+              break;
+            }
+          }
         }
       } catch (aiErr) {
-        console.error("Errore durante la generazione dell'immagine con IA:", aiErr.message);
+        console.error("Nota IA non bloccante:", aiErr.message);
       }
     }
 
