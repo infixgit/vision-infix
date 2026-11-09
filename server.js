@@ -118,39 +118,39 @@ app.post('/api/visual-generate', async (req, res) => {
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
+    const finishLower = (finish || '').toLowerCase();
 
     let technicalSpecs = "";
 
-    if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
-      technicalSpecs = `• Isolamento Termico & Pannelli: Portone coibentato con schiuma poliuretanica ad alta densità, trasmittanza U fino a 1.3 W/(m²K) e tenuta aria/acqua certificata.\n` +
-          `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco di emergenza.\n` +
-          `• Ingombro Ottimizzato: Scorrimento a soffitto senza invasione dello spazio esterno.`;
-    } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
-      technicalSpecs = `• Sicurezza Antieffrazione: Struttura in acciaio rinforzato certificata in Classe 3 o Classe 4 antieffrazione.\n` +
-          `• Isolamento Termoacustico: Valori di abbattimento acustico fino a 43 dB e guarnizioni tagliafreddo perimetrali.\n` +
-          `• Design e Finitura: Pannelli coordinati ${finish} resistenti agli agenti atmosferici severi.`;
-    } else if (catLower.includes('scorrevole') || catLower.includes('alzante') || catLower.includes('traslante')) {
-      technicalSpecs = `• Luminosità & Trasmittanza: Grandi superfici vetrate con profili slim e U_w ottimizzato fino a 0.9 W/(m²K).\n` +
-          `• Scorrimento Ergonomico: Meccanismo alzante o traslante per ante di grandi dimensioni movimentabili con minimo sforzo.\n` +
-          `• Tenuta Superiore: Classificazione AEV ai vertici della categoria.`;
-    } else if (catLower.includes('zanzariera') || catLower.includes('frangisole') || catLower.includes('grata') || catLower.includes('inferriata')) {
-      technicalSpecs = `• Funzionalità & Protezione: Sistema schermante o di sicurezza progettato su misura per integrarsi perfettamente con il serramento esistente.\n` +
-          `• Durabilità: Reti plissettate ad alta visibilità o tondini in acciaio antitaglio protetti contro la corrosione.\n` +
-          `• Comfort Visivo e Aerazione: Regolazione ottimale della luce solare e del passaggio d'aria.`;
+    if (catLower.includes('alluminio') || finishLower.includes('alluminio') || finishLower.includes('ral')) {
+      technicalSpecs = `• Profilo e Taglio Termico: Sistema in alluminio estruso a taglio termico con camere d'isolamento maggiorate, progettato per azzerare la condensa e garantire una trasmittanza termica ottimale (U_w conforme agli standard ecobonus).\n` +
+          `• Finitura Superficiale: Trattamento ${finish} eseguito tramite verniciatura a polveri epossidiche certificate Qualicoat, altamente resistenti ai raggi UV, agli agenti atmosferici aggressivi e alla salsedine.\n` +
+          `• Armonia Architettonica: Linee geometriche pulite e minimaliste studiate per integrarsi perfettamente nel contesto murario esistente, rispettando l'estetica e la prospettiva del prospetto.`;
+    } else if (catLower.includes('pvc')) {
+      technicalSpecs = `• Struttura Multi-camera: Profilo in PVC rigido ad alto isolamento termico e acustico con rinforzi interni in acciaio zincato.\n` +
+          `• Finitura & Manutenzione: Rivestimento protettivo ${finish} inattaccabile dagli agenti atmosferici e privo di qualsiasi necessità di manutenzione periodica.\n` +
+          `• Sicurezza e Tenuta: Ferramenta perimetrale di sicurezza antieffrazione e tripla guarnizione di tenuta aria/acqua.`;
+    } else if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
+      technicalSpecs = `• Pannelli Coibentati: Struttura in acciaio con schiuma poliuretanica ad alta densità, trasmittanza U ridotta e tenuta perimetrale certificata.\n` +
+          `• Sicurezza Operativa: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco d'emergenza.\n` +
+          `• Finitura Coordinata: Superficie ${finish} resistente all'usura e agli agenti atmosferici esterni.`;
     } else {
-      technicalSpecs = `• Abbattimento Termico & Risparmio: Trasmittanza termica stimata U_w fino a 1.1 W/(m²K), con riduzione delle dispersioni fino al 45%.\n` +
-          `• Isolamento Acustico Certificato: Smorzamento acustico testato fino a 42 dB per il comfort domestico.\n` +
-          `• Sicurezza Antieffrazione: Ferramenta perimetrale in classe RC2/RC3.`;
+      technicalSpecs = `• Efficienza Energetica: Abbattimento termico e acustico di categoria superiore, con riduzione significativa delle dispersioni.\n` +
+          `• Finitura Dedicata: Trattamento superficiale ${finish} studiato per esaltare il valore estetico dell'immobile senza opere murarie invasive.\n` +
+          `• Sicurezza e Durabilità: Componenti testati per resistere nel lungo periodo con stabilità strutturale garantita.`;
     }
 
-    const technicalReport = `PROPOSTA DI INTERVENTO TECNICO — Configurazione: ${category} | Finitura: ${finish}\n\n` +
-        technicalSpecs + `\n` +
-        `• Valorizzazione Estetica: Finitura superficiale ${finish} resistente ai raggi UV, progettata per integrarsi senza opere murarie invasive.\n` +
-        (userPrompt ? `• Note specifiche di cantiere: "${userPrompt}"` : '');
+    const technicalReport = `RELAZIONE TECNICA DI INTERVENTO — Vision INFIX®\n\n` +
+        `1. Configurazione Cantiere: ${category}\n` +
+        `2. Finitura & Trattamento: ${finish}\n\n` +
+        `SPECIFICHE DI PROGETTO E PRESTAZIONI:\n` +
+        technicalSpecs + `\n\n` +
+        `• Conformità e Installazione: Posa in opera qualificata senza alterare la struttura portante o l'intonaco circostante.\n` +
+        (userPrompt ? `• Note specifiche di cantiere rilevate: "${userPrompt}"` : '');
 
     let generatedImageUrl = imageUri;
 
-    // Chiamata IA corretta con gemini-2.5-flash
+    // Tentativo di chiamata IA (fallback sicuro all'originale se l'API restituisce solo testo)
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await ai.models.generateContent({
@@ -163,7 +163,7 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `Genera una versione modificata di questa fotografia applicando la categoria: "${category}" e la finitura: "${finish}". Restituisci l'immagine elaborata.`
+              text: `Analizza questa foto e restituisci un'immagine elaborata in cui il serramento viene convertito con finitura "${finish}".`
             }
           ]
         });
@@ -186,7 +186,7 @@ app.post('/api/visual-generate', async (req, res) => {
       imageUrl: generatedImageUrl, 
       result: imageUri,
       dossier: technicalReport,
-      message: "Generazione completata con successo." 
+      message: "Dossier tecnico generato con successo." 
     });
 
   } catch (error) {
