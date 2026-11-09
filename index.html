@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision INFIX® - Diagnosi & Soluzione Tecnica da Foto</title>
+    <title>Vision INFIX® - Consulenza Avanzata & Vantaggi del "Dopo"</title>
     
     <link rel="icon" href="bussola-infix-marchio-figurativo-momento di intervenire.jpg">
     <meta name="theme-color" content="#111111">
@@ -50,8 +50,8 @@
         .stripe-packs-box h4 { margin: 0 0 6px 0; color: #f57f17; font-size: 14px; }
 
         .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: left; box-sizing: border-box; width: 100%; }
-        .diagnostic-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
-        .diagnostic-photo { flex: 1; min-width: 260px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
+        .diagnostic-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
+        .diagnostic-photo { width: 100%; max-width: 320px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
         .diagnostic-photo img { width: 100%; height: 220px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
@@ -61,15 +61,15 @@
         <div class="header">
             <img src="bussola-infix-marchio-figurativo-momento di intervenire.jpg" alt="Logo INFIX" class="logo">
             <h2>Vision INFIX®</h2>
-            <p>Sopralluogo Preliminare & Diagnosi Tecnica da Foto</p>
+            <p>Configuratore Avanzato & Analisi Comparativa Prima vs Dopo</p>
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Carica la foto dello stato attuale del cantiere e seleziona i parametri desiderati: il sistema genererà un'<strong>Analisi Preliminare e la Soluzione Tecnica (Il Dopo Tecnico)</strong> istantanea per il tuo progetto.
+                Carica la foto del cantiere e seleziona i dettagli dal menu ampliato: il sistema genererà un dossier professionale basato sul confronto <strong>Prima vs Dopo</strong> e sui benefici esclusivi della scelta effettuata.
             </div>
 
             <div id="free-trial-box">
-                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #1b5e20;">🎁 PROVA GRATUITA 2 ANALISI DI CANTIERE</div>
+                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #1b5e20;">🎁 PROVA GRATUITA 2 CONSULENZE PROFESSIONALI</div>
                 
                 <div id="step-email-container" style="display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%;">
                     <input type="email" id="trial-email-input" placeholder="Inserisci la tua email...">
@@ -99,13 +99,13 @@
             </div>
 
             <div class="pro-banner">
-                <span>🔒 Diagnosi Avanzata & Ecosistema INFIX (Funzione PRO)</span>
+                <span>🔒 Vision PRO & Analisi Illimitate</span>
                 <button onclick="scrollToPacks()">Scopri i Piani PRO</button>
             </div>
 
             <div class="pack-buttons-container" id="packs-container">
                 <button class="pack-btn" onclick="avviaCheckout('pack_1')">Pack 1 (60€)</button>
-                <button class="pack-btn" onclick="avviaCheckout('pack_2')">Pack 110€)</button>
+                <button class="pack-btn" onclick="avviaCheckout('pack_2')">Pack 2 (110€)</button>
                 <button class="pack-btn" onclick="avviaCheckout('pack_3')">Pack 3 (150€)</button>
                 <button class="pack-btn pro-unlimited" onclick="avviaCheckout('pro_unlimited')">PRO Unlimited (49€/mese)</button>
             </div>
@@ -134,7 +134,7 @@
 
             <!-- LIVELLO 1: MACRO-CATEGORIA -->
             <div class="form-group">
-                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria di Intervento</label>
+                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria</label>
                 <select id="macroCategorySelect" onchange="gestisciCascataMenu()" required>
                     <option value="">-- Seleziona la Macro-Categoria --</option>
                     <option value="serramenti">Serramenti & Vetrate</option>
@@ -142,6 +142,7 @@
                     <option value="garage">Chiusure Garage & Grandi Aperture</option>
                     <option value="oscuranti">Oscuranti & Schermature</option>
                     <option value="protezioni">Protezioni & Accessori</option>
+                    <option value="ristrutturazione_completa">Riqualificazione Energetica Completa (Infisso + Cassonetto + Soglia)</option>
                     <option value="altro_macro">Altro / Progetto Personalizzato</option>
                 </select>
             </div>
@@ -153,7 +154,7 @@
 
             <!-- LIVELLO 2: MODELLO SPECIFICO -->
             <div class="form-group">
-                <label for="productSelect">🔍 3. Seleziona il Modello di Soluzione</label>
+                <label for="productSelect">🔍 3. Seleziona il Modello Scelto</label>
                 <select id="productSelect" onchange="verificaAltroProdotto()" disabled required>
                     <option value="">-- Prima seleziona la macro-categoria sopra --</option>
                 </select>
@@ -161,7 +162,7 @@
 
             <div class="form-group" id="customProductContainer" style="display: none;">
                 <label for="customProductInput">✏️ Specifica Modello personalizzato</label>
-                <input type="text" id="customProductInput" placeholder="Es. Infisso triplo vetro asimmetrico, Forma ad arco...">
+                <input type="text" id="customProductInput" placeholder="Es. Infisso triplo vetro asimmetrico...">
             </div>
 
             <!-- LIVELLO 3: MATERIALE TELAIO -->
@@ -192,21 +193,23 @@
 
             <!-- LIVELLO 5: FINITURA / COLORE TELAIO -->
             <div class="form-group">
-                <label for="finishSelect">🎨 6. Scegli Finitura / Colore di Progetto</label>
+                <label for="finishSelect">🎨 6. Scegli Finitura / Colore del "Dopo"</label>
                 <select id="finishSelect" onchange="verificaAltraFinitura()" required>
                     <optgroup label="Standard & Tinte RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
+                        <option value="Bianco Avorio RAL 1013">Bianco Avorio RAL 1013</option>
                         <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
+                        <option value="Grigio Luce RAL 7035">Grigio Luce RAL 7035</option>
                         <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
                         <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
-                        <option value="Nero Opaco Moderno">Nero Opaco Moderno</option>
+                        <option value="Nero Opaco Moderno RAL 9005">Nero Opaco Moderno RAL 9005</option>
                         <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
                     </optgroup>
                     <optgroup label="Effetto Legno / Pregiati">
                         <option value="Legno Effetto Noce Scuro">Legno Effetto Noce Scuro</option>
                         <option value="Legno Effetto Rovere Naturale">Legno Effetto Rovere Naturale</option>
                         <option value="Legno Effetto Douglas / Ciliegio">Legno Effetto Douglas / Ciliegio</option>
-                        <option value="Effetto Cor-ten / Ruggine">Effetto Cor-ten / Ruggine</option>
+                        <option value="Effetto Cor-ten / Ruggine Spazzolato">Effetto Cor-ten / Ruggine Spazzolato</option>
                     </optgroup>
                     <option value="altro_finitura">➕ Altro colore / Finitura personalizzata...</option>
                 </select>
@@ -220,16 +223,16 @@
             <!-- NOTE PERSONALIZZATE -->
             <div class="form-group">
                 <label for="customUserRequest">✏️ 7. Note o criticità riscontrate in cantiere (opzionale)</label>
-                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi, condanna termica, umidità suiili, maniglia particolare..."></textarea>
+                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condanna termica, cassonetto non coibentato, maniglione specifico..."></textarea>
             </div>
 
-            <!-- PULSANTE DI DIAGNOSI -->
+            <!-- PULSANTE DI GENERAZIONE DOSSIER -->
             <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Elabora Diagnosi & Soluzione INFIX®</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Genera Dossier Analisi Comparativa (Prima vs Dopo)</h4>
                 <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
-                    Analizza la foto ed elabora il dossier tecnico e la soluzione "Dopo" ingegneristica.
+                    Elabora il responso tecnico spiegando lo stato attuale e i benefici straordinari del nuovo prodotto.
                 </p>
-                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Analisi Preliminare & Soluzione 📋✨</button>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier Prima vs Dopo 📋✨</button>
             </div>
         </form>
 
@@ -245,7 +248,7 @@
         </div>
 
         <div id="resultArea" class="result-box">
-            <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Diagnostico & Soluzione INFIX®</h3>
+            <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Ufficiale Vision INFIX®</h3>
             <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold; text-align: center;"></p>
             
             <div class="diagnostic-grid">
@@ -255,27 +258,20 @@
                 </div>
             </div>
 
-            <!-- DOSSIER TECNICO & SOLUZIONE "DOPO" -->
+            <!-- DOSSIER TECNICO & ANALISI PRIMA VS DOPO -->
             <div id="technicalDossierBox" style="margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; box-sizing: border-box; width: 100%;">
-                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Analisi Preliminare & Intervento Consigliato (Il "Dopo" Tecnico)</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📊 Analisi Comparativa (Prima vs Dopo) & Vantaggi Esclusivi</h4>
                 <p id="technicalDossierText" style="font-size: 13px; color: #111318; font-weight: 500; margin: 0; line-height: 1.5; white-space: pre-line;"></p>
             </div>
 
-            <!-- ECOSISTEMA INFIX: COLLEGAMENTO ALLA BUSSOLA -->
-            <div style="margin-top: 15px; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 15px; border-radius: 6px; text-align: center;">
-                <h4 style="margin: 0 0 6px 0; color: #2e7d32; font-size: 14px;">🧭 Vuoi approfondire la diagnosi o configurare il preventivo?</h4>
-                <p style="font-size: 12px; color: #333; margin: 0 0 10px 0;">Usa la Bussola INFIX® per una consulenza tecnica approfondita sul problema riscontrato.</p>
-                <a href="https://bussola-infix-app.onrender.com" target="_blank" style="background: #2e7d32; color: white; text-decoration: none; padding: 10px 18px; border-radius: 5px; font-weight: bold; font-size: 13px; display: inline-block;">Apri Bussola INFIX® & Approfondisci 🚀</a>
-            </div>
-
-            <!-- PULSANTE PER NUOVA SIMULAZIONE -->
+            <!-- PULSANTE PER NUOVA ANALISI -->
             <div style="margin-top: 20px; border-top: 1px solid #e9ecef; padding-top: 15px; text-align: center;">
-                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">🔄 Esegui una Nuova Analisi di Cantiere</button>
+                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">🔄 Esegui una Nuova Consulenza Vision INFIX®</button>
             </div>
         </div>
     </div>
 
-    <!-- MODALI LOGIN / RESET (INVARIATI) -->
+    <!-- MODALI LOGIN / RESET -->
     <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Accedi a Vision INFIX®</h3>
@@ -305,76 +301,153 @@
         const RENDER_BACKEND_URL = 'https://vision-infix.onrender.com';
         let currentOtpEmail = '';
 
+        // MENU DINAMICO AMPLIATO CON SPECIFICHE DETTAGLIATE
         const configuratoreDinamico = {
             serramenti: {
                 prodotti: [
                     { val: "finestra_battente_1", text: "Finestra / Portafinestra a 1 Anta a Battente" },
                     { val: "finestra_battente_2", text: "Finestra / Portafinestra a 2 Ante a Battente" },
                     { val: "finestra_vasistas", text: "Finestra con Apertura Vasistas / Ribalta" },
-                    { val: "scorrevole_alzante", text: "Scorrevole Alzante (Grandi Vetrate)" },
+                    { val: "scorrevole_alzante", text: "Scorrevole Alzante (Grandi Vetrate panoramiche)" },
                     { val: "scorrevole_traslante", text: "Scorrevole Traslante Parallelo" },
                     { val: "porta_filomuro", text: "Porta Interna Filomuro di Design" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Profilo / Telaio Serramento",
-                materiali: ["PVC ad alto isolamento termico", "Alluminio a Taglio Termico", "Legno Naturale (Massello / Lamellare)", "Legno-Alluminio (Interno Legno / Esterno Alluminio)", "Acciaio / Acciaio Inox / Corten", "altro_materiale"],
+                materiali: [
+                    "PVC ad alto isolamento termico multi-camera", 
+                    "Alluminio a Taglio Termico con camere d'aria maggiorate", 
+                    "Legno Naturale (Massello / Lamellare pregiato)", 
+                    "Legno-Alluminio (Interno Legno caldo / Esterno Alluminio protettivo)", 
+                    "Acciaio Minimal / Acciaio Inox / Corten", 
+                    "altro_materiale"
+                ],
                 vetriLabel: "🪟 5. Tipologia & Finitura Vetro",
-                vetri: ["Doppio Vetro Trasparente Basso Emissivo con Gas Argon", "Triplo Vetro Acustico / Sicurezza Trasparente", "Vetro Satinato / Opaco Privacy", "Vetro Fumé / Controllo Solare Riflettente", "Vetro Sabbiato Decorativo / Cinchillà", "altro_vetro"]
+                vetri: [
+                    "Doppio Vetro Trasparente Basso Emissivo con Gas Argon", 
+                    "Triplo Vetro ad alto abbattimento acustico e termico", 
+                    "Vetro Satinato / Opaco Privacy totale", 
+                    "Vetro Fumé / Controllo Solare Riflettente", 
+                    "Vetro Antisfondamento Stratificato di Sicurezza P4A", 
+                    "Vetro Sabbiato Decorativo / Cinchillà", 
+                    "altro_vetro"
+                ]
             },
             portoncini: {
                 prodotti: [
                     { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso con Inserto Vetro" },
-                    { val: "portoncino_cieco_bugnato", text: "Portoncino d'Ingresso Cieco / Bugnato" },
+                    { val: "portoncino_cieco_bugnato", text: "Portoncino d'Ingresso Cieco / Bugnato Classico" },
                     { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
-                    { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata Classe 4 con Fiancoluce" },
-                    { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente" },
+                    { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata Classe 4 con Fiancoluce Laterale" },
+                    { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente per Vano Ampio" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Struttura & Rivestimento Portoncino",
-                materiali: ["Struttura Blindata in Acciaio zincato", "Profilo Alluminio a Taglio Termico ad alta sicurezza", "Profilo PVC rinforzato in acciaio", "Legno Massello di Pregio", "altro_materiale"],
+                materiali: [
+                    "Struttura Blindata in Acciaio rinforzato zincato", 
+                    "Profilo Alluminio a Taglio Termico antieffrazione", 
+                    "Profilo PVC rinforzato con anima in acciaio", 
+                    "Legno Massello di Rovere / Okoumé", 
+                    "altro_materiale"
+                ],
                 vetriLabel: "🚪 5. Inserto centrale / Fiancoluce",
-                vetri: ["Vetro Blindato Antisfondamento Trasparente", "Vetro Blindato Satinato Privacy", "Inserto Vetro Fumé con Grata di Sicurezza", "Pannello Cieco Coibentato (Senza Vetro)", "altro_vetro"]
+                vetri: [
+                    "Vetro Blindato Antisfondamento Trasparente", 
+                    "Vetro Blindato Satinato Privacy con grata interna", 
+                    "Pannello Cieco Coibentato ad alto isolamento", 
+                    "altro_vetro"
+                ]
             },
             garage: {
                 prodotti: [
                     { val: "sezionale_coibentato", text: "Portone Sezionale Box Coibentato a Pannelli" },
                     { val: "basculante_acciaio", text: "Portone Basculante in Acciaio Verniciato" },
-                    { val: "basculante_legno", text: "Portone Basculante con Rivestimento Legno" },
-                    { val: "serranda_avvolgibile", text: "Serranda Avvolgibile Coibentata / Industriale" },
-                    { val: "chiusura_libro", text: "Chiusura a Libro con o senza Guida a Terra" },
+                    { val: "basculante_legno", text: "Portone Basculante con Doghe in Legno" },
+                    { val: "serranda_avvolgibile", text: "Serranda Avvolgibile Coibentata Silenziosa" },
+                    { val: "chiusura_libro", text: "Chiusura a Libro industriale o residenziale" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Struttura & Finitura Pannelli Garage",
-                materiali: ["Pannelli Coibentati 40mm in Acciaio Galvanizzato", "Acciaio Mono-lamiera Zinco-verniciato", "Legno Okoumé / Pino / Abete Trattato", "Alluminio Estruso ad alta resistenza", "altro_materiale"],
+                materiali: [
+                    "Pannelli Coibentati 40mm in Acciaio con poliuretano", 
+                    "Acciaio Mono-lamiera zincato e verniciato", 
+                    "Legno Okoumé trattato per esterni", 
+                    "Alluminio Estruso ad alta resistenza e stabilità", 
+                    "altro_materiale"
+                ],
                 vetriLabel: "🪟 5. Inserti Trasparenti / Oblò Garage",
-                vetri: ["Senza Oblò (Pannello completamente cieco)", "Oblò Rettangolari in Policarbonato Trasparente", "Oblò Tondi in Vetro Acrilico Satinato", "Sezione Rettangolare Vetrata Panorama", "altro_vetro"]
+                vetri: [
+                    "Senza Oblò (Pannello cieco di massima sicurezza)", 
+                    "Oblò Rettangolari in Policarbonato Antisfondamento", 
+                    "Fila di Finestrature Panoramiche orizzontali", 
+                    "altro_vetro"
+                ]
             },
             oscuranti: {
                 prodotti: [
-                    { val: "persiana_orientabile", text: "Persiana con Alette Orientabili" },
-                    { val: "persiana_fissa", text: "Persiana a Stecca Fissa Storica" },
+                    { val: "persiana_orientabile", text: "Persiana con Alette Orientabili in Alluminio" },
+                    { val: "persiana_fissa", text: "Persiana a Stecca Fissa Tradizionale" },
                     { val: "scurone_cieco", text: "Scurone Antone Cieco a Doghe Verticali" },
-                    { val: "tapparella_coibentata", text: "Tapparella Avvolgibile Coibentata" },
-                    { val: "tapparella_blindata", text: "Tapparella Avvolgibile Blindata in Acciaio" },
+                    { val: "tapparella_coibentata", text: "Tapparella Avvolgibile in Alluminio Coibentato" },
+                    { val: "tapparella_blindata", text: "Tapparella Avvolgibile Antieffrazione in Acciaio" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Oscurante",
-                materiali: ["Alluminio Verniciato a Polvere", "PVC ad alta stabilità termica", "Legno Naturale Trattato per Esterni", "Acciaio Coibentato Antieffrazione", "altro_materiale"],
-                vetriLabel: "⚙️ 5. Tipologia Funzionale / Telaio",
-                vetri: ["Montaggio con Telaio di Cassa perimetrale", "Montaggio Cardini Diretti a Muro", "Cassonetto Termoacustico Monoblocco", "Guida di Scorrimento Incassata", "altro_vetro"]
+                materiali: [
+                    "Alluminio Verniciato a polveri epossidiche", 
+                    "PVC estruso ad alta stabilità termica", 
+                    "Legno massello trattato per intemperie", 
+                    "Acciaio coibentato ad alta densità", 
+                    "altro_materiale"
+                ],
+                vetriLabel: "⚙️ 5. Tipologia di Posa e Movimentazione",
+                vetri: [
+                    "Installazione con Telaio Perimetrale dedicato", 
+                    "Montaggio su cardini a muro esistenti", 
+                    "Motorizzazione con comando a pulsante / radio", 
+                    "altro_vetro"
+                ]
             },
             protezioni: {
                 prodotti: [
                     { val: "zanzariera_plissettata", text: "Zanzariera Plissettata a Guida Bassa" },
-                    { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Motorizzata" },
+                    { val: "frangisole_orientabile", text: "Frangisole / Schermatura Solare Frangisole" },
                     { val: "grata_sicurezza_apribile", text: "Grata di Sicurezza Apribile con Snodo" },
-                    { val: "inferriata_fissa", text: "Inferriata Fissa a Muro" },
+                    { val: "inferriata_fissa", text: "Inferriata Fissa Antintrusione" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
-                materialiLabel: "🧱 4. Materiale Protezione / Grata",
-                materiali: ["Acciaio Pieno Trattato Anticorrosione", "Alluminio Estruso Anodizzato", "Rete in Fibra di Vetro / Rete Inox Antistrappo", "altro_materiale"],
-                vetriLabel: "🎨 5. Dettagli Costruttivi / Motivo",
-                vetri: ["Design Quadro Moderno Minimalista", "Motivo Classico a Sbarre con Ovoli / Ricci", "Telo Zanzariera Nero ad alta visibilità", "Telo Zanzariera Grigio Standard", "altro_vetro"]
+                materialiLabel: "🧱 4. Materiale Protezione",
+                materiali: [
+                    "Acciaio Pieno Inox Anticorrosione", 
+                    "Alluminio Estruso ad alta robustezza", 
+                    "Rete in Fibra di Vetro / Inox ad alta visibilità", 
+                    "altro_materiale"
+                ],
+                vetriLabel: "🎨 5. Design e Finitura",
+                vetri: [
+                    "Design Lineare Moderno Minimalista", 
+                    "Modello Classico con ricci e decori tradizionali", 
+                    "Telo plissettato nero oscurante / filtrante", 
+                    "altro_vetro"
+                ]
+            },
+            ristrutturazione_completa: {
+                prodotti: [
+                    { val: "pacchetto_infisso_cassonetto", text: "Riqualificazione Completa: Infisso ad alte prestazioni + Cassonetto Termico Coibentato" },
+                    { val: "pacchetto_chiavi_in_mano", text: "Intervento Completo INFIX®: Serramento + Controtelaio + Soglia Termica + Posa Qualificata" }
+                ],
+                materialiLabel: "🧱 4. Sistema Integrato",
+                materiali: [
+                    "PVC ad alte prestazioni + Cassonetto monoblocco isolato", 
+                    "Alluminio a Taglio Termico + Sistema isolante perimetrale", 
+                    "Legno-Alluminio + Isolamento termico ad alta densità"
+                ],
+                vetriLabel: "🪟 5. Vetro & Componenti",
+                vetri: [
+                    "Triplo Vetro basso emissivo con gas argon e canalina calda", 
+                    "Doppio vetro acustico stratificato antisfondamento", 
+                    "Vetro satinato privacy con trattamento solare"
+                ]
             }
         };
 
@@ -539,7 +612,7 @@
             }
         }
 
-        // WORKFLOW DIAGNOSI NATIVO
+        // WORKFLOW VISION INFIX - ANALISI COMPARATIVA PRIMA VS DOPO
         document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = localStorage.getItem('infix_visual_user_email');
@@ -569,7 +642,7 @@
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             const submitBtn = document.getElementById('generateBtn');
-            submitBtn.disabled = true; submitBtn.innerText = "Analisi e Diagnosi cantiere in corso... ⏳";
+            submitBtn.disabled = true; submitBtn.innerText = "Elaborazione Dossier Prima vs Dopo in corso... ⏳";
 
             const reader = new FileReader();
             reader.onload = async function(e) {
@@ -593,17 +666,17 @@
                     });
                     const data = await response.json();
                     if (response.ok && data.success) {
-                        document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroText} / ${productText} | Finitura: ${finishText}`;
+                        document.getElementById('resultSubtitle').innerText = `Configurazione Scelta: ${macroText} / ${productText} | Finitura: ${finishText}`;
                         document.getElementById('technicalDossierText').innerText = data.dossier;
                         document.getElementById('resultArea').style.display = 'block';
                         document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
                     } else {
-                        alert(data.error || "Errore durante l'elaborazione della diagnosi.");
+                        alert(data.error || "Errore durante l'elaborazione del dossier.");
                     }
                 } catch (err) {
                     alert("Impossibile contattare il server.");
                 } finally {
-                    submitBtn.disabled = false; submitBtn.innerText = "Genera Analisi Preliminare & Soluzione 📋✨";
+                    submitBtn.disabled = false; submitBtn.innerText = "Genera Dossier Prima vs Dopo 📋✨";
                 }
             };
             reader.readAsDataURL(file);
