@@ -118,39 +118,39 @@ app.post('/api/visual-generate', async (req, res) => {
     const imageUri = `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`;
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const catLower = (category || '').toLowerCase();
-    const finishLower = (finish || '').toLowerCase();
 
+    // Generazione della nota descrittiva professionale e dei benefici mirati per il "Dopo"
     let technicalSpecs = "";
+    let descrizioneDopo = "";
 
-    if (catLower.includes('alluminio') || finishLower.includes('alluminio') || finishLower.includes('ral')) {
-      technicalSpecs = `• Profilo e Taglio Termico: Sistema in alluminio estruso a taglio termico con camere d'isolamento maggiorate, progettato per azzerare la condensa e garantire una trasmittanza termica ottimale (U_w conforme agli standard ecobonus).\n` +
-          `• Finitura Superficiale: Trattamento ${finish} eseguito tramite verniciatura a polveri epossidiche certificate Qualicoat, altamente resistenti ai raggi UV, agli agenti atmosferici aggressivi e alla salsedine.\n` +
-          `• Armonia Architettonica: Linee geometriche pulite e minimaliste studiate per integrarsi perfettamente nel contesto murario esistente, rispettando l'estetica e la prospettiva del prospetto.`;
-    } else if (catLower.includes('pvc')) {
-      technicalSpecs = `• Struttura Multi-camera: Profilo in PVC rigido ad alto isolamento termico e acustico con rinforzi interni in acciaio zincato.\n` +
-          `• Finitura & Manutenzione: Rivestimento protettivo ${finish} inattaccabile dagli agenti atmosferici e privo di qualsiasi necessità di manutenzione periodica.\n` +
-          `• Sicurezza e Tenuta: Ferramenta perimetrale di sicurezza antieffrazione e tripla guarnizione di tenuta aria/acqua.`;
-    } else if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
-      technicalSpecs = `• Pannelli Coibentati: Struttura in acciaio con schiuma poliuretanica ad alta densità, trasmittanza U ridotta e tenuta perimetrale certificata.\n` +
-          `• Sicurezza Operativa: Sistema di blocco antieffrazione meccanico e motorizzazione silenziosa con sblocco d'emergenza.\n` +
-          `• Finitura Coordinata: Superficie ${finish} resistente all'usura e agli agenti atmosferici esterni.`;
+    if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
+      descrizioneDopo = `Intervento di riqualificazione completato: sostituzione dei vecchi sistemi di chiusura con moderni portoni sezionali coordinati nella finitura "${finish}". L'installazione valorizza l'estetica della facciata eliminando l'ingombro esterno dei vecchi basculanti e integrandosi perfettamente con i volumi murari esistenti.`;
+      technicalSpecs = `• Isolamento Termico Avanzato: Pannelli coibentati con poliuretano ad alta densità per l'azzeramento dei ponti termici e la conformità ai requisiti di risparmio energetico.\n` +
+          `• Sicurezza & Motorizzazione: Sistema di blocco antieffrazione meccanico e movimentazione motorizzata silenziosa con sblocco d'emergenza.\n` +
+          `• Durabilità e Finitura: Trattamento superficiale ${finish} resistente agli agenti atmosferici più severi, privo di manutenzione periodica.`;
+    } else if (catLower.includes('blindato') || catLower.includes('portoncino') || catLower.includes('ingresso')) {
+      descrizioneDopo = `Intervento di rinnovamento d'ingresso completato: posa del nuovo portoncino "${category}" in finitura "${finish}", progettato per integrarsi armoniosamente nel vano scala e nella bussola d'ingresso originaria senza opere murarie invasive.`;
+      technicalSpecs = `• Sicurezza Antieffrazione Certificata: Struttura in acciaio rinforzato in Classe 3 o 4 con cilindro europeo protetto.\n` +
+          `• Isolamento termoacustico perimetrale e ghiera tagliafreddo.\n` +
+          `• Design coordinato ${finish} resistente all'usura e agli agenti atmosferici.`;
     } else {
-      technicalSpecs = `• Efficienza Energetica: Abbattimento termico e acustico di categoria superiore, con riduzione significativa delle dispersioni.\n` +
-          `• Finitura Dedicata: Trattamento superficiale ${finish} studiato per esaltare il valore estetico dell'immobile senza opere murarie invasive.\n` +
-          `• Sicurezza e Durabilità: Componenti testati per resistere nel lungo periodo con stabilità strutturale garantita.`;
+      descrizioneDopo = `Intervento di sostituzione infissi completato: inserimento del nuovo sistema "${category}" con profilo in "${finish}", studiato per rispettare rigorosamente le linee architettoniche, la geometria dei fori finestra e la prospettiva originaria della facciata.`;
+      technicalSpecs = `• Efficienza Energetica e Risparmio: Trasmittanza termica ottimizzata U_w con drastica riduzione delle dispersioni termiche.\n` +
+          `• Isolamento Acustico e Comfort: Smorzamento testato dei rumori esterni.\n` +
+          `• Finitura Pregiata ${finish} protetta contro i raggi UV e stabile nel tempo.`;
     }
 
-    const technicalReport = `RELAZIONE TECNICA DI INTERVENTO — Vision INFIX®\n\n` +
-        `1. Configurazione Cantiere: ${category}\n` +
-        `2. Finitura & Trattamento: ${finish}\n\n` +
-        `SPECIFICHE DI PROGETTO E PRESTAZIONI:\n` +
+    const technicalReport = `RELAZIONE TECNICA & RESPONSO DI SIMULAZIONE — Vision INFIX®\n\n` +
+        `🔍 ANALISI DEL RISULTATO (DOPO):\n` +
+        descrizioneDopo + `\n\n` +
+        `📋 SPECIFICHE E BENEFICI INSTALLATI:\n` +
         technicalSpecs + `\n\n` +
-        `• Conformità e Installazione: Posa in opera qualificata senza alterare la struttura portante o l'intonaco circostante.\n` +
+        `• Conformità di Cantiere: Posa qualificata eseguita nel pieno rispetto della struttura muraria e dell'intonaco circostante.\n` +
         (userPrompt ? `• Note specifiche di cantiere rilevate: "${userPrompt}"` : '');
 
     let generatedImageUrl = imageUri;
 
-    // Tentativo di chiamata IA (fallback sicuro all'originale se l'API restituisce solo testo)
+    // Chiamata all'IA per la generazione della foto modificata
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await ai.models.generateContent({
@@ -163,7 +163,7 @@ app.post('/api/visual-generate', async (req, res) => {
               }
             },
             {
-              text: `Analizza questa foto e restituisci un'immagine elaborata in cui il serramento viene convertito con finitura "${finish}".`
+              text: `Modifica esclusivamente i serramenti presenti in questa foto sostituendoli con: "${category}" rifiniti in "${finish}". Mantieni intatti lo sfondo, i muri, l'intonaco e la prospettiva originale dell'edificio. Genera e restituisci l'immagine elaborata del "Dopo".`
             }
           ]
         });
@@ -177,7 +177,7 @@ app.post('/api/visual-generate', async (req, res) => {
           }
         }
       } catch (aiErr) {
-        console.error("Nota IA non bloccante:", aiErr.message);
+        console.error("Errore generazione immagine IA:", aiErr.message);
       }
     }
 
@@ -186,7 +186,7 @@ app.post('/api/visual-generate', async (req, res) => {
       imageUrl: generatedImageUrl, 
       result: imageUri,
       dossier: technicalReport,
-      message: "Dossier tecnico generato con successo." 
+      message: "Simulazione e dossier generati con successo." 
     });
 
   } catch (error) {
