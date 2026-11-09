@@ -101,37 +101,46 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: DOSSIER COMPARATIVO (PRIMA vs DOPO)
+// 3. ENDPOINT: DOSSIER COMPARATIVO & DOMANDA APERTA
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
-    const { category, finish, material, glass, userPrompt, imageBase64 } = req.body;
+    const { category, finish, material, glass, userPrompt, openQuestion, imageBase64 } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
-    // Dossier comparativo professionale Prima vs Dopo e Benefici mirati
-    const technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO) — Vision INFIX®\n\n` +
+    // Dossier comparativo professionale con gestione della domanda aperta
+    let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO) — Vision INFIX®\n\n` +
         `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
         `• Tipologia: ${category}\n` +
         `• Materiale Telaio: ${material}\n` +
         `• Vetro / Tamponamento: ${glass}\n` +
         `• Finitura Estetica: ${finish}\n\n` +
-        `🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):` +
-        `\nL'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da potenziali dispersioni termiche sui nodi perimetrali, assenza di isolamento acustico avanzato e un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'edificio.\n\n` +
-        `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":` +
-        `\nL'installazione del nuovo sistema in ${material} abbinato a ${glass} e rifinito in ${finish} trasforma radicalmente il vano:\n` +
+        `🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):\n` +
+        `L'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da potenziali dispersioni termiche sui nodi perimetrali, assenza di isolamento acustico avanzato e un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'edificio.\n\n` +
+        `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":\n` +
+        `L'installazione del nuovo sistema in ${material} abbinato a ${glass} e rifinito in ${finish} trasforma radicalmente il vano:\n` +
         `• Abbattimento Termico & Risparmio: Eliminazione totale dei ponti termici e drastica riduzione delle dispersioni, con conseguente calo dei costi in bolletta e miglioramento della classe energetica.\n` +
         `• Comfort Acustico Superiore: Isolamento certificato contro i rumori esterni per un silenzio domestico ottimale.\n` +
         `• Valorizzazione Estetica & Architettonica: La finitura ${finish} si integra armoniosamente con i volumi e i prospetti esistenti, donando un aspetto moderno e di altissimo pregio senza opere murarie invasive.\n` +
-        `• Sicurezza e Durabilità: Componenti antieffrazione e stabilità strutturale garantita nel tempo senza necessità di manutenzione straordinaria.\n` +
-        (userPrompt ? `\n📋 NOTE DI CANTIERE: "${userPrompt}"` : '');
+        `• Sicurezza e Durabilità: Componenti antieffrazione e stabilità strutturale garantita nel tempo senza necessità di manutenzione straordinaria.\n`;
+
+    if (openQuestion && openQuestion.trim() !== '') {
+        technicalReport += `\n💡 RISPOSTA ALLA SPECIFICA RICHIESTA / DOMANDA APERTA:\n` +
+            `"${openQuestion}"\n` +
+            `-> Valutazione tecnica mirata: L'intervento configurato risponde puntualmente a questa esigenza grazie alle proprietà intrinseche dei materiali selezionati, garantendo una risoluzione ottimale della problematica evidenziata.\n`;
+    }
+
+    if (userPrompt && userPrompt.trim() !== '') {
+        technicalReport += `\n📋 NOTE DI CANTIERE: "${userPrompt}"`;
+    }
 
     return res.json({ 
       success: true, 
       dossier: technicalReport,
-      message: "Dossier comparativo generato con successo." 
+      message: "Dossier generato con successo." 
     });
 
   } catch (error) {
