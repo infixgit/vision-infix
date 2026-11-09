@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision INFIX® - Simulatore Visivo Professionale</title>
+    <title>Vision INFIX® - Diagnosi & Soluzione Tecnica da Foto</title>
     
     <link rel="icon" href="bussola-infix-marchio-figurativo-momento di intervenire.jpg">
     <meta name="theme-color" content="#111111">
@@ -49,11 +49,10 @@
         .stripe-packs-box { display: none; margin-top: 20px; background: #fff8e1; border: 1px solid #ffe0b2; padding: 15px; border-radius: 8px; text-align: center; box-sizing: border-box; width: 100%; }
         .stripe-packs-box h4 { margin: 0 0 6px 0; color: #f57f17; font-size: 14px; }
 
-        .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: center; box-sizing: border-box; width: 100%; }
-        .comparison-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
-        .comparison-item { flex: 1; min-width: 280px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
-        .comparison-item h4 { margin: 0 0 8px 0; font-size: 14px; color: #111; }
-        .comparison-item img { width: 100%; height: 250px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: left; box-sizing: border-box; width: 100%; }
+        .diagnostic-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .diagnostic-photo { flex: 1; min-width: 260px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
+        .diagnostic-photo img { width: 100%; height: 220px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -62,17 +61,15 @@
         <div class="header">
             <img src="bussola-infix-marchio-figurativo-momento di intervenire.jpg" alt="Logo INFIX" class="logo">
             <h2>Vision INFIX®</h2>
-            <p>Simulatore Grafico Professionale "Prima / Dopo" per Serramenti e Finiture</p>
+            <p>Sopralluogo Preliminare & Diagnosi Tecnica da Foto</p>
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Il sistema offre <strong>2 simulazioni gratuite</strong> per testare il rendering professionale di serramenti e finiture[cite: 1].<br>
-                1. Inserisci la tua email autorizzata qui sotto e verifica il codice OTP ricevuto per accedere.<br>
-                2. Carica la foto, seleziona categoria e parametri per generare istantaneamente il dossier e il prompt ottimizzato.
+                Carica la foto dello stato attuale del cantiere e seleziona i parametri desiderati: il sistema genererà un'<strong>Analisi Preliminare e la Soluzione Tecnica (Il Dopo Tecnico)</strong> istantanea per il tuo progetto.
             </div>
 
             <div id="free-trial-box">
-                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #1b5e20;">🎁 PROVA GRATUITA 2 CONSULENZE</div>
+                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #1b5e20;">🎁 PROVA GRATUITA 2 ANALISI DI CANTIERE</div>
                 
                 <div id="step-email-container" style="display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%;">
                     <input type="email" id="trial-email-input" placeholder="Inserisci la tua email...">
@@ -102,13 +99,13 @@
             </div>
 
             <div class="pro-banner">
-                <span>🔒 Vision AI & Simulazione Avanzata (Funzione PRO)</span>
+                <span>🔒 Diagnosi Avanzata & Ecosistema INFIX (Funzione PRO)</span>
                 <button onclick="scrollToPacks()">Scopri i Piani PRO</button>
             </div>
 
             <div class="pack-buttons-container" id="packs-container">
                 <button class="pack-btn" onclick="avviaCheckout('pack_1')">Pack 1 (60€)</button>
-                <button class="pack-btn" onclick="avviaCheckout('pack_2')">Pack 2 (110€)</button>
+                <button class="pack-btn" onclick="avviaCheckout('pack_2')">Pack 110€)</button>
                 <button class="pack-btn" onclick="avviaCheckout('pack_3')">Pack 3 (150€)</button>
                 <button class="pack-btn pro-unlimited" onclick="avviaCheckout('pro_unlimited')">PRO Unlimited (49€/mese)</button>
             </div>
@@ -131,13 +128,13 @@
 
         <form id="visualForm" class="form-section">
             <div class="form-group">
-                <label for="photoInput">📷 1. Carica la foto dello stato attuale</label>
+                <label for="photoInput">📷 1. Carica la foto dello stato attuale del cantiere</label>
                 <input type="file" id="photoInput" accept="image/*" required>
             </div>
 
             <!-- LIVELLO 1: MACRO-CATEGORIA -->
             <div class="form-group">
-                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria</label>
+                <label for="macroCategorySelect">🗂️ 2. Seleziona la Macro-Categoria di Intervento</label>
                 <select id="macroCategorySelect" onchange="gestisciCascataMenu()" required>
                     <option value="">-- Seleziona la Macro-Categoria --</option>
                     <option value="serramenti">Serramenti & Vetrate</option>
@@ -156,7 +153,7 @@
 
             <!-- LIVELLO 2: MODELLO SPECIFICO -->
             <div class="form-group">
-                <label for="productSelect">🔍 3. Seleziona il Modello Specifico</label>
+                <label for="productSelect">🔍 3. Seleziona il Modello di Soluzione</label>
                 <select id="productSelect" onchange="verificaAltroProdotto()" disabled required>
                     <option value="">-- Prima seleziona la macro-categoria sopra --</option>
                 </select>
@@ -195,7 +192,7 @@
 
             <!-- LIVELLO 5: FINITURA / COLORE TELAIO -->
             <div class="form-group">
-                <label for="finishSelect">🎨 6. Scegli Finitura / Colore Superficiale</label>
+                <label for="finishSelect">🎨 6. Scegli Finitura / Colore di Progetto</label>
                 <select id="finishSelect" onchange="verificaAltraFinitura()" required>
                     <optgroup label="Standard & Tinte RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
@@ -211,28 +208,28 @@
                         <option value="Legno Effetto Douglas / Ciliegio">Legno Effetto Douglas / Ciliegio</option>
                         <option value="Effetto Cor-ten / Ruggine">Effetto Cor-ten / Ruggine</option>
                     </optgroup>
-                    <option value="altro_finitura">➕ Altro colore / Finitura personalizzata (es. RAL 9001)...</option>
+                    <option value="altro_finitura">➕ Altro colore / Finitura personalizzata...</option>
                 </select>
             </div>
 
             <div class="form-group" id="customFinishContainer" style="display: none;">
-                <label for="customFinishInput">✏️ Specifica Colore / Finitura (es. RAL 9001, essenza speciale)</label>
-                <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema / Effetto legno spazzolato bianco">
+                <label for="customFinishInput">✏️ Specifica Colore / Finitura</label>
+                <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema...">
             </div>
 
             <!-- NOTE PERSONALIZZATE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 7. Note o richiesta personalizzata di cantiere (opzionale)</label>
-                <textarea id="customUserRequest" rows="2" placeholder="Es. Richiesta specifica per il cliente, dettagli sui pannelli, maniglia particolare, soglia ribassata..."></textarea>
+                <label for="customUserRequest">✏️ 7. Note o criticità riscontrate in cantiere (opzionale)</label>
+                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi, condanna termica, umidità suiili, maniglia particolare..."></textarea>
             </div>
 
-            <!-- PONTE OPERATIVO (WORKFLOW BRIDGE) -->
+            <!-- PULSANTE DI DIAGNOSI -->
             <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Ponte Operativo Grafico (Workflow Bridge)</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Elabora Diagnosi & Soluzione INFIX®</h4>
                 <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
-                    Genera il dossier tecnico e prepara il prompt ottimizzato copiato automaticamente negli appunti.
+                    Analizza la foto ed elabora il dossier tecnico e la soluzione "Dopo" ingegneristica.
                 </p>
-                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier & Copia Prompt 🎨✨</button>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Analisi Preliminare & Soluzione 📋✨</button>
             </div>
         </form>
 
@@ -248,78 +245,56 @@
         </div>
 
         <div id="resultArea" class="result-box">
-            <h3 style="margin-top:0; color:#111; font-size: 1.3rem;">Confronto Vision INFIX®</h3>
-            <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold;"></p>
-            <p id="resultCustomNote" style="font-size: 12px; color: #444; font-style: italic; margin-top: 4px;"></p>
+            <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Diagnostico & Soluzione INFIX®</h3>
+            <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold; text-align: center;"></p>
             
-            <div class="comparison-grid">
-                <div class="comparison-item">
-                    <h4>Stato Attuale (Prima)</h4>
-                    <img id="beforeImage" alt="Foto Originale">
-                </div>
-                <div class="comparison-item">
-                    <h4>Simulazione (Dopo)</h4>
-                    <img id="afterImage" alt="Rendering Finitura">
+            <div class="diagnostic-grid">
+                <div class="diagnostic-photo">
+                    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #111;">Stato Attuale (Cantiere)</h4>
+                    <img id="beforeImage" alt="Foto Originale Cantiere">
                 </div>
             </div>
 
-            <!-- GUIDA & DOSSIER TECNICO -->
-            <div id="technicalDossierBox" style="display: none; margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; text-align: left; box-sizing: border-box; width: 100%;">
-                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Relazione Tecnica & Guida Workflow Bridge</h4>
+            <!-- DOSSIER TECNICO & SOLUZIONE "DOPO" -->
+            <div id="technicalDossierBox" style="margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; box-sizing: border-box; width: 100%;">
+                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📋 Analisi Preliminare & Intervento Consigliato (Il "Dopo" Tecnico)</h4>
                 <p id="technicalDossierText" style="font-size: 13px; color: #111318; font-weight: 500; margin: 0; line-height: 1.5; white-space: pre-line;"></p>
-                
-                <!-- BOX ANTEPRIMA PROMPT PRONTO -->
-                <div style="margin-top: 12px; background: #fff; border: 1px solid #cbd5e0; padding: 10px; border-radius: 6px;">
-                    <div style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 4px;">📝 PROMPT PULITO ED ESSENZIALE NEGLI APPUNTI:</div>
-                    <div id="promptPreviewText" style="font-size: 12px; color: #0d47a1; font-family: monospace; word-break: break-all;"></div>
-                </div>
-
-                <!-- GUIDA OPERATIVA -->
-                <div style="margin-top: 12px; background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 12px; color: #0d47a1; line-height: 1.4;">
-                    <strong>Flusso Operativo Consigliato:</strong><br>
-                    1. Clicca su "Apri Gemini Web" (assicurati di aver effettuato l'accesso con il tuo account Google su Gemini).<br>
-                    2. Incolla (Ctrl+V) il prompt copiato e trascina la foto del cantiere.<br>
-                    3. La tua scheda di <strong>Vision INFIX®</strong> rimane sempre aperta in questa pagina per effettuare nuove configurazioni!
-                </div>
-
-                <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="copiaPromptAppunti()" style="background: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px;">Copia di nuovo il Prompt 📋</button>
-                    <a href="https://gemini.google.com" target="_blank" style="background: #007bff; color: white; text-decoration: none; padding: 8px 14px; border-radius: 5px; font-weight: bold; font-size: 12px; display: inline-block;">Apri Gemini Web in Nuova Scheda 🚀</a>
-                </div>
             </div>
 
-            <!-- PULSANTE PER NUOVA SIMULAZIONE (AGGIUNTO) -->
+            <!-- ECOSISTEMA INFIX: COLLEGAMENTO ALLA BUSSOLA -->
+            <div style="margin-top: 15px; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 15px; border-radius: 6px; text-align: center;">
+                <h4 style="margin: 0 0 6px 0; color: #2e7d32; font-size: 14px;">🧭 Vuoi approfondire la diagnosi o configurare il preventivo?</h4>
+                <p style="font-size: 12px; color: #333; margin: 0 0 10px 0;">Usa la Bussola INFIX® per una consulenza tecnica approfondita sul problema riscontrato.</p>
+                <a href="https://bussola-infix-app.onrender.com" target="_blank" style="background: #2e7d32; color: white; text-decoration: none; padding: 10px 18px; border-radius: 5px; font-weight: bold; font-size: 13px; display: inline-block;">Apri Bussola INFIX® & Approfondisci 🚀</a>
+            </div>
+
+            <!-- PULSANTE PER NUOVA SIMULAZIONE -->
             <div style="margin-top: 20px; border-top: 1px solid #e9ecef; padding-top: 15px; text-align: center;">
-                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">🔄 Esegui una Nuova Simulazione</button>
+                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">🔄 Esegui una Nuova Analisi di Cantiere</button>
             </div>
         </div>
     </div>
 
-    <!-- MODALE LOGIN -->
+    <!-- MODALI LOGIN / RESET (INVARIATI) -->
     <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Accedi a Vision INFIX®</h3>
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
             <input type="email" id="login-email" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 12px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
-            
             <label style="font-size: 12px; font-weight: bold; color: #444;">Password</label>
             <input type="password" id="login-password" placeholder="La tua password" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
-            
             <button onclick="eseguiLoginPassword()" style="background: #111; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Accedi</button>
             <button onclick="chiudiLoginModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
             <p id="login-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
         </div>
     </div>
 
-    <!-- MODALE RESET PASSWORD -->
     <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
             <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP di sblocco.</p>
-            
+            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP.</p>
             <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
             <input type="email" id="reset-email-input" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
-            
             <button onclick="eseguiRichiestaReset()" id="reset-send-btn" style="background: #2e7d32; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Invia Codice OTP ✉️</button>
             <button onclick="chiudiResetModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
             <p id="reset-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
@@ -329,7 +304,6 @@
     <script>
         const RENDER_BACKEND_URL = 'https://vision-infix.onrender.com';
         let currentOtpEmail = '';
-        let ultimoPromptGenerato = '';
 
         const configuratoreDinamico = {
             serramenti: {
@@ -343,23 +317,9 @@
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Profilo / Telaio Serramento",
-                materiali: [
-                    "PVC ad alto isolamento termico",
-                    "Alluminio a Taglio Termico",
-                    "Legno Naturale (Massello / Lamellare)",
-                    "Legno-Alluminio (Interno Legno / Esterno Alluminio)",
-                    "Acciaio / Acciaio Inox / Corten",
-                    "altro_materiale"
-                ],
+                materiali: ["PVC ad alto isolamento termico", "Alluminio a Taglio Termico", "Legno Naturale (Massello / Lamellare)", "Legno-Alluminio (Interno Legno / Esterno Alluminio)", "Acciaio / Acciaio Inox / Corten", "altro_materiale"],
                 vetriLabel: "🪟 5. Tipologia & Finitura Vetro",
-                vetri: [
-                    "Doppio Vetro Trasparente Basso Emissivo con Gas Argon",
-                    "Triplo Vetro Acustico / Sicurezza Trasparente",
-                    "Vetro Satinato / Opaco Privacy",
-                    "Vetro Fumé / Controllo Solare Riflettente",
-                    "Vetro Sabbiato Decorativo / Cinchillà",
-                    "altro_vetro"
-                ]
+                vetri: ["Doppio Vetro Trasparente Basso Emissivo con Gas Argon", "Triplo Vetro Acustico / Sicurezza Trasparente", "Vetro Satinato / Opaco Privacy", "Vetro Fumé / Controllo Solare Riflettente", "Vetro Sabbiato Decorativo / Cinchillà", "altro_vetro"]
             },
             portoncini: {
                 prodotti: [
@@ -371,21 +331,9 @@
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Struttura & Rivestimento Portoncino",
-                materiali: [
-                    "Struttura Blindata in Acciaio zincato",
-                    "Profilo Alluminio a Taglio Termico ad alta sicurezza",
-                    "Profilo PVC rinforzato in acciaio",
-                    "Legno Massello di Pregio",
-                    "altro_materiale"
-                ],
+                materiali: ["Struttura Blindata in Acciaio zincato", "Profilo Alluminio a Taglio Termico ad alta sicurezza", "Profilo PVC rinforzato in acciaio", "Legno Massello di Pregio", "altro_materiale"],
                 vetriLabel: "🚪 5. Inserto centrale / Fiancoluce",
-                vetri: [
-                    "Vetro Blindato Antisfondamento Trasparente",
-                    "Vetro Blindato Satinato Privacy",
-                    "Inserto Vetro Fumé con Grata di Sicurezza",
-                    "Pannello Cieco Coibentato (Senza Vetro)",
-                    "altro_vetro"
-                ]
+                vetri: ["Vetro Blindato Antisfondamento Trasparente", "Vetro Blindato Satinato Privacy", "Inserto Vetro Fumé con Grata di Sicurezza", "Pannello Cieco Coibentato (Senza Vetro)", "altro_vetro"]
             },
             garage: {
                 prodotti: [
@@ -397,21 +345,9 @@
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Struttura & Finitura Pannelli Garage",
-                materiali: [
-                    "Pannelli Coibentati 40mm in Acciaio Galvanizzato",
-                    "Acciaio Mono-lamiera Zinco-verniciato",
-                    "Legno Okoumé / Pino / Abete Trattato",
-                    "Alluminio Estruso ad alta resistenza",
-                    "altro_materiale"
-                ],
+                materiali: ["Pannelli Coibentati 40mm in Acciaio Galvanizzato", "Acciaio Mono-lamiera Zinco-verniciato", "Legno Okoumé / Pino / Abete Trattato", "Alluminio Estruso ad alta resistenza", "altro_materiale"],
                 vetriLabel: "🪟 5. Inserti Trasparenti / Oblò Garage",
-                vetri: [
-                    "Senza Oblò (Pannello completamente cieco)",
-                    "Oblò Rettangolari in Policarbonato Trasparente",
-                    "Oblò Tondi in Vetro Acrilico Satinato",
-                    "Sezione Rettangolare Vetrata Panorama",
-                    "altro_vetro"
-                ]
+                vetri: ["Senza Oblò (Pannello completamente cieco)", "Oblò Rettangolari in Policarbonato Trasparente", "Oblò Tondi in Vetro Acrilico Satinato", "Sezione Rettangolare Vetrata Panorama", "altro_vetro"]
             },
             oscuranti: {
                 prodotti: [
@@ -423,21 +359,9 @@
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Oscurante",
-                materiali: [
-                    "Alluminio Verniciato a Polvere",
-                    "PVC ad alta stabilità termica",
-                    "Legno Naturale Trattato per Esterni",
-                    "Acciaio Coibentato Antieffrazione",
-                    "altro_materiale"
-                ],
+                materiali: ["Alluminio Verniciato a Polvere", "PVC ad alta stabilità termica", "Legno Naturale Trattato per Esterni", "Acciaio Coibentato Antieffrazione", "altro_materiale"],
                 vetriLabel: "⚙️ 5. Tipologia Funzionale / Telaio",
-                vetri: [
-                    "Montaggio con Telaio di Cassa perimetrale",
-                    "Montaggio Cardini Diretti a Muro",
-                    "Cassonetto Termoacustico Monoblocco",
-                    "Guida di Scorrimento Incassata",
-                    "altro_vetro"
-                ]
+                vetri: ["Montaggio con Telaio di Cassa perimetrale", "Montaggio Cardini Diretti a Muro", "Cassonetto Termoacustico Monoblocco", "Guida di Scorrimento Incassata", "altro_vetro"]
             },
             protezioni: {
                 prodotti: [
@@ -448,20 +372,9 @@
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Protezione / Grata",
-                materiali: [
-                    "Acciaio Pieno Trattato Anticorrosione",
-                    "Alluminio Estruso Anodizzato",
-                    "Rete in Fibra di Vetro / Rete Inox Antistrappo",
-                    "altro_materiale"
-                ],
+                materiali: ["Acciaio Pieno Trattato Anticorrosione", "Alluminio Estruso Anodizzato", "Rete in Fibra di Vetro / Rete Inox Antistrappo", "altro_materiale"],
                 vetriLabel: "🎨 5. Dettagli Costruttivi / Motivo",
-                vetri: [
-                    "Design Quadro Moderno Minimalista",
-                    "Motivo Classico a Sbarre con Ovoli / Ricci",
-                    "Telo Zanzariera Nero ad alta visibilità",
-                    "Telo Zanzariera Grigio Standard",
-                    "altro_vetro"
-                ]
+                vetri: ["Design Quadro Moderno Minimalista", "Motivo Classico a Sbarre con Ovoli / Ricci", "Telo Zanzariera Nero ad alta visibilità", "Telo Zanzariera Grigio Standard", "altro_vetro"]
             }
         };
 
@@ -470,17 +383,14 @@
             const productSelect = document.getElementById('productSelect');
             const materialSelect = document.getElementById('materialSelect');
             const glassSelect = document.getElementById('glassSelect');
-            
             const materialLabel = document.getElementById('materialLabel');
             const glassLabel = document.getElementById('glassLabel');
-
             const customMacroContainer = document.getElementById('customMacroContainer');
             const categoriaScelta = macroSelect.value;
 
             productSelect.innerHTML = '';
             materialSelect.innerHTML = '';
             glassSelect.innerHTML = '';
-
             customMacroContainer.style.display = 'none';
             document.getElementById('customProductContainer').style.display = 'none';
             document.getElementById('customMaterialContainer').style.display = 'none';
@@ -491,9 +401,7 @@
                 productSelect.innerHTML = '<option value="personalizzato">Altro prodotto personalizzato</option>';
                 materialSelect.innerHTML = '<option value="personalizzato">Altro materiale personalizzato</option>';
                 glassSelect.innerHTML = '<option value="personalizzato">Altra specifica personalizzata</option>';
-                productSelect.disabled = false;
-                materialSelect.disabled = false;
-                glassSelect.disabled = false;
+                productSelect.disabled = false; materialSelect.disabled = false; glassSelect.disabled = false;
                 document.getElementById('customProductContainer').style.display = 'flex';
                 document.getElementById('customMaterialContainer').style.display = 'flex';
                 document.getElementById('customGlassContainer').style.display = 'flex';
@@ -504,68 +412,38 @@
                 productSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 materialSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 glassSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
-                productSelect.disabled = true;
-                materialSelect.disabled = true;
-                glassSelect.disabled = true;
+                productSelect.disabled = true; materialSelect.disabled = true; glassSelect.disabled = true;
                 return;
             }
 
             const datiCategoria = configuratoreDinamico[categoriaScelta];
-
             datiCategoria.prodotti.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.val;
-                opt.text = item.text;
-                productSelect.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = item.val; opt.text = item.text; productSelect.appendChild(opt);
             });
             productSelect.disabled = false;
 
             materialLabel.innerText = datiCategoria.materialiLabel;
             datiCategoria.materiali.forEach(mat => {
-                const opt = document.createElement('option');
-                opt.value = mat;
-                opt.text = mat === 'altro_materiale' ? '➕ Altro materiale personalizzato...' : mat;
-                materialSelect.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = mat; opt.text = mat === 'altro_materiale' ? '➕ Altro materiale personalizzato...' : mat; materialSelect.appendChild(opt);
             });
             materialSelect.disabled = false;
 
             glassLabel.innerText = datiCategoria.vetriLabel;
             datiCategoria.vetri.forEach(vtr => {
-                const opt = document.createElement('option');
-                opt.value = vtr;
-                opt.text = vtr === 'altro_vetro' ? '➕ Altra specifica personalizzata...' : vtr;
-                glassSelect.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = vtr; opt.text = vtr === 'altro_vetro' ? '➕ Altra specifica personalizzata...' : vtr; glassSelect.appendChild(opt);
             });
             glassSelect.disabled = false;
         }
 
-        function verificaAltroProdotto() {
-            const productSelect = document.getElementById('productSelect');
-            document.getElementById('customProductContainer').style.display = (productSelect.value === 'altro_prodotto') ? 'flex' : 'none';
-        }
-
-        function verificaAltroMateriale() {
-            const materialSelect = document.getElementById('materialSelect');
-            document.getElementById('customMaterialContainer').style.display = (materialSelect.value === 'altro_materiale') ? 'flex' : 'none';
-        }
-
-        function verificaAltroVetro() {
-            const glassSelect = document.getElementById('glassSelect');
-            document.getElementById('customGlassContainer').style.display = (glassSelect.value === 'altro_vetro') ? 'flex' : 'none';
-        }
-
-        function verificaAltraFinitura() {
-            const finishSelect = document.getElementById('finishSelect');
-            document.getElementById('customFinishContainer').style.display = (finishSelect.value === 'altro_finitura') ? 'flex' : 'none';
-        }
+        function verificaAltroProdotto() { document.getElementById('customProductContainer').style.display = (document.getElementById('productSelect').value === 'altro_prodotto') ? 'flex' : 'none'; }
+        function verificaAltroMateriale() { document.getElementById('customMaterialContainer').style.display = (document.getElementById('materialSelect').value === 'altro_materiale') ? 'flex' : 'none'; }
+        function verificaAltroVetro() { document.getElementById('customGlassContainer').style.display = (document.getElementById('glassSelect').value === 'altro_vetro') ? 'flex' : 'none'; }
+        function verificaAltraFinitura() { document.getElementById('customFinishContainer').style.display = (document.getElementById('finishSelect').value === 'altro_finitura') ? 'flex' : 'none'; }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('infix_visual_user_email');
             const savedCredits = localStorage.getItem('infix_visual_credits');
-
-            if (savedEmail) {
-                attivaSessioneUtente(savedEmail, savedCredits);
-            }
+            if (savedEmail) { attivaSessioneUtente(savedEmail, savedCredits); }
         });
 
         function attivaSessioneUtente(email, credits) {
@@ -576,18 +454,9 @@
 
             const emailLower = email.toLowerCase();
             let displayCredits = credits;
-
-            if (emailLower === 'infix@outlook.it') {
-                displayCredits = 'PRO Illimitato 🚀';
-            } else if (emailLower === 'santino.simoncello@libero.it') {
-                if (displayCredits === null || displayCredits === undefined || parseInt(displayCredits) > 50) {
-                    displayCredits = '50';
-                }
-            } else {
-                if (displayCredits === null || displayCredits === undefined) {
-                    displayCredits = '2';
-                }
-            }
+            if (emailLower === 'infix@outlook.it') { displayCredits = 'PRO Illimitato 🚀'; }
+            else if (emailLower === 'santino.simoncello@libero.it') { if (displayCredits === null || parseInt(displayCredits) > 50) displayCredits = '50'; }
+            else { if (displayCredits === null) displayCredits = '2'; }
 
             localStorage.setItem('infix_visual_user_email', email);
             localStorage.setItem('infix_visual_credits', displayCredits);
@@ -602,8 +471,7 @@
         }
 
         async function richiediCodiceOtp() {
-            const emailInput = document.getElementById('trial-email-input');
-            const email = emailInput.value.trim().toLowerCase();
+            const email = document.getElementById('trial-email-input').value.trim().toLowerCase();
             const captcha = parseInt(document.getElementById('captcha-input').value.trim());
             const privacy = document.getElementById('privacy-checkbox').checked;
             const errorMsg = document.getElementById('trial-error-msg');
@@ -614,160 +482,66 @@
             if (!privacy) { errorMsg.innerText = "Devi accettare l'informativa sulla privacy."; errorMsg.style.display = 'block'; return; }
 
             errorMsg.style.display = 'none';
-            sendBtn.disabled = true;
-            sendBtn.innerText = "Invio OTP in corso... ⏳";
+            sendBtn.disabled = true; sendBtn.innerText = "Invio OTP in corso... ⏳";
 
             try {
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email })
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
                     currentOtpEmail = email;
                     document.getElementById('sent-email-label').innerText = email;
                     document.getElementById('step-email-container').style.display = 'none';
                     document.getElementById('step-otp-container').style.display = 'flex';
-                    document.getElementById('otp-input').value = '';
                 } else {
-                    errorMsg.innerText = data.error || "Errore durante l'invio dell'OTP.";
-                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = data.error || "Errore invio OTP."; errorMsg.style.display = 'block';
                 }
             } catch (err) {
-                console.error(err);
-                errorMsg.innerText = "Impossibile contattare il server sicuro. Riprova tra poco.";
-                errorMsg.style.display = 'block';
+                errorMsg.innerText = "Errore di connessione al server."; errorMsg.style.display = 'block';
             } finally {
-                sendBtn.disabled = false;
-                sendBtn.innerText = "Invia Codice OTP ✉️";
+                sendBtn.disabled = false; sendBtn.innerText = "Invia Codice OTP ✉️";
             }
         }
 
         async function verificaCodiceOtpEAccedi() {
             const otp = document.getElementById('otp-input').value.trim();
             const errorMsg = document.getElementById('trial-error-msg');
-
-            if (!otp) {
-                errorMsg.style.color = '#dc3545';
-                errorMsg.innerText = "Inserisci un codice OTP valido.";
-                errorMsg.style.display = 'block';
-                return;
-            }
-
             try {
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/verify-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentOtpEmail, otp: otp })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentOtpEmail, otp: otp })
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
                     let initialCredits = (currentOtpEmail.toLowerCase() === 'infix@outlook.it') ? 'PRO Illimitato' : ((currentOtpEmail.toLowerCase() === 'santino.simoncello@libero.it') ? '50' : '2');
-                    let existingCredits = localStorage.getItem('infix_visual_credits');
-                    if (localStorage.getItem('infix_visual_user_email') === currentOtpEmail && existingCredits !== null) {
-                        initialCredits = existingCredits;
-                    }
                     attivaSessioneUtente(currentOtpEmail, initialCredits);
                 } else {
-                    errorMsg.style.color = '#dc3545';
-                    errorMsg.innerText = data.error || "Codice OTP errato o scaduto.";
-                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = data.error || "OTP errato."; errorMsg.style.display = 'block';
                 }
             } catch (err) {
-                console.error(err);
-                errorMsg.style.color = '#dc3545';
-                errorMsg.innerText = "Errore di connessione al server di verifica.";
-                errorMsg.style.display = 'block';
+                errorMsg.innerText = "Errore di connessione."; errorMsg.style.display = 'block';
             }
         }
 
         function mostraLoginModal(e) { e.preventDefault(); document.getElementById('login-modal').style.display = 'flex'; }
         function chiudiLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-        
-        function mostraResetPasswordModal(e) { 
-            e.preventDefault(); 
-            document.getElementById('reset-modal').style.display = 'flex'; 
-        }
-
-        function chiudiResetModal() { 
-            document.getElementById('reset-modal').style.display = 'none'; 
-            document.getElementById('reset-msg').innerText = '';
-            document.getElementById('reset-email-input').value = '';
-        }
-
-        async function eseguiRichiestaReset() {
-            const email = document.getElementById('reset-email-input').value.trim().toLowerCase();
-            const msg = document.getElementById('reset-msg');
-            const btn = document.getElementById('reset-send-btn');
-
-            if (!email || !email.includes('@')) {
-                msg.style.color = 'red';
-                msg.innerText = "Inserisci un'email valida.";
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "Invio in corso... ⏳";
-
-            try {
-                const response = await fetch(`${RENDER_BACKEND_URL}/api/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    msg.style.color = 'green';
-                    msg.innerText = "Codice OTP inviato! Controlla la tua email.";
-                    setTimeout(() => {
-                        chiudiResetModal();
-                        document.getElementById('trial-email-input').value = email;
-                    }, 2000);
-                } else {
-                    msg.style.color = 'red';
-                    msg.innerText = data.error || "Errore durante l'invio dell'OTP.";
-                }
-            } catch (err) {
-                console.error(err);
-                msg.style.color = 'red';
-                msg.innerText = "Errore di connessione al server.";
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Invia Codice OTP ✉️";
-            }
-        }
-
+        function mostraResetPasswordModal(e) { e.preventDefault(); document.getElementById('reset-modal').style.display = 'flex'; }
+        function chiudiResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function scrollToPacks() { window.scrollTo({ top: document.getElementById('stripePaywall').offsetTop, behavior: 'smooth' }); }
 
         function eseguiLoginPassword() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const msg = document.getElementById('login-msg');
-
             if (email === 'santino.simoncello@libero.it' || email === 'infix@outlook.it') {
-                let initialCredits = (email === 'infix@outlook.it') ? 'PRO Illimitato' : '50';
-                let existingCredits = localStorage.getItem('infix_visual_credits');
-                if (localStorage.getItem('infix_visual_user_email') === email && existingCredits !== null) {
-                    initialCredits = existingCredits;
-                }
                 chiudiLoginModal();
-                attivaSessioneUtente(email, initialCredits);
+                attivaSessioneUtente(email, email === 'infix@outlook.it' ? 'PRO Illimitato' : '50');
             } else {
-                msg.style.color = 'red';
-                msg.innerText = "Email non autorizzata.";
+                document.getElementById('login-msg').innerText = "Email non autorizzata.";
             }
         }
 
-        // WORKFLOW BRIDGE
-        document.getElementById('visualForm').addEventListener('submit', function(e) {
+        // WORKFLOW DIAGNOSI NATIVO
+        document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const email = localStorage.getItem('infix_visual_user_email');
             let credits = localStorage.getItem('infix_visual_credits');
 
@@ -776,140 +550,77 @@
                 if (isNaN(numCredits) || numCredits <= 0) {
                     document.getElementById('visualForm').style.display = 'none';
                     document.getElementById('stripePaywall').style.display = 'block';
-                    alert("Hai esaurito le simulazioni gratuite. Acquista dei crediti per continuare.");
                     return;
                 }
                 numCredits--;
                 localStorage.setItem('infix_visual_credits', numCredits.toString());
                 document.getElementById('credits-counter-display').innerText = numCredits;
-
-                if (numCredits <= 0) {
-                    document.getElementById('visualForm').style.display = 'none';
-                    document.getElementById('stripePaywall').style.display = 'block';
-                }
             }
 
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
-            
-            const macroSelect = document.getElementById('macroCategorySelect');
-            let macroCategoryText = macroSelect.options[macroSelect.selectedIndex].text;
-            if (macroSelect.value === 'altro_macro') {
-                const customMacro = document.getElementById('customMacroInput').value.trim();
-                if (customMacro) macroCategoryText = customMacro;
-            }
-            
-            const productSelect = document.getElementById('productSelect');
-            let productText = productSelect.options[productSelect.selectedIndex].text;
-            if (productSelect.value === 'altro_prodotto') {
-                const customProd = document.getElementById('customProductInput').value.trim();
-                if (customProd) productText = customProd;
-            }
+            if (!file) { alert("Carica prima una foto!"); return; }
 
-            const materialSelect = document.getElementById('materialSelect');
-            let materialText = materialSelect.value;
-            if (materialSelect.value === 'altro_materiale') {
-                const customMat = document.getElementById('customMaterialInput').value.trim();
-                if (customMat) materialText = customMat;
-            }
-
-            const glassSelect = document.getElementById('glassSelect');
-            let glassText = glassSelect.value;
-            if (glassSelect.value === 'altro_vetro') {
-                const customGlass = document.getElementById('customGlassInput').value.trim();
-                if (customGlass) glassText = customGlass;
-            }
-            
-            const finishSelect = document.getElementById('finishSelect');
-            let finishText = finishSelect.options[finishSelect.selectedIndex].text;
-            if (finishSelect.value === 'altro_finitura') {
-                const customFinish = document.getElementById('customFinishInput').value.trim();
-                if (customFinish) finishText = customFinish;
-            }
-            
+            const macroText = document.getElementById('macroCategorySelect').options[document.getElementById('macroCategorySelect').selectedIndex].text;
+            const productText = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
+            const materialText = document.getElementById('materialSelect').value;
+            const glassText = document.getElementById('glassSelect').value;
+            const finishText = document.getElementById('finishSelect').options[document.getElementById('finishSelect').selectedIndex].text;
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
-            if (!file) {
-                alert("Per favore, seleziona o scatta prima una foto!");
-                return;
-            }
+            const submitBtn = document.getElementById('generateBtn');
+            submitBtn.disabled = true; submitBtn.innerText = "Analisi e Diagnosi cantiere in corso... ⏳";
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const base64Full = e.target.result;
                 document.getElementById('beforeImage').src = base64Full;
-                document.getElementById('afterImage').src = base64Full;
-                
-                document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroCategoryText} / ${productText} | Materiale: ${materialText} | Specifica: ${glassText} | Finitura: ${finishText}`;
-                
-                if (customRequest) {
-                    document.getElementById('resultCustomNote').innerText = `Note cantiere: "${customRequest}"`;
-                    document.getElementById('resultCustomNote').style.display = 'block';
-                } else {
-                    document.getElementById('resultCustomNote').style.display = 'none';
+                const base64Data = base64Full.split(',')[1];
+
+                try {
+                    const response = await fetch(`${RENDER_BACKEND_URL}/api/visual-generate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            category: `${macroText} -> ${productText}`,
+                            finish: finishText,
+                            material: materialText,
+                            glass: glassText,
+                            userPrompt: customRequest,
+                            imageBase64: base64Data,
+                            mimeType: file.type || 'image/jpeg'
+                        })
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroText} / ${productText} | Finitura: ${finishText}`;
+                        document.getElementById('technicalDossierText').innerText = data.dossier;
+                        document.getElementById('resultArea').style.display = 'block';
+                        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert(data.error || "Errore durante l'elaborazione della diagnosi.");
+                    }
+                } catch (err) {
+                    alert("Impossibile contattare il server.");
+                } finally {
+                    submitBtn.disabled = false; submitBtn.innerText = "Genera Analisi Preliminare & Soluzione 📋✨";
                 }
-
-                ultimoPromptGenerato = `Modifica esclusivamente la finestra o l'apertura esistente nella foto allegata sostituendo il vecchio infisso con un "${productText}" in "${materialText}", con "${glassText}" e finitura superficiale "${finishText}". ` +
-                    `Mantieni intatti e inalterati lo sfondo, i muri, l'intonaco, la prospettiva e l'edificio originale della foto. Non generare immagini affiancate o doppie. ` +
-                    (customRequest ? `Note aggiuntive: ${customRequest}` : '');
-
-                let technicalSpecs = `• Configurazione: ${macroCategoryText} -> ${productText}\n` +
-                    `• Materiale Strutturale: ${materialText}\n` +
-                    `• Specifica Tamponamento / Vetro: ${glassText}\n` +
-                    `• Finitura / Colore Telaio: ${finishText}\n` +
-                    `• Valorizzazione Estetica: Trattamento superficiale ${finishText} ad alta durabilità e resistenza UV.\n` +
-                    (customRequest ? `• 📝 Note di cantiere: "${customRequest}"\n` : '');
-
-                document.getElementById('technicalDossierText').innerText = technicalSpecs;
-                document.getElementById('promptPreviewText').innerText = ultimoPromptGenerato;
-                
-                document.getElementById('technicalDossierBox').style.display = 'block';
-                document.getElementById('resultArea').style.display = 'block';
-                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-
-                navigator.clipboard.writeText(ultimoPromptGenerato).catch(() => {});
             };
             reader.readAsDataURL(file);
         });
 
-        function copiaPromptAppunti() {
-            if (ultimoPromptGenerato) {
-                navigator.clipboard.writeText(ultimoPromptGenerato).then(() => {
-                    alert("Prompt copiato negli appunti con successo! Ora puoi incollarlo in Gemini.");
-                }).catch(() => {
-                    alert("Impossibile copiare automaticamente.");
-                });
-            } else {
-                alert("Nessun prompt generato. Compila il form e genera prima il dossier.");
-            }
-        }
-
         function resettaNuovaSimulazione() {
             document.getElementById('visualForm').reset();
             document.getElementById('resultArea').style.display = 'none';
-            document.getElementById('customMacroContainer').style.display = 'none';
-            document.getElementById('customProductContainer').style.display = 'none';
-            document.getElementById('customMaterialContainer').style.display = 'none';
-            document.getElementById('customGlassContainer').style.display = 'none';
-            document.getElementById('customFinishContainer').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function avviaCheckout(planKey) {
-            const stripeLinks = {
-                'pack_1': 'https://buy.stripe.com/TUO_LINK_PACK_1',
-                'pack_2': 'https://buy.stripe.com/TUO_LINK_PACK_2',
-                'pack_3': 'https://buy.stripe.com/TUO_LINK_PACK_3',
-                'pro_unlimited': 'https://buy.stripe.com/TUO_LINK_PRO_UNLIMITED'
-            };
-            window.location.href = stripeLinks[planKey] || "https://buy.stripe.com/TUO_LINK_DI_PAGAMENTO_INFIX";
+            const links = { 'pack_1': 'https://buy.stripe.com/...', 'pack_2': 'https://buy.stripe.com/...', 'pack_3': 'https://buy.stripe.com/...', 'pro_unlimited': 'https://buy.stripe.com/...' };
+            window.location.href = links[planKey] || "https://buy.stripe.com/INFIX_LINK";
         }
 
-        function eseguiLogout() {
-            localStorage.removeItem('infix_visual_user_email');
-            localStorage.removeItem('infix_visual_credits');
-            location.reload();
-        }
+        function eseguiLogout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
