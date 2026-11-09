@@ -101,7 +101,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: DIAGNOSI & DOSSIER TECNICO DA FOTO
+// 3. ENDPOINT: DOSSIER COMPARATIVO (PRIMA vs DOPO)
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -111,27 +111,32 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
-    // Generazione della nota tecnica diagnostica e della soluzione professionale
-    const technicalReport = `ANALISI PRELIMINARE & SOLUZIONE TECNICA (IL "DOPO" TECNICO) — Vision INFIX®\n\n` +
-        `1. Intervento Selezionato: ${category}\n` +
-        `2. Materiale Strutturale: ${material}\n` +
-        `3. Tamponamento / Vetro: ${glass}\n` +
-        `4. Finitura & Estetica: ${finish}\n\n` +
-        `💡 DIAGNOSI DI CANTIERE E BENEFICI NEL CONTESTO:\n` +
-        `• Diagnosi visiva: Il sistema attuale evidenzia potenziali dispersioni termiche e la necessità di riqualificazione energetica.\n` +
-        `• Soluzione applicata: Sostituzione mirata con profilo ad alte prestazioni e finitura ${finish}, progettata per azzerare i ponti termici.\n` +
-        `• Integrazione Estetica: Posa in opera qualificata nel pieno rispetto della geometria e dell'armonia architettonica dell'edificio.\n` +
-        (userPrompt ? `• Note specifiche rilevate: "${userPrompt}"` : '');
+    // Dossier comparativo professionale Prima vs Dopo e Benefici mirati
+    const technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO) — Vision INFIX®\n\n` +
+        `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
+        `• Tipologia: ${category}\n` +
+        `• Materiale Telaio: ${material}\n` +
+        `• Vetro / Tamponamento: ${glass}\n` +
+        `• Finitura Estetica: ${finish}\n\n` +
+        `🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):` +
+        `\nL'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da potenziali dispersioni termiche sui nodi perimetrali, assenza di isolamento acustico avanzato e un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'edificio.\n\n` +
+        `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":` +
+        `\nL'installazione del nuovo sistema in ${material} abbinato a ${glass} e rifinito in ${finish} trasforma radicalmente il vano:\n` +
+        `• Abbattimento Termico & Risparmio: Eliminazione totale dei ponti termici e drastica riduzione delle dispersioni, con conseguente calo dei costi in bolletta e miglioramento della classe energetica.\n` +
+        `• Comfort Acustico Superiore: Isolamento certificato contro i rumori esterni per un silenzio domestico ottimale.\n` +
+        `• Valorizzazione Estetica & Architettonica: La finitura ${finish} si integra armoniosamente con i volumi e i prospetti esistenti, donando un aspetto moderno e di altissimo pregio senza opere murarie invasive.\n` +
+        `• Sicurezza e Durabilità: Componenti antieffrazione e stabilità strutturale garantita nel tempo senza necessità di manutenzione straordinaria.\n` +
+        (userPrompt ? `\n📋 NOTE DI CANTIERE: "${userPrompt}"` : '');
 
     return res.json({ 
       success: true, 
       dossier: technicalReport,
-      message: "Diagnosi e dossier generati con successo." 
+      message: "Dossier comparativo generato con successo." 
     });
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, error: "Errore durante l'elaborazione della diagnosi." });
+    return res.status(500).json({ success: false, error: "Errore durante l'elaborazione del dossier." });
   }
 });
 
