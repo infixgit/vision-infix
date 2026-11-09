@@ -65,7 +65,7 @@
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Carica la foto del cantiere e seleziona i dettagli dal menu ampliato: il sistema genererà un dossier professionale basato sul confronto <strong>Prima vs Dopo</strong> e sui benefici esclusivi della scelta effettuata.
+                Carica la foto del cantiere, seleziona i dettagli dal menu ampliato e inserisci eventuali richieste specifiche: il sistema genererà un dossier professionale basato sul confronto <strong>Prima vs Dopo</strong>.
             </div>
 
             <div id="free-trial-box">
@@ -220,10 +220,16 @@
                 <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema...">
             </div>
 
-            <!-- NOTE PERSONALIZZATE -->
+            <!-- DOMANDA APERTA / RICHIESTA SPECIFICA -->
+            <div class="form-group" style="background: #fff8e1; border: 1px solid #ffe0b2; padding: 12px; border-radius: 6px;">
+                <label for="openQuestionInput" style="color: #f57f17; font-weight: bold;">💬 Domanda aperta o richiesta specifica per l'IA (opzionale)</label>
+                <textarea id="openQuestionInput" rows="3" placeholder="Es. Spiega al cliente perché questo infisso in PVC bianco risolverà il problema della condensa sui bordi, oppure evidenzia l'importanza del vetro basso emissivo..."></textarea>
+            </div>
+
+            <!-- NOTE DI CANTIERE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 7. Note o criticità riscontrate in cantiere (opzionale)</label>
-                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condanna termica, cassonetto non coibentato, maniglione specifico..."></textarea>
+                <label for="customUserRequest">✏️ 8. Note o criticità tecniche di cantiere (opzionale)</label>
+                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condanna termica, cassonetto non coibentato..."></textarea>
             </div>
 
             <!-- PULSANTE DI GENERAZIONE DOSSIER -->
@@ -301,7 +307,6 @@
         const RENDER_BACKEND_URL = 'https://vision-infix.onrender.com';
         let currentOtpEmail = '';
 
-        // MENU DINAMICO AMPLIATO CON SPECIFICHE DETTAGLIATE
         const configuratoreDinamico = {
             serramenti: {
                 prodotti: [
@@ -612,7 +617,7 @@
             }
         }
 
-        // WORKFLOW VISION INFIX - ANALISI COMPARATIVA PRIMA VS DOPO
+        // WORKFLOW VISION INFIX - ANALISI COMPARATIVA PRIMA VS DOPO CON DOMANDA APERTA
         document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = localStorage.getItem('infix_visual_user_email');
@@ -639,6 +644,7 @@
             const materialText = document.getElementById('materialSelect').value;
             const glassText = document.getElementById('glassSelect').value;
             const finishText = document.getElementById('finishSelect').options[document.getElementById('finishSelect').selectedIndex].text;
+            const openQuestionText = document.getElementById('openQuestionInput').value.trim();
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             const submitBtn = document.getElementById('generateBtn');
@@ -659,6 +665,7 @@
                             finish: finishText,
                             material: materialText,
                             glass: glassText,
+                            openQuestion: openQuestionText,
                             userPrompt: customRequest,
                             imageBase64: base64Data,
                             mimeType: file.type || 'image/jpeg'
