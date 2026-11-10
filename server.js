@@ -116,6 +116,7 @@ app.post('/api/visual-generate', async (req, res) => {
     let beneficiSpecifici = "";
     let analisiStato = "";
     let beneficiFiscali = "";
+    let rischiNonIntervento = "";
 
     // A. GESTIONE SPECIFICA: PORTE INTERNE & OSCURANTI/PERSIANE (Sostituzione isolata)
     if (catLower.includes('porte interne') || catLower.includes('divisori') || catLower.includes('oscuranti') || catLower.includes('schermature')) {
@@ -134,6 +135,9 @@ app.post('/api/visual-generate', async (req, res) => {
             `• La semplice sostituzione isolata di questo elemento non dà diritto autonomamente a detrazioni fiscali dirette (intervento di manutenzione ordinaria).\n` +
             `• L'agevolazione fiscale (Bonus Ristrutturazioni al 50%) è applicabile ESCLUSIVAMENTE se l'intervento rientra all'interno di un progetto complessivo e autorizzato di Manutenzione Straordinaria o Ristrutturazione Edilizia dell'immobile.\n`;
 
+        rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
+            `Rimandare la sostituzione comporta un progressivo peggioramento estetico e funzionale, con il rischio di blocchi meccanici improvvisi, fessurazioni strutturali del supporto e un degrado visivo che svaluta l'armonia complessiva degli spazi abitativi.`;
+
     // B. GESTIONE SPECIFICA: SERRAMENTI & RIQUALIFICAZIONE ENERGETICA
     } else if (catLower.includes('serramenti') || catLower.includes('ristrutturazione_completa')) {
         analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura esterno datato, caratterizzato da usura superficiale e da un impatto termico superato che penalizza l'efficienza complessiva dell'immobile.";
@@ -145,6 +149,9 @@ app.post('/api/visual-generate', async (req, res) => {
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
             `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (Ecobonus / Bonus Casa), subordinatamente alla conformità dei requisiti tecnici e di trasmittanza termica previsti dalla legge.\n`;
 
+        rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
+            `Mantenere serramenti obsoleti alimenta il costo occulto delle dispersioni termiche in bolletta, favorisce la formazione di condensa e muffe sui  punti freddi e svaluta progressivamente il valore commerciale dell'immobile sul mercato.`;
+
     // C. GESTIONE SPECIFICA: PORTONCINI BLINDATI, GARAGE E PROTEZIONI (Sicurezza)
     } else {
         analisiStato = "L'esame della fotografia evidenzia un elemento di chiusura attuale che mostra segni di obsolescenza estetica e funzionale, limitando la protezione complessiva e l'impatto visivo dell'accesso.";
@@ -154,6 +161,9 @@ app.post('/api/visual-generate', async (req, res) => {
 
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
             `• Bonus Sicurezza / Ristrutturazioni: L'intervento può accedere alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi (sistemi antieffrazione) o per interventi di ristrutturazione edilizia.\n`;
+
+        rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
+            `Lasciare inalterati sistemi di chiusura o protezione vulnerabili espone l'immobile a rischi concreti di intrusione, usura meccanica irreversibile e costi di manutenzione straordinaria ricorrenti nel tempo.`;
     }
 
     let dettagliInstallazione = "";
@@ -176,7 +186,8 @@ app.post('/api/visual-generate', async (req, res) => {
         `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":\n` +
         beneficiSpecifici +
         `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per resistere all'usura e semplificare la pulizia quotidiana.\n\n` +
-        beneficiFiscali;
+        beneficiFiscali + `\n` +
+        rischiNonIntervento;
 
     // Risposta intelligente estesa a tutte le categorie per la domanda aperta
     if (openQuestion && openQuestion.trim() !== '') {
@@ -197,7 +208,7 @@ app.post('/api/visual-generate', async (req, res) => {
             rispostaMirata = "La configurazione scelta è ingegnerizzata per azzerare gli ingombri superflui, ottimizzando lo spazio utile di passaggio sia interno che esterno e valorizzando la metratura calpestabile dell'ambiente.";
         }
 
-        technicalReport += `\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
+        technicalReport += `\n\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
             `"${openQuestion}"\n` +
             `-> ${rispostaMirata}\n`;
     }
