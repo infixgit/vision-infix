@@ -101,7 +101,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: DOSSIER COMPARATIVO & TUTELA LEGALE
+// 3. ENDPOINT: DOSSIER COMPARATIVO & TUTELA B2B
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -114,7 +114,7 @@ app.post('/api/visual-generate', async (req, res) => {
     const matLower = (material || '').toLowerCase();
     const catLower = (category || '').toLowerCase();
 
-    // Generazione dinamica dei benefici prestazionali
+    // Generazione dinamica dei benefici prestazionali in base ai materiali reali
     let beneficiSpecifici = "";
     let analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'immobile.";
 
@@ -137,7 +137,7 @@ app.post('/api/visual-generate', async (req, res) => {
     let beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
         `• Detrazioni Fiscali / Ecobonus: L'intervento di riqualificazione energetica con la sostituzione dei sistemi di chiusura/infissi rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (es. Bonus Ristrutturazioni o Ecobonus, subordinatamente alla trasmissione delle pratiche ENEA e ai requisiti di trasmittanza termica previsti dalla legge).\n`;
 
-    let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO) — Vision INFIX®\n\n` +
+    let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO)\n\n` +
         `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
         `• Tipologia: ${category}\n` +
         `• Materiale / Struttura: ${material}\n` +
@@ -152,7 +152,7 @@ app.post('/api/visual-generate', async (req, res) => {
         `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per durare nel tempo senza interventi straordinari.\n\n` +
         beneficiFiscali;
 
-    // Risposta alla domanda aperta
+    // Risposta intelligente alla domanda aperta
     if (openQuestion && openQuestion.trim() !== '') {
         let rispostaMirata = "In merito alla richiesta specifica, l'opzione configurata rappresenta la risposta ideale bilanciando perfettamente estetica, praticità d'uso e caratteristiche tecniche del vano analizzato in foto.";
         const qLower = openQuestion.toLowerCase();
@@ -174,9 +174,9 @@ app.post('/api/visual-generate', async (req, res) => {
         technicalReport += `\n📋 NOTE DI CANTIERE: "${userPrompt}"`;
     }
 
-    // NOTA TECNICA FINALE DI TUTELA LEGALE (DISCLAIMER)
+    // Nota tecnica finale agnostica (priva di marchi fissi, perfetta per l'uso B2B universale)
     technicalReport += `\n\n🛡️ NOTA TECNICA E CLAUSOLA DI SALVAGUARDIA:\n` +
-        `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati, le valutazioni e le stime prestazionali hanno valore indicativo e non sostituiscono in alcun modo il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione esecutiva affidata a personale qualificato INFIX®. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte non rilevabili da immagine fotografica.`;
+        `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati, le valutazioni e le stime prestazionali hanno valore indicativo e non sostituiscono in alcun modo il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione esecutiva affidata a personale tecnico abilitato. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte non rilevabili da immagine fotografica.`;
 
     return res.json({ 
       success: true, 
