@@ -117,16 +117,21 @@ app.post('/api/visual-generate', async (req, res) => {
     let analisiStato = "";
     let beneficiFiscali = "";
 
-    // A. GESTIONE SPECIFICA: PORTE INTERNE & DIVISORI
-    if (catLower.includes('porte interne') || catLower.includes('divisori')) {
-        analisiStato = "L'esame della fotografia evidenzia una porta interna allo stato attuale caratterizzata da finiture usurate dall'uso quotidiano e da un impatto visivo superato che frammenta la continuità estetica degli ambienti.";
+    // A. GESTIONE SPECIFICA: PORTE INTERNE & OSCURANTI/PERSIANE (Sostituzione isolata)
+    if (catLower.includes('porte interne') || catLower.includes('divisori') || catLower.includes('oscuranti') || catLower.includes('schermature')) {
+        const isOscurante = catLower.includes('oscuranti') || catLower.includes('schermature');
+        analisiStato = isOscurante 
+            ? "L'esame della fotografia evidenzia un sistema di oscuramento esterno usurato dagli agenti atmosferici, con ridotta funzionalità meccanica e un impatto estetico che penalizza l'affaccio."
+            : "L'esame della fotografia evidenzia una porta interna allo stato attuale caratterizzata da finiture usurate dall'uso quotidiano e da un impatto visivo superato che frammenta la continuità estetica degli ambienti.";
         
-        beneficiSpecifici = `• Continuità Architettonica & Stile: L'installazione della nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi abitativi.\n` +
-            `• Vivibilità & Funzionalità: Ottimizzazione del passaggio e fluidità nei movimenti tra i vari ambienti della casa.\n` +
-            `• Comfort Acustico Interno: Riduzione della propagazione dei rumori quotidiani tra una stanza e l'altra.\n`;
+        beneficiSpecifici = isOscurante
+            ? `• Regolazione della Luce & Comfort: L'installazione del nuovo sistema in ${material} rifinito in ${finish} assicura un controllo ottimale dell'irraggiamento solare e della privacy.\n` +
+              `• Durabilità agli Agenti Atmosferici: Trattamenti protettivi di altissima qualità per resistere nel tempo senza bisogno di manutenzione gravosa.\n`
+            : `• Continuità Architettonica & Stile: L'installazione della nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi abitativi.\n` +
+              `• Vivibilità & Funzionalità: Ottimizzazione del passaggio e fluidità nei movimenti tra i vari ambienti della casa.\n`;
 
         beneficiFiscali = `⚖️ 3. BENEFICI E NORMATIVA FISCALE DI LEGGE:\n` +
-            `• La semplice sostituzione di porte interne non dà diritto a detrazioni fiscali dirette o bonus specifici (manutenzione ordinaria).\n` +
+            `• La semplice sostituzione isolata di questo elemento non dà diritto autonomamente a detrazioni fiscali dirette (intervento di manutenzione ordinaria).\n` +
             `• L'agevolazione fiscale (Bonus Ristrutturazioni al 50%) è applicabile ESCLUSIVAMENTE se l'intervento rientra all'interno di un progetto complessivo e autorizzato di Manutenzione Straordinaria o Ristrutturazione Edilizia dell'immobile.\n`;
 
     // B. GESTIONE SPECIFICA: SERRAMENTI & RIQUALIFICAZIONE ENERGETICA
@@ -140,7 +145,7 @@ app.post('/api/visual-generate', async (req, res) => {
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
             `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (Ecobonus / Bonus Casa), subordinatamente alla conformità dei requisiti tecnici e di trasmittanza termica previsti dalla legge.\n`;
 
-    // C. GESTIONE SPECIFICA: PORTONCINI, GARAGE, OSCURANTI E PROTEZIONI
+    // C. GESTIONE SPECIFICA: PORTONCINI BLINDATI, GARAGE E PROTEZIONI (Sicurezza)
     } else {
         analisiStato = "L'esame della fotografia evidenzia un elemento di chiusura attuale che mostra segni di obsolescenza estetica e funzionale, limitando la protezione complessiva e l'impatto visivo dell'accesso.";
         
@@ -148,7 +153,7 @@ app.post('/api/visual-generate', async (req, res) => {
             `• Estetica & Coordinamento: Il nuovo design in ${finish} rinnova radicalmente l'impatto visivo dell'affaccio.\n`;
 
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
-            `• Bonus Sicurezza / Ristrutturazioni: L'intervento può accedere alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi o per interventi di ristrutturazione edilizia.\n`;
+            `• Bonus Sicurezza / Ristrutturazioni: L'intervento può accedere alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi (sistemi antieffrazione) o per interventi di ristrutturazione edilizia.\n`;
     }
 
     let dettagliInstallazione = "";
