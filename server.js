@@ -101,7 +101,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: DOSSIER COMPARATIVO & DINAMICO
+// 3. ENDPOINT: DOSSIER COMPARATIVO & TUTELA LEGALE
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -114,25 +114,28 @@ app.post('/api/visual-generate', async (req, res) => {
     const matLower = (material || '').toLowerCase();
     const catLower = (category || '').toLowerCase();
 
-    // Generazione dinamica dei benefici in base al materiale reale scelto (evita contraddizioni tecniche)
+    // Generazione dinamica dei benefici prestazionali
     let beneficiSpecifici = "";
-    let analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'estetica e la funzionalità complessiva dell'immobile.";
+    let analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'immobile.";
 
     if (matLower.includes('coibentato') || matLower.includes('taglio termico') || matLower.includes('multi-camera')) {
         beneficiSpecifici = `• Isolamento Termico & Risparmio Energetico: L'adozione di materiali coibentati azzera i ponti termici, riducendo drasticamente le dispersioni e migliorando il comfort climatico.\n` +
             `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un silenzio domestico ottimale.\n`;
     } else if (matLower.includes('mono-lamiera') || matLower.includes('acciaio zincato')) {
         beneficiSpecifici = `• Robustezza & Sicurezza Strutturale: Soluzione in acciaio ad alta resistenza meccanica, ideale per la protezione solida e duratura del vano.\n` +
-            `• Ventilazione & Praticità: Struttura essenziale, affidabile nel tempo e protetta contro gli agenti atmosferici aggressivi grazie alla zincatura.\n`;
+            `• Ventilazione & Praticità: Struttura essenziale, affidabile nel tempo e protetta contro gli agenti atmosferici aggressivi.\n`;
     } else {
         beneficiSpecifici = `• Stabilità & Durabilità: Materiali di prima scelta selezionati per garantire un ciclo di vita eccellente e un funzionamento impeccabile.\n` +
             `• Protezione dagli Agenti Atmosferici: Resistenza superiore all'usura e agli sbalzi termici.\n`;
     }
 
-    // Aggiunta specifica per garage se pertinente
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
         beneficiSpecifici += `• Ottimizzazione dello Spazio: Movimentazione studiata per liberare lo spazio utile sia all'interno che all'esterno del box.\n`;
     }
+
+    // Vantaggi fiscali e di legge applicabili
+    let beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
+        `• Detrazioni Fiscali / Ecobonus: L'intervento di riqualificazione energetica con la sostituzione dei sistemi di chiusura/infissi rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (es. Bonus Ristrutturazioni o Ecobonus, subordinatamente alla trasmissione delle pratiche ENEA e ai requisiti di trasmittanza termica previsti dalla legge).\n`;
 
     let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO) — Vision INFIX®\n\n` +
         `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
@@ -146,9 +149,10 @@ app.post('/api/visual-generate', async (req, res) => {
         `L'installazione del nuovo sistema in ${material} rifinito in ${finish} rinnova radicalmente il contesto:\n` +
         beneficiSpecifici +
         `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente, donando un aspetto curato e di alto pregio.\n` +
-        `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per durare nel tempo senza interventi straordinari.\n`;
+        `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per durare nel tempo senza interventi straordinari.\n\n` +
+        beneficiFiscali;
 
-    // Risposta discorsiva e reale alla domanda aperta del cliente
+    // Risposta alla domanda aperta
     if (openQuestion && openQuestion.trim() !== '') {
         let rispostaMirata = "In merito alla richiesta specifica, l'opzione configurata rappresenta la risposta ideale bilanciando perfettamente estetica, praticità d'uso e caratteristiche tecniche del vano analizzato in foto.";
         const qLower = openQuestion.toLowerCase();
@@ -169,6 +173,10 @@ app.post('/api/visual-generate', async (req, res) => {
     if (userPrompt && userPrompt.trim() !== '') {
         technicalReport += `\n📋 NOTE DI CANTIERE: "${userPrompt}"`;
     }
+
+    // NOTA TECNICA FINALE DI TUTELA LEGALE (DISCLAIMER)
+    technicalReport += `\n\n🛡️ NOTA TECNICA E CLAUSOLA DI SALVAGUARDIA:\n` +
+        `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati, le valutazioni e le stime prestazionali hanno valore indicativo e non sostituiscono in alcun modo il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione esecutiva affidata a personale qualificato INFIX®. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte non rilevabili da immagine fotografica.`;
 
     return res.json({ 
       success: true, 
