@@ -138,6 +138,7 @@
                 <select id="macroCategorySelect" onchange="gestisciCascataMenu()" required>
                     <option value="">-- Seleziona la Macro-Categoria --</option>
                     <option value="serramenti">Serramenti & Vetrate</option>
+                    <option value="porte_interne">Porte Interne & Divisori</option>
                     <option value="portoncini">Portoncini & Ingressi</option>
                     <option value="garage">Chiusure Garage & Grandi Aperture</option>
                     <option value="oscuranti">Oscuranti & Schermature</option>
@@ -191,7 +192,7 @@
                 <input type="text" id="customGlassInput" placeholder="Es. Vetro blindato stratificato anti-sfondamento...">
             </div>
 
-            <!-- CAMPO DINAMICO: CONTROTELAIO (Comparirà solo per serramenti e riqualificazione) -->
+            <!-- CAMPO DINAMICO: CONTROTELAIO (Solo per serramenti e riqualificazione) -->
             <div class="form-group" id="subframeGroup" style="display: none;">
                 <label for="subframeSelect">🛠️ 6. Stato del Controtelaio / Tipo di Posa</label>
                 <select id="subframeSelect">
@@ -202,7 +203,7 @@
                 </select>
             </div>
 
-            <!-- CAMPO DINAMICO: CASSONETTO (Comparirà solo per serramenti e riqualificazione) -->
+            <!-- CAMPO DINAMICO: CASSONETTO (Solo per serramenti e riqualificazione) -->
             <div class="form-group" id="shutterBoxGroup" style="display: none;">
                 <label for="shutterBoxSelect">📦 7. Situazione Cassonetto / Vano Superiore</label>
                 <select id="shutterBoxSelect">
@@ -337,7 +338,6 @@
                     { val: "finestra_vasistas", text: "Finestra con Apertura Vasistas / Ribalta" },
                     { val: "scorrevole_alzante", text: "Scorrevole Alzante (Grandi Vetrate panoramiche)" },
                     { val: "scorrevole_traslante", text: "Scorrevole Traslante Parallelo" },
-                    { val: "porta_filomuro", text: "Porta Interna Filomuro di Design" },
                     { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
                 ],
                 materialiLabel: "🧱 4. Materiale Profilo / Telaio Serramento",
@@ -360,10 +360,41 @@
                     "altro_vetro"
                 ]
             },
+            porte_interne: {
+                prodotti: [
+                    { val: "porta_battente_cieca", text: "Porta Interna a Battente Cieca / Laminata" },
+                    { val: "porta_battente_vetro", text: "Porta Interna a Battente con Inserto in Vetro" },
+                    { val: "scorrevole_scomparsa", text: "Porta Scorrevole a Scomparsa (Controtelaio Scrigno)" },
+                    { val: "scorrevole_esterno_muro", text: "Porta Scorrevole Esterno Muro con Binario a Vista" },
+                    { val: "porta_filomuro_interna", text: "Porta Filomuro / Rasomuro di Design" },
+                    { val: "porta_libro_rototraslante", text: "Porta a Libro o Rototraslante Salvaspazio" },
+                    { val: "altro_prodotto", text: "➕ Altro modello personalizzato..." }
+                ],
+                materialiLabel: "🧱 4. Materiale Anta & Telaio Porta Interna",
+                materiali: [
+                    "Legno Listellare / Massello nobilitato", 
+                    "Laccato Opaco / Lucido antigraffio", 
+                    "Vetro temperato di sicurezza con telaio perimetrale", 
+                    "Laminatino melaminico ad alta resistenza", 
+                    "Alluminio strutturale con pannello in vetro/legno", 
+                    "altro_materiale"
+                ],
+                vetriLabel: "🪟 5. Finitura Vetro o Decorazioni Anta",
+                vetri: [
+                    "Pannello Anta Cieco Pieno Liscio / Inciso", 
+                    "Vetro Satinato / Acidato Luce Diffusa", 
+                    "Vetro Trasparente o Extra-chiaro decorato", 
+                    "Inserti in metallo / Alluminio orizzontali", 
+                    "altro_vetro"
+                ]
+            },
             portoncini: {
                 prodotti: [
-                    { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso con Inserto Vetro" },
-                    { val: "portoncino_cieco_bugnato", text: "Portoncino d'Ingresso Cieco / Bugnato Classico" },
+                    { val: "portoncino_pvc_isolato", text: "Portoncino d'Ingresso in PVC ad Alto Isolamento" },
+                    { val: "portoncino_alluminio_taglio_termico", text: "Portoncino in Alluminio a Taglio Termico (Design Moderno)" },
+                    { val: "portoncino_legno_massello", text: "Portoncino in Legno Massello (Classico / Bugnato)" },
+                    { val: "portoncino_legno_alluminio", text: "Portoncino Legno-Alluminio di Alta Gamma" },
+                    { val: "portoncino_alluminio_vetro", text: "Portoncino d'Ingresso Panoramico con Inserto Vetro" },
                     { val: "blindato_classe_3", text: "Porta Blindata di Sicurezza - Classe 3" },
                     { val: "blindato_classe_4_fiancoluce", text: "Porta Blindata Classe 4 con Fiancoluce Laterale" },
                     { val: "blindato_doppio_battente", text: "Porta Blindata a Doppio Battente per Vano Ampio" },
@@ -371,17 +402,19 @@
                 ],
                 materialiLabel: "🧱 4. Struttura & Rivestimento Portoncino",
                 materiali: [
-                    "Struttura Blindata in Acciaio rinforzato zincato", 
-                    "Profilo Alluminio a Taglio Termico antieffrazione", 
-                    "Profilo PVC rinforzato con anima in acciaio", 
-                    "Legno Massello di Rovere / Okoumé", 
+                    "Profilo PVC rinforzato con anima in acciaio ed estrusione multi-camera", 
+                    "Profilo Alluminio a Taglio Termico ad alta resistenza con pannello coibentato", 
+                    "Legno Massello di Rovere / Okoumé trattato per esterni", 
+                    "Struttura Blindata in Acciaio rinforzato zincato antieffrazione", 
+                    "Legno-Alluminio (Interno caldo / Esterno in profilato d'alluminio)", 
                     "altro_materiale"
                 ],
-                vetriLabel: "🚪 5. Inserto centrale / Fiancoluce",
+                vetriLabel: "🚪 5. Inserto centrale / Fiancoluce / Pannello",
                 vetri: [
-                    "Vetro Blindato Antisfondamento Trasparente", 
-                    "Vetro Blindato Satinato Privacy con grata interna", 
-                    "Pannello Cieco Coibentato ad alto isolamento", 
+                    "Pannello Cieco Coibentato ad alto isolamento termico", 
+                    "Pannello Bugnato Classico con rilievi tradizionali", 
+                    "Vetro Blindato Antisfondamento Trasparente Basso Emissivo", 
+                    "Vetro Blindato Satinato Privacy con grata interna di sicurezza", 
                     "altro_vetro"
                 ]
             },
@@ -498,7 +531,6 @@
             document.getElementById('customMaterialContainer').style.display = 'none';
             document.getElementById('customGlassContainer').style.display = 'none';
 
-            // Mostra controtelaio e cassonetto SOLO per serramenti o ristrutturazione completa
             if (categoriaScelta === 'serramenti' || categoriaScelta === 'ristrutturazione_completa') {
                 subframeGroup.style.display = 'flex';
                 shutterBoxGroup.style.display = 'flex';
@@ -654,7 +686,6 @@
             }
         }
 
-        // WORKFLOW VISION INFIX - ANALISI COMPARATIVA PRIMA VS DOPO CON DOMANDA APERTA
         document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = localStorage.getItem('infix_visual_user_email');
