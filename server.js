@@ -111,30 +111,44 @@ app.post('/api/visual-generate', async (req, res) => {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
     }
 
-    const matLower = (material || '').toLowerCase();
     const catLower = (category || '').toLowerCase();
 
-    // Generazione dinamica dei benefici prestazionali in base ai materiali e alla macro-categoria
     let beneficiSpecifici = "";
-    let analisiStato = "L'esame della fotografia evidenzia un sistema attuale caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'efficienza e il comfort complessivo dell'immobile.";
+    let analisiStato = "";
+    let beneficiFiscali = "";
 
-    if (matLower.includes('coibentato') || matLower.includes('taglio termico') || matLower.includes('multi-camera')) {
+    // A. GESTIONE SPECIFICA: PORTE INTERNE & DIVISORI
+    if (catLower.includes('porte interne') || catLower.includes('divisori')) {
+        analisiStato = "L'esame della fotografia evidenzia una porta interna allo stato attuale caratterizzata da finiture usurate dall'uso quotidiano e da un impatto visivo superato che frammenta la continuità estetica degli ambienti.";
+        
+        beneficiSpecifici = `• Continuità Architettonica & Stile: L'installazione della nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi abitativi.\n` +
+            `• Vivibilità & Funzionalità: Ottimizzazione del passaggio e fluidità nei movimenti tra i vari ambienti della casa.\n` +
+            `• Comfort Acustico Interno: Riduzione della propagazione dei rumori quotidiani tra una stanza e l'altra.\n`;
+
+        beneficiFiscali = `⚖️ 3. BENEFICI E NORMATIVA FISCALE DI LEGGE:\n` +
+            `• La semplice sostituzione di porte interne non dà diritto a detrazioni fiscali dirette o bonus specifici (manutenzione ordinaria).\n` +
+            `• L'agevolazione fiscale (Bonus Ristrutturazioni al 50%) è applicabile ESCLUSIVAMENTE se l'intervento rientra all'interno di un progetto complessivo e autorizzato di Manutenzione Straordinaria o Ristrutturazione Edilizia dell'immobile.\n`;
+
+    // B. GESTIONE SPECIFICA: SERRAMENTI & RIQUALIFICAZIONE ENERGETICA
+    } else if (catLower.includes('serramenti') || catLower.includes('ristrutturazione_completa')) {
+        analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura esterno datato, caratterizzato da usura superficiale e da un impatto termico superato che penalizza l'efficienza complessiva dell'immobile.";
+        
         beneficiSpecifici = `• Isolamento Termico & Risparmio Energetico: L'adozione di materiali evoluti azzera i ponti termici, riducendo drasticamente le dispersioni.\n` +
-            `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un isolamento ottimale.\n`;
-    } else if (matLower.includes('mono-lamiera') || matLower.includes('acciaio')) {
-        beneficiSpecifici = `• Robustezza & Sicurezza Strutturale: Soluzione ad alta resistenza meccanica, ideale per la protezione solida e duratura del vano.\n` +
-            `• Pragmatismo & Affidabilità: Struttura resistente nel tempo contro gli agenti atmosferici.\n`;
-    } else {
-        beneficiSpecifici = `• Stabilità & Durabilità: Materiali selezionati per garantire un ciclo di vita eccellente e un funzionamento impeccabile.\n` +
-            `• Design & Funzionalità: Perfetto bilanciamento tra estetica curata e praticità d'uso quotidiano.\n`;
-    }
+            `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un isolamento ottimale.\n` +
+            `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente.\n`;
 
-    if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
-        beneficiSpecifici += `• Ottimizzazione dello Spazio: Movimentazione studiata per liberare lo spazio utile sia all'interno che all'esterno del box.\n`;
-    } else if (catLower.includes('porte interne') || catLower.includes('filomuro')) {
-        beneficiSpecifici += `• Continuità Architettonica: Soluzione di design che valorizza gli ambienti interni con linee pulite e moderne.\n`;
-    } else if (catLower.includes('portoncini') || catLower.includes('blindata')) {
-        beneficiSpecifici += `• Sicurezza Antieffrazione: Sistemi di chiusura avanzati per blindare l'ingresso principale.\n`;
+        beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
+            `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (Ecobonus / Bonus Casa), subordinatamente alla conformità dei requisiti tecnici e di trasmittanza termica previsti dalla legge.\n`;
+
+    // C. GESTIONE SPECIFICA: PORTONCINI, GARAGE, OSCURANTI E PROTEZIONI
+    } else {
+        analisiStato = "L'esame della fotografia evidenzia un elemento di chiusura attuale che mostra segni di obsolescenza estetica e funzionale, limitando la protezione complessiva e l'impatto visivo dell'accesso.";
+        
+        beneficiSpecifici = `• Sicurezza & Affidabilità: Soluzione strutturata per garantire protezione elevata contro tentativi di effrazione e un funzionamento meccanico impeccabile nel tempo.\n` +
+            `• Estetica & Coordinamento: Il nuovo design in ${finish} rinnova radicalmente l'impatto visivo dell'affaccio.\n`;
+
+        beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
+            `• Bonus Sicurezza / Ristrutturazioni: L'intervento può accedere alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi o per interventi di ristrutturazione edilizia.\n`;
     }
 
     let dettagliInstallazione = "";
@@ -144,9 +158,6 @@ app.post('/api/visual-generate', async (req, res) => {
     if (shutterBox && shutterBox !== "Non applicabile") {
         dettagliInstallazione += `• Vano Superiore: ${shutterBox}\n`;
     }
-
-    let beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
-        `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (es. Bonus Ristrutturazioni o Ecobonus, subordinatamente alla conformità dei requisiti tecnici e di trasmittanza previsti dalla legge).\n`;
 
     let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO)\n\n` +
         `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
@@ -158,23 +169,19 @@ app.post('/api/visual-generate', async (req, res) => {
         `🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):\n` +
         analisiStato + `\n\n` +
         `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":\n` +
-        `L'installazione del nuovo sistema in ${material} rifinito in ${finish} rinnova radicalmente il contesto:\n` +
         beneficiSpecifici +
-        `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente.\n` +
-        `• Manutenzione Ridotta: Trattamenti protettivi studiati per durare nel tempo.\n\n` +
+        `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per resistere all'usura e semplificare la pulizia quotidiana.\n\n` +
         beneficiFiscali;
 
-    // Risposta alla domanda aperta
+    // Risposta alla domanda aperta (es. pulizia del nero opaco, impronte, ecc.)
     if (openQuestion && openQuestion.trim() !== '') {
-        let rispostaMirata = "In merito alla richiesta specifica, la configurazione scelta rappresenta la soluzione ideale bilanciando estetica, funzionalità e requisiti tecnici del vano analizzato.";
+        let rispostaMirata = "In merito alla richiesta specifica, la configurazione proposta bilancia perfettamente la resa estetica con la funzionalità del vano.";
         const qLower = openQuestion.toLowerCase();
         
-        if (qLower.includes('pvc') || qLower.includes('alluminio')) {
-            rispostaMirata = "Confrontando PVC e Alluminio: il PVC offre eccellenti doti di isolamento termico con un ottimo rapporto qualità-prezzo, mentre l'alluminio a taglio termico garantisce profili sottili, massima luminosità e stabilità strutturale per grandi dimensioni.";
-        } else if (qLower.includes('spazio') || qLower.includes('sezionale') || qLower.includes('scomparsa')) {
-            rispostaMirata = "Analizzando l'aspetto della gestione degli spazi, questa tipologia elimina ingombri superflui, recuperando superficie utile calpestabile sia in apertura che in chiusura.";
-        } else if (qLower.includes('condensa') || qLower.includes('spifferi') || qLower.includes('freddo')) {
-            rispostaMirata = "Per risolvere la problematica segnalata, il nuovo sistema con guarnizioni perimetrali e materiali ad alte prestazioni interrompe i ponti termici responsabili di spifferi e umidità.";
+        if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
+            rispostaMirata = "Le superfici e le finiture opache di ultima generazione (come il Nero Opaco RAL 9005) utilizzano rivestimenti ad elevata durezza e trattamenti anti-impronta. Non richiedono manutenzioni complesse: è sufficiente la pulizia ordinaria con panni morbidi in microfibra e detergenti neutri non abrasivi, mantenendo inalterata la profondità del colore e la resa estetica nel tempo.";
+        } else if (qLower.includes('pvc') || qLower.includes('alluminio')) {
+            rispostaMirata = "La selezione del materiale assicura la massima stabilità strutturale e una drastica riduzione degli interventi di manutenzione futura.";
         }
 
         technicalReport += `\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
@@ -186,7 +193,7 @@ app.post('/api/visual-generate', async (req, res) => {
         technicalReport += `\n📋 NOTE DI CANTIERE: "${userPrompt}"`;
     }
 
-    // Clausola di salvaguardia agnostica e universale (B2B white-label)
+    // Clausola di tutela agnostica
     technicalReport += `\n\n🛡️ NOTA TECNICA E CLAUSOLA DI SALVAGUARDIA:\n` +
         `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati e le stime hanno valore indicativo e non sostituiscono il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione affidata a personale abilitato. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte.`;
 
