@@ -173,15 +173,23 @@ app.post('/api/visual-generate', async (req, res) => {
         `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per resistere all'usura e semplificare la pulizia quotidiana.\n\n` +
         beneficiFiscali;
 
-    // Risposta alla domanda aperta (es. pulizia del nero opaco, impronte, ecc.)
+    // Risposta intelligente estesa a tutte le categorie per la domanda aperta
     if (openQuestion && openQuestion.trim() !== '') {
-        let rispostaMirata = "In merito alla richiesta specifica, la configurazione proposta bilancia perfettamente la resa estetica con la funzionalità del vano.";
+        let rispostaMirata = "In merito alla richiesta specifica, la configurazione proposta bilancia perfettamente la resa estetica con la funzionalità e l'efficienza tecnica del vano.";
         const qLower = openQuestion.toLowerCase();
         
         if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
             rispostaMirata = "Le superfici e le finiture opache di ultima generazione (come il Nero Opaco RAL 9005) utilizzano rivestimenti ad elevata durezza e trattamenti anti-impronta. Non richiedono manutenzioni complesse: è sufficiente la pulizia ordinaria con panni morbidi in microfibra e detergenti neutri non abrasivi, mantenendo inalterata la profondità del colore e la resa estetica nel tempo.";
         } else if (qLower.includes('pvc') || qLower.includes('alluminio')) {
-            rispostaMirata = "La selezione del materiale assicura la massima stabilità strutturale e una drastica riduzione degli interventi di manutenzione futura.";
+            rispostaMirata = "Analizzando il confronto diretto: il PVC offre eccellenti doti di isolamento termico intrinseco, leggerezza e un imbattibile rapporto qualità-prezzo, azzerando la manutenzione. L'Alluminio (estruso o a taglio termico) garantisce invece una rigidità strutturale superiore, ed è la scelta d'elezione per elementi esposti a forte irraggiamento solare o di grandi dimensioni, offrendo indeformabilità e una durata meccanica praticamente illimitata.";
+        } else if (qLower.includes('condensa') || qLower.includes('spifferi') || qLower.includes('freddo')) {
+            rispostaMirata = "Per risolvere le problematiche di dispersione e condensa, la scelta di sistemi a multi-camera con guarnizioni perimetrali di tenuta e vetri basso emissivi interrompe efficacemente i ponti termici, eliminando spifferi e sbalzi di temperatura superficiale.";
+        } else if (qLower.includes('sicurezza') || qLower.includes('blindat') || qLower.includes('effraz') || qLower.includes('classe')) {
+            rispostaMirata = "Dal punto di vista della protezione antieffrazione, l'adozione di strutture rinforzate in acciaio, serrature a cilindro europeo protetto e rostri di sicurezza garantisce standard elevati di resistenza attiva e passiva, tutelando efficacemente gli accessi dell'immobile.";
+        } else if (qLower.includes('motor') || qLower.includes('telecomando') || qLower.includes('pulsant')) {
+            rispostaMirata = "Il sistema di movimentazione automatica (tramite pulsantiera a muro o radiocomando protetto) assicura il massimo comfort d'uso quotidiano, integrando dispositivi di sicurezza antischiacciamento e sblocco manuale di emergenza in caso di blackout.";
+        } else if (qLower.includes('spazio') || qLower.includes('ingombr') || qLower.includes('salvaspazio')) {
+            rispostaMirata = "La configurazione scelta è ingegnerizzata per azzerare gli ingombri superflui, ottimizzando lo spazio utile di passaggio sia interno che esterno e valorizzando la metratura calpestabile dell'ambiente.";
         }
 
         technicalReport += `\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
