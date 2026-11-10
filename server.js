@@ -105,7 +105,7 @@ app.post('/api/verify-otp', (req, res) => {
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
-    const { category, finish, material, glass, userPrompt, openQuestion, imageBase64 } = req.body;
+    const { category, finish, material, glass, subframe, shutterBox, userPrompt, openQuestion, imageBase64 } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: "Nessuna immagine fornita." });
@@ -114,55 +114,67 @@ app.post('/api/visual-generate', async (req, res) => {
     const matLower = (material || '').toLowerCase();
     const catLower = (category || '').toLowerCase();
 
-    // Generazione dinamica dei benefici prestazionali in base ai materiali reali
+    // Generazione dinamica dei benefici prestazionali in base ai materiali e alla macro-categoria
     let beneficiSpecifici = "";
-    let analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura datato, caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'efficienza energetica complessiva dell'immobile.";
+    let analisiStato = "L'esame della fotografia evidenzia un sistema attuale caratterizzato da usura superficiale e da un impatto estetico superato che penalizza l'efficienza e il comfort complessivo dell'immobile.";
 
     if (matLower.includes('coibentato') || matLower.includes('taglio termico') || matLower.includes('multi-camera')) {
-        beneficiSpecifici = `• Isolamento Termico & Risparmio Energetico: L'adozione di materiali coibentati azzera i ponti termici, riducendo drasticamente le dispersioni e migliorando il comfort climatico.\n` +
-            `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un silenzio domestico ottimale.\n`;
-    } else if (matLower.includes('mono-lamiera') || matLower.includes('acciaio zincato')) {
-        beneficiSpecifici = `• Robustezza & Sicurezza Strutturale: Soluzione in acciaio ad alta resistenza meccanica, ideale per la protezione solida e duratura del vano.\n` +
-            `• Ventilazione & Praticità: Struttura essenziale, affidabile nel tempo e protetta contro gli agenti atmosferici aggressivi.\n`;
+        beneficiSpecifici = `• Isolamento Termico & Risparmio Energetico: L'adozione di materiali evoluti azzera i ponti termici, riducendo drasticamente le dispersioni.\n` +
+            `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un isolamento ottimale.\n`;
+    } else if (matLower.includes('mono-lamiera') || matLower.includes('acciaio')) {
+        beneficiSpecifici = `• Robustezza & Sicurezza Strutturale: Soluzione ad alta resistenza meccanica, ideale per la protezione solida e duratura del vano.\n` +
+            `• Pragmatismo & Affidabilità: Struttura resistente nel tempo contro gli agenti atmosferici.\n`;
     } else {
-        beneficiSpecifici = `• Stabilità & Durabilità: Materiali di prima scelta selezionati per garantire un ciclo di vita eccellente e un funzionamento impeccabile.\n` +
-            `• Protezione dagli Agenti Atmosferici: Resistenza superiore all'usura e agli sbalzi termici.\n`;
+        beneficiSpecifici = `• Stabilità & Durabilità: Materiali selezionati per garantire un ciclo di vita eccellente e un funzionamento impeccabile.\n` +
+            `• Design & Funzionalità: Perfetto bilanciamento tra estetica curata e praticità d'uso quotidiano.\n`;
     }
 
     if (catLower.includes('garage') || catLower.includes('sezionale') || catLower.includes('basculante')) {
         beneficiSpecifici += `• Ottimizzazione dello Spazio: Movimentazione studiata per liberare lo spazio utile sia all'interno che all'esterno del box.\n`;
+    } else if (catLower.includes('porte interne') || catLower.includes('filomuro')) {
+        beneficiSpecifici += `• Continuità Architettonica: Soluzione di design che valorizza gli ambienti interni con linee pulite e moderne.\n`;
+    } else if (catLower.includes('portoncini') || catLower.includes('blindata')) {
+        beneficiSpecifici += `• Sicurezza Antieffrazione: Sistemi di chiusura avanzati per blindare l'ingresso principale.\n`;
     }
 
-    // Vantaggi fiscali e di legge applicabili
+    let dettagliInstallazione = "";
+    if (subframe && subframe !== "Non applicabile") {
+        dettagliInstallazione += `• Gestione Posa: ${subframe}\n`;
+    }
+    if (shutterBox && shutterBox !== "Non applicabile") {
+        dettagliInstallazione += `• Vano Superiore: ${shutterBox}\n`;
+    }
+
     let beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
-        `• Detrazioni Fiscali / Ecobonus: L'intervento di riqualificazione energetica con la sostituzione dei sistemi di chiusura/infissi rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (es. Bonus Ristrutturazioni o Ecobonus, subordinatamente alla trasmissione delle pratiche ENEA e ai requisiti di trasmittanza termica previsti dalla legge).\n`;
+        `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (es. Bonus Ristrutturazioni o Ecobonus, subordinatamente alla conformità dei requisiti tecnici e di trasmittanza previsti dalla legge).\n`;
 
     let technicalReport = `DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO)\n\n` +
         `🎯 CONFIGURAZIONE DI PROGETTO SCELTA:\n` +
         `• Tipologia: ${category}\n` +
         `• Materiale / Struttura: ${material}\n` +
-        `• Tamponamento / Vetro: ${glass}\n` +
+        `• Tamponamento / Vetro / Pannello: ${glass}\n` +
+        (dettagliInstallazione ? dettagliInstallazione : ``) +
         `• Finitura Estetica: ${finish}\n\n` +
         `🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):\n` +
         analisiStato + `\n\n` +
         `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":\n` +
         `L'installazione del nuovo sistema in ${material} rifinito in ${finish} rinnova radicalmente il contesto:\n` +
         beneficiSpecifici +
-        `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente, donando un aspetto curato e di alto pregio.\n` +
-        `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per durare nel tempo senza interventi straordinari.\n\n` +
+        `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente.\n` +
+        `• Manutenzione Ridotta: Trattamenti protettivi studiati per durare nel tempo.\n\n` +
         beneficiFiscali;
 
-    // Risposta intelligente alla domanda aperta
+    // Risposta alla domanda aperta
     if (openQuestion && openQuestion.trim() !== '') {
-        let rispostaMirata = "In merito alla richiesta specifica, l'opzione configurata rappresenta la risposta ideale bilanciando perfettamente estetica, praticità d'uso e caratteristiche tecniche del vano analizzato in foto.";
+        let rispostaMirata = "In merito alla richiesta specifica, la configurazione scelta rappresenta la soluzione ideale bilanciando estetica, funzionalità e requisiti tecnici del vano analizzato.";
         const qLower = openQuestion.toLowerCase();
         
         if (qLower.includes('pvc') || qLower.includes('alluminio')) {
-            rispostaMirata = "Analizzando il confronto tra PVC e Alluminio per questo cantiere: il PVC offre eccellenti doti di isolamento termico intrinseco con un ottimo rapporto qualità-prezzo, mentre l'alluminio a taglio termico garantisce profili più sottili, massima luminosità e una stabilità strutturale eccezionale per grandi vetrate.";
-        } else if (qLower.includes('spazio') || qLower.includes('praticità') || qLower.includes('sezionale') || qLower.includes('basculante')) {
-            rispostaMirata = "Valutando la gestione dello spazio tra portone basculante e sezionale: il portone sezionale scorre verticalmente a soffitto eliminando completamente lo sbalzo esterno in apertura, permettendo di parcheggiare l'auto a ridosso della chiusura e offrendo un recupero di spazio prezioso rispetto al basculante tradizionale.";
-        } else if (qLower.includes('condensa') || qLower.includes('freddo') || qLower.includes('spifferi')) {
-            rispostaMirata = "Per risolvere la problematica evidenziata, la combinazione del nuovo infisso con vetro basso emissivo e guarnizioni perimetrali di tenuta interrompe i ponti termici responsabili degli spifferi e dell'accumulo di umidità sui nodi.";
+            rispostaMirata = "Confrontando PVC e Alluminio: il PVC offre eccellenti doti di isolamento termico con un ottimo rapporto qualità-prezzo, mentre l'alluminio a taglio termico garantisce profili sottili, massima luminosità e stabilità strutturale per grandi dimensioni.";
+        } else if (qLower.includes('spazio') || qLower.includes('sezionale') || qLower.includes('scomparsa')) {
+            rispostaMirata = "Analizzando l'aspetto della gestione degli spazi, questa tipologia elimina ingombri superflui, recuperando superficie utile calpestabile sia in apertura che in chiusura.";
+        } else if (qLower.includes('condensa') || qLower.includes('spifferi') || qLower.includes('freddo')) {
+            rispostaMirata = "Per risolvere la problematica segnalata, il nuovo sistema con guarnizioni perimetrali e materiali ad alte prestazioni interrompe i ponti termici responsabili di spifferi e umidità.";
         }
 
         technicalReport += `\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
@@ -174,9 +186,9 @@ app.post('/api/visual-generate', async (req, res) => {
         technicalReport += `\n📋 NOTE DI CANTIERE: "${userPrompt}"`;
     }
 
-    // Nota tecnica finale agnostica (priva di marchi fissi, perfetta per l'uso B2B universale)
+    // Clausola di salvaguardia agnostica e universale (B2B white-label)
     technicalReport += `\n\n🛡️ NOTA TECNICA E CLAUSOLA DI SALVAGUARDIA:\n` +
-        `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati, le valutazioni e le stime prestazionali hanno valore indicativo e non sostituiscono in alcun modo il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione esecutiva affidata a personale tecnico abilitato. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte non rilevabili da immagine fotografica.`;
+        `Il presente dossier costituisce un'analisi preliminare di orientamento tecnico-commerciale basata sulla documentazione fotografica fornita e sulle opzioni di configurazione selezionate. I dati e le stime hanno valore indicativo e non sostituiscono il rilievo geometrico esecutivo in cantiere, la verifica tecnica strutturale e la progettazione affidata a personale abilitato. Si declina ogni responsabilità per difformità derivanti da misurazioni non verificate in loco o da condizioni murarie occulte.`;
 
     return res.json({ 
       success: true, 
@@ -190,7 +202,6 @@ app.post('/api/visual-generate', async (req, res) => {
   }
 });
 
-// Health check endpoint per Render
 app.get('/healthz', (req, res) => res.send('OK'));
 
 app.listen(PORT, () => {
