@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision INFIX® - Consulenza Avanzata & Vantaggi del "Dopo"</title>
+    <title>Vision INFIX® - Consulenza Avanzata & Dossier Tecnico Comparativo</title>
     
     <link rel="icon" href="bussola-infix-marchio-figurativo-momento di intervenire.jpg">
     <meta name="theme-color" content="#111111">
@@ -61,11 +61,11 @@
         <div class="header">
             <img src="bussola-infix-marchio-figurativo-momento di intervenire.jpg" alt="Logo INFIX" class="logo">
             <h2>Vision INFIX®</h2>
-            <p>Configuratore Avanzato & Analisi Comparativa Prima vs Dopo</p>
+            <p>Configuratore Avanzato & Dossier Tecnico Prima vs Dopo</p>
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Carica la foto del cantiere, seleziona i dettagli mirati per il prodotto scelto e genera il dossier professionale basato sul confronto <strong>Prima vs Dopo</strong>.
+                Carica la foto del cantiere, seleziona i dettagli mirati e genera il dossier professionale con analisi comparativa e argomenti di vendita mirati.
             </div>
 
             <div id="free-trial-box">
@@ -192,7 +192,7 @@
                 <input type="text" id="customGlassInput" placeholder="Es. Vetro blindato stratificato anti-sfondamento...">
             </div>
 
-            <!-- CAMPO DINAMICO: CONTROTELAIO (Solo per serramenti e riqualificazione) -->
+            <!-- CAMPO DINAMICO: CONTROTELAIO -->
             <div class="form-group" id="subframeGroup" style="display: none;">
                 <label for="subframeSelect">🛠️ 6. Stato del Controtelaio / Tipo di Posa</label>
                 <select id="subframeSelect">
@@ -203,7 +203,7 @@
                 </select>
             </div>
 
-            <!-- CAMPO DINAMICO: CASSONETTO (Solo per serramenti e riqualificazione) -->
+            <!-- CAMPO DINAMICO: CASSONETTO -->
             <div class="form-group" id="shutterBoxGroup" style="display: none;">
                 <label for="shutterBoxSelect">📦 7. Situazione Cassonetto / Vano Superiore</label>
                 <select id="shutterBoxSelect">
@@ -243,10 +243,10 @@
                 <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema...">
             </div>
 
-            <!-- DOMANDA APERTA / RICHIESTA SPECIFICA -->
+            <!-- DOMANDA APERTA -->
             <div class="form-group" style="background: #fff8e1; border: 1px solid #ffe0b2; padding: 12px; border-radius: 6px;">
                 <label for="openQuestionInput" style="color: #f57f17; font-weight: bold;">💬 Domanda aperta o richiesta specifica per l'IA (opzionale)</label>
-                <textarea id="openQuestionInput" rows="3" placeholder="Es. Spiega al cliente perché questo infisso in PVC bianco risolverà il problema della condensa sui bordi, oppure evidenzia l'importanza del vetro basso emissivo..."></textarea>
+                <textarea id="openQuestionInput" rows="3" placeholder="Es. Meglio PVC o Alluminio? La finitura nera attira impronte? Come si risolve la condensa?..."></textarea>
             </div>
 
             <!-- NOTE DI CANTIERE -->
@@ -259,9 +259,9 @@
             <div style="background: #e3f2fd; border: 2px dashed #2196f3; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px;">
                 <h4 style="margin: 0 0 8px 0; color: #0d47a1; font-size: 14px;">🚀 Genera Dossier Analisi Comparativa (Prima vs Dopo)</h4>
                 <p style="font-size: 12px; color: #333; margin: 0 0 12px 0;">
-                    Elabora il responso tecnico spiegando lo stato attuale e i benefici straordinari del nuovo prodotto.
+                    Elabora il responso tecnico completo di vantaggi, fiscalità e rischi del non intervento.
                 </p>
-                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier Prima vs Dopo 📋✨</button>
+                <button type="submit" class="btn-primary" id="generateBtn" style="background: #1976d2;">Genera Dossier Ufficiale 📋✨</button>
             </div>
         </form>
 
@@ -276,8 +276,9 @@
             </div>
         </div>
 
+        <!-- AREA RISULTATI (STAMPABILE IN PDF) -->
         <div id="resultArea" class="result-box">
-            <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Ufficiale Vision INFIX®</h3>
+            <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Tecnico Ufficiale Vision INFIX®</h3>
             <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold; text-align: center;"></p>
             
             <div class="diagnostic-grid">
@@ -287,15 +288,16 @@
                 </div>
             </div>
 
-            <!-- DOSSIER TECNICO & ANALISI PRIMA VS DOPO -->
+            <!-- DOSSIER TECNICO & ANALISI -->
             <div id="technicalDossierBox" style="margin-top: 15px; background: #f0f4f8; border-left: 4px solid #0056b3; padding: 15px; border-radius: 6px; box-sizing: border-box; width: 100%;">
-                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📊 Analisi Comparativa (Prima vs Dopo) & Vantaggi Esclusivi</h4>
+                <h4 style="margin: 0 0 8px 0; color: #0056b3; font-size: 14px;">📊 Analisi Comparativa & Argomenti di Vendita</h4>
                 <p id="technicalDossierText" style="font-size: 13px; color: #111318; font-weight: 500; margin: 0; line-height: 1.5; white-space: pre-line;"></p>
             </div>
 
-            <!-- PULSANTE PER NUOVA ANALISI -->
-            <div style="margin-top: 20px; border-top: 1px solid #e9ecef; padding-top: 15px; text-align: center;">
-                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">🔄 Esegui una Nuova Consulenza Vision INFIX®</button>
+            <!-- PULSANTI AZIONE (PDF & NUOVA CONSULENZA) -->
+            <div id="actionButtonsContainer" style="margin-top: 20px; border-top: 1px solid #e9ecef; padding-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="scaricaDossierPdf()" style="background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; flex: 1;">📥 Scarica Dossier in PDF Ufficiale</button>
+                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; flex: 1;">🔄 Nuova Consulenza</button>
             </div>
         </div>
     </div>
@@ -325,6 +327,9 @@
             <p id="reset-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
         </div>
     </div>
+
+    <!-- Libreria html2pdf per il download del PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         const RENDER_BACKEND_URL = 'https://vision-infix.onrender.com';
@@ -721,7 +726,7 @@
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
             const submitBtn = document.getElementById('generateBtn');
-            submitBtn.disabled = true; submitBtn.innerText = "Elaborazione Dossier Prima vs Dopo in corso... ⏳";
+            submitBtn.disabled = true; submitBtn.innerText = "Elaborazione Dossier in corso... ⏳";
 
             const reader = new FileReader();
             reader.onload = async function(e) {
@@ -748,7 +753,7 @@
                     });
                     const data = await response.json();
                     if (response.ok && data.success) {
-                        document.getElementById('resultSubtitle').innerText = `Configurazione Scelta: ${macroText} / ${productText} | Finitura: ${finishText}`;
+                        document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroText} / ${productText} | Finitura: ${finishText}`;
                         document.getElementById('technicalDossierText').innerText = data.dossier;
                         document.getElementById('resultArea').style.display = 'block';
                         document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
@@ -758,11 +763,32 @@
                 } catch (err) {
                     alert("Impossibile contattare il server.");
                 } finally {
-                    submitBtn.disabled = false; submitBtn.innerText = "Genera Dossier Prima vs Dopo 📋✨";
+                    submitBtn.disabled = false; submitBtn.innerText = "Genera Dossier Ufficiale 📋✨";
                 }
             };
             reader.readAsDataURL(file);
         });
+
+        // Funzione per scaricare il PDF pulito del dossier
+        function scaricaDossierPdf() {
+            const element = document.getElementById('resultArea');
+            const actionButtons = document.getElementById('actionButtonsContainer');
+            
+            // Nascondiamo i pulsanti prima della stampa PDF
+            if (actionButtons) actionButtons.style.display = 'none';
+
+            const opt = {
+                margin:       10,
+                filename:     'Dossier_Tecnico_Vision_INFIX.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                if (actionButtons) actionButtons.style.display = 'flex';
+            });
+        }
 
         function resettaNuovaSimulazione() {
             document.getElementById('visualForm').reset();
