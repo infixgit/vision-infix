@@ -65,7 +65,7 @@
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Carica la foto del cantiere, seleziona i dettagli dal menu ampliato e inserisci eventuali richieste specifiche: il sistema genererà un dossier professionale basato sul confronto <strong>Prima vs Dopo</strong>.
+                Carica la foto del cantiere, seleziona i dettagli mirati per il prodotto scelto e genera il dossier professionale basato sul confronto <strong>Prima vs Dopo</strong>.
             </div>
 
             <div id="free-trial-box">
@@ -191,9 +191,31 @@
                 <input type="text" id="customGlassInput" placeholder="Es. Vetro blindato stratificato anti-sfondamento...">
             </div>
 
-            <!-- LIVELLO 5: FINITURA / COLORE TELAIO -->
+            <!-- CAMPO DINAMICO: CONTROTELAIO (Comparirà solo per serramenti e riqualificazione) -->
+            <div class="form-group" id="subframeGroup" style="display: none;">
+                <label for="subframeSelect">🛠️ 6. Stato del Controtelaio / Tipo di Posa</label>
+                <select id="subframeSelect">
+                    <option value="Rimozione totale vecchio controtelaio e posa sistema isolato">Rimozione totale vecchio controtelaio e posa sistema isolato</option>
+                    <option value="Posa su controtelaio esistente (Senza demolizione muraria)">Posa su controtelaio esistente (Senza demolizione)</option>
+                    <option value="Riqualificazione foro con controtelaio termico evoluto">Riqualificazione foro con controtelaio termico evoluto</option>
+                    <option value="Posa a filo esterno / monoblocco termico per cappotto">Posa a filo esterno / monoblocco termico</option>
+                </select>
+            </div>
+
+            <!-- CAMPO DINAMICO: CASSONETTO (Comparirà solo per serramenti e riqualificazione) -->
+            <div class="form-group" id="shutterBoxGroup" style="display: none;">
+                <label for="shutterBoxSelect">📦 7. Situazione Cassonetto / Vano Superiore</label>
+                <select id="shutterBoxSelect">
+                    <option value="Cassonetto esistente non coibentato (da riqualificare/isolare)">Cassonetto esistente non coibentato (Da riqualificare)</option>
+                    <option value="Cassonetto termico coibentato ad alta efficienza energetica">Cassonetto termico coibentato ad alta efficienza</option>
+                    <option value="Nessun cassonetto / Foro sola finestra / Architrave libero">Nessun cassonetto / Foro sola finestra</option>
+                    <option value="Sostituzione completa blocco infisso + cassonetto coibentato">Sostituzione completa blocco infisso + cassonetto</option>
+                </select>
+            </div>
+
+            <!-- LIVELLO 8: FINITURA / COLORE TELAIO -->
             <div class="form-group">
-                <label for="finishSelect">🎨 6. Scegli Finitura / Colore del "Dopo"</label>
+                <label for="finishSelect">🎨 8. Scegli Finitura / Colore del "Dopo"</label>
                 <select id="finishSelect" onchange="verificaAltraFinitura()" required>
                     <optgroup label="Standard & Tinte RAL">
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
@@ -228,7 +250,7 @@
 
             <!-- NOTE DI CANTIERE -->
             <div class="form-group">
-                <label for="customUserRequest">✏️ 8. Note o criticità tecniche di cantiere (opzionale)</label>
+                <label for="customUserRequest">✏️ 9. Note o criticità tecniche di cantiere (opzionale)</label>
                 <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condanna termica, cassonetto non coibentato..."></textarea>
             </div>
 
@@ -463,6 +485,8 @@
             const glassSelect = document.getElementById('glassSelect');
             const materialLabel = document.getElementById('materialLabel');
             const glassLabel = document.getElementById('glassLabel');
+            const subframeGroup = document.getElementById('subframeGroup');
+            const shutterBoxGroup = document.getElementById('shutterBoxGroup');
             const customMacroContainer = document.getElementById('customMacroContainer');
             const categoriaScelta = macroSelect.value;
 
@@ -474,6 +498,15 @@
             document.getElementById('customMaterialContainer').style.display = 'none';
             document.getElementById('customGlassContainer').style.display = 'none';
 
+            // Mostra controtelaio e cassonetto SOLO per serramenti o ristrutturazione completa
+            if (categoriaScelta === 'serramenti' || categoriaScelta === 'ristrutturazione_completa') {
+                subframeGroup.style.display = 'flex';
+                shutterBoxGroup.style.display = 'flex';
+            } else {
+                subframeGroup.style.display = 'none';
+                shutterBoxGroup.style.display = 'none';
+            }
+
             if (categoriaScelta === 'altro_macro') {
                 customMacroContainer.style.display = 'flex';
                 productSelect.innerHTML = '<option value="personalizzato">Altro prodotto personalizzato</option>';
@@ -483,6 +516,8 @@
                 document.getElementById('customProductContainer').style.display = 'flex';
                 document.getElementById('customMaterialContainer').style.display = 'flex';
                 document.getElementById('customGlassContainer').style.display = 'flex';
+                subframeGroup.style.display = 'flex';
+                shutterBoxGroup.style.display = 'flex';
                 return;
             }
 
@@ -491,6 +526,8 @@
                 materialSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 glassSelect.innerHTML = '<option value="">-- Prima seleziona la macro-categoria sopra --</option>';
                 productSelect.disabled = true; materialSelect.disabled = true; glassSelect.disabled = true;
+                subframeGroup.style.display = 'none';
+                shutterBoxGroup.style.display = 'none';
                 return;
             }
 
@@ -643,6 +680,11 @@
             const productText = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
             const materialText = document.getElementById('materialSelect').value;
             const glassText = document.getElementById('glassSelect').value;
+            
+            const isSerramenti = document.getElementById('macroCategorySelect').value === 'serramenti' || document.getElementById('macroCategorySelect').value === 'ristrutturazione_completa';
+            const subframeText = isSerramenti ? document.getElementById('subframeSelect').value : "Non applicabile";
+            const shutterBoxText = isSerramenti ? document.getElementById('shutterBoxSelect').value : "Non applicabile";
+
             const finishText = document.getElementById('finishSelect').options[document.getElementById('finishSelect').selectedIndex].text;
             const openQuestionText = document.getElementById('openQuestionInput').value.trim();
             const customRequest = document.getElementById('customUserRequest').value.trim();
@@ -665,6 +707,8 @@
                             finish: finishText,
                             material: materialText,
                             glass: glassText,
+                            subframe: subframeText,
+                            shutterBox: shutterBoxText,
                             openQuestion: openQuestionText,
                             userPrompt: customRequest,
                             imageBase64: base64Data,
