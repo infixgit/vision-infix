@@ -205,12 +205,14 @@ app.post('/api/visual-generate', async (req, res) => {
         beneficiFiscali + `\n` +
         rischiNonIntervento;
 
-    // Risposta intelligente ed estesa (inclusi trabocchetti e paradossi)
+    // Risposta intelligente ed estesa (gestione avanzata domande aperte e trabocchetti)
     if (openQuestion && openQuestion.trim() !== '') {
-        let rispostaMirata = "In merito alla richiesta specifica, la configurazione proposta bilancia perfettamente la resa estetica con la funzionalità e l'efficienza tecnica del vano.";
+        let rispostaMirata = "";
         const qLower = openQuestion.toLowerCase();
         
-        if (qLower.includes('carta') || qLower.includes('cartone') || qLower.includes('pizza') || qLower.includes('burro') || qLower.includes('aria')) {
+        if (qLower.includes('acqua') || qLower.includes('piscina') || qLower.includes('sommers') || qLower.includes('subacque')) {
+            rispostaMirata = "Anomalia di progetto critica: nessun serramento, porta o portoncino residenziale è certificato per l'immersione continua o parziale in ambiente natatorio (piscina). L'esposizione costante a umidità satura, cloro e getti d'acqua compromette rapidamente le guarnizioni, i trattamenti superficiali e i componenti meccanici, invalidando ogni garanzia.";
+        } else if (qLower.includes('carta') || qLower.includes('cartone') || qLower.includes('pizza') || qLower.includes('burro') || qLower.includes('aria')) {
             rispostaMirata = "Rilevata anomalia strutturale nel quesito: nessun sistema di chiusura o portoncino ad alte prestazioni può garantire certificazioni antieffrazione o tenuta termica se ancorato su supporti inconsistenti (come carta o cartone). L'efficacia del serramento richiede tassativamente un supporto murario solido, squadrato e verificato staticamente.";
         } else if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
             rispostaMirata = "Le superfici e le finiture opache di ultima generazione (come il Nero Opaco RAL 9005) utilizzano rivestimenti ad elevata durezza e trattamenti anti-impronta. Non richiedono manutenzioni complesse: è sufficiente la pulizia ordinaria con panni morbidi in microfibra e detergenti neutri non abrasivi, mantenendo inalterata la profondità del colore e la resa estetica nel tempo.";
@@ -224,6 +226,8 @@ app.post('/api/visual-generate', async (req, res) => {
             rispostaMirata = "Il sistema di movimentazione automatica (tramite pulsantiera a muro o radiocomando protetto) assicura il massimo comfort d'uso quotidiano, integrando dispositivi di sicurezza antischiacciamento e sblocco manuale di emergenza in caso di blackout.";
         } else if (qLower.includes('spazio') || qLower.includes('ingombr') || qLower.includes('salvaspazio')) {
             rispostaMirata = "La configurazione scelta è ingegnerizzata per azzerare gli ingombri superflui, ottimizzando lo spazio utile di passaggio sia interno che esterno e valorizzando la metratura calpestabile dell'ambiente.";
+        } else {
+            rispostaMirata = `In merito al quesito specifico "${openQuestion}", l'analisi tecnica conferma che la scelta progettuale del componente deve essere coordinata con le tolleranze dimensionali del vano e con i requisiti prestazionali richiesti dalla normativa vigente in cantiere.`;
         }
 
         technicalReport += `\n\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
