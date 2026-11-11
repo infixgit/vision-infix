@@ -50,9 +50,16 @@
         .stripe-packs-box h4 { margin: 0 0 6px 0; color: #f57f17; font-size: 14px; }
 
         .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: left; box-sizing: border-box; width: 100%; }
+        
+        /* GRIGUA AFFIANCATA PRIMA VS DOPO */
         .diagnostic-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
-        .diagnostic-photo { width: 100%; max-width: 320px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
-        .diagnostic-photo img { width: 100%; height: 220px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .diagnostic-photo { flex: 1; min-width: 280px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
+        .diagnostic-photo img { width: 100%; height: 210px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
+        /* MOCKUP TECNICO DEL DOPO */
+        .mockup-after-box { width: 100%; height: 210px; background: #111; color: #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align: center; }
+        .mockup-badge { background: #28a745; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .mockup-color-swatch { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff; margin: 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -276,15 +283,27 @@
             </div>
         </div>
 
-        <!-- AREA RISULTATI (STAMPABILE IN PDF) -->
+        <!-- AREA RISULTATI CON DOPPIA VISUALIZZAZIONE AFFIANCATA -->
         <div id="resultArea" class="result-box">
             <h3 style="margin-top:0; color:#111; font-size: 1.3rem; text-align: center;">Dossier Tecnico Ufficiale Vision INFIX®</h3>
             <p id="resultSubtitle" style="font-size: 12px; color: #666; font-weight: bold; text-align: center;"></p>
             
             <div class="diagnostic-grid">
+                <!-- COLONNA 1: IL PRIMA (FOTO REALE) -->
                 <div class="diagnostic-photo">
-                    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #111;">Stato Attuale (Cantiere)</h4>
+                    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #111;">Stato Attuale (Il Prima)</h4>
                     <img id="beforeImage" alt="Foto Originale Cantiere">
+                </div>
+
+                <!-- COLONNA 2: IL DOPO (MOCKUP TECNICO / SIMULAZIONE) -->
+                <div class="diagnostic-photo">
+                    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #111;">Soluzione Installata (Il Dopo - Simulato)</h4>
+                    <div class="mockup-after-box">
+                        <div class="mockup-badge">Vision INFIX® Verified</div>
+                        <div id="mockupSwatch" class="mockup-color-swatch" style="background: #7016;"></div>
+                        <div id="mockupProductText" style="font-size: 12px; font-weight: bold; margin-top: 4px;">Configurazione Installata</div>
+                        <div id="mockupFinishText" style="font-size: 11px; color: #aaa; margin-top: 2px;">Finitura selezionata</div>
+                    </div>
                 </div>
             </div>
 
@@ -732,6 +751,22 @@
             reader.onload = async function(e) {
                 const base64Full = e.target.result;
                 document.getElementById('beforeImage').src = base64Full;
+                
+                // Aggiorniamo dinamicamente il box del "Dopo" (Mockup Tecnico)
+                document.getElementById('mockupProductText').innerText = productText;
+                document.getElementById('mockupFinishText').innerText = `Finitura: ${finishText}`;
+                
+                // Assegniamo un colore indicativo al cerchio cromatico in base alla finitura scelta
+                const swatch = document.getElementById('mockupSwatch');
+                const fLower = finishText.toLowerCase();
+                if (fLower.includes('antracite') || fLower.includes('7016')) swatch.style.background = '#383e42';
+                else if (fLower.includes('nero') || fLower.includes('9005')) swatch.style.background = '#1a1a1a';
+                else if (fLower.includes('bianco') || fLower.includes('9010')) swatch.style.background = '#f8f9fa';
+                else if (fLower.includes('verde')) swatch.style.background = '#2c5e3b';
+                else if (fLower.includes('marrone') || fLower.includes('noce')) swatch.style.background = '#5c4033';
+                else if (fLower.includes('grigio')) swatch.style.background = '#adb5bd';
+                else swatch.style.background = '#0056b3';
+
                 const base64Data = base64Full.split(',')[1];
 
                 try {
@@ -774,7 +809,6 @@
             const element = document.getElementById('resultArea');
             const actionButtons = document.getElementById('actionButtonsContainer');
             
-            // Nascondiamo i pulsanti prima della stampa PDF
             if (actionButtons) actionButtons.style.display = 'none';
 
             const opt = {
