@@ -101,7 +101,7 @@ app.post('/api/verify-otp', (req, res) => {
 });
 
 // ==========================================
-// 3. ENDPOINT: DOSSIER COMPARATIVO & TUTELA B2B
+// 3. ENDPOINT: DOSSIER COMPARATIVO & ANALISI SARTORIALE
 // ==========================================
 app.post('/api/visual-generate', async (req, res) => {
   try {
@@ -112,58 +112,75 @@ app.post('/api/visual-generate', async (req, res) => {
     }
 
     const catLower = (category || '').toLowerCase();
+    const matLower = (material || '').toLowerCase();
+    const glassLower = (glass || '').toLowerCase();
 
     let beneficiSpecifici = "";
     let analisiStato = "";
     let beneficiFiscali = "";
     let rischiNonIntervento = "";
 
-    // A. GESTIONE SPECIFICA: PORTE INTERNE & OSCURANTI/PERSIANE (Sostituzione isolata)
+    // A. PORTE INTERNE & OSCURANTI/PERSIANE
     if (catLower.includes('porte interne') || catLower.includes('divisori') || catLower.includes('oscuranti') || catLower.includes('schermature')) {
         const isOscurante = catLower.includes('oscuranti') || catLower.includes('schermature');
+        
         analisiStato = isOscurante 
-            ? "L'esame della fotografia evidenzia un sistema di oscuramento esterno usurato dagli agenti atmosferici, con ridotta funzionalità meccanica e un impatto estetico che penalizza l'affaccio."
-            : "L'esame della fotografia evidenzia una porta interna allo stato attuale caratterizzata da finiture usurate dall'uso quotidiano e da un impatto visivo superato che frammenta la continuità estetica degli ambienti.";
+            ? `L'esame visivo dello stato attuale evidenzia un sistema di oscuramento fortemente esposto agli agenti atmosferici, con usura superficiale della vernice, giochi meccanici anomali nelle snodo-stecche e una perdita di efficacia nella schermatura dell'irraggiamento solare.`
+            : `L'esame visivo dello stato attuale evidenzia una porta interna caratterizzata da finiture logore dall'uso, sbalzi di planarità del pannello e un impatto estetico superato che interrompe la continuità stilistica dei locali.`;
         
         beneficiSpecifici = isOscurante
-            ? `• Regolazione della Luce & Comfort: L'installazione del nuovo sistema in ${material} rifinito in ${finish} assicura un controllo ottimale dell'irraggiamento solare e della privacy.\n` +
-              `• Durabilità agli Agenti Atmosferici: Trattamenti protettivi di altissima qualità per resistere nel tempo senza bisogno di manutenzione gravosa.\n`
-            : `• Continuità Architettonica & Stile: L'installazione della nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi abitativi.\n` +
-              `• Vivibilità & Funzionalità: Ottimizzazione del passaggio e fluidità nei movimenti tra i vari ambienti della casa.\n`;
+            ? `• Regolazione della Luce & Comfort Termico: L'installazione del nuovo sistema in ${material} rifinita in ${finish} garantisce un controllo ottimale della luce diretta e una protezione duratura.\n` +
+              `• Zero Manutenzione: I trattamenti superficiali applicati azzerano la necessità di verniciature periodiche.\n`
+            : `• Continuità Architettonica & Stile: La nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi.\n` +
+              `• Vivibilità & Ergonomia: Fluidità di movimento e abbattimento della rumorosità di calpestio/passaggio.\n`;
 
         beneficiFiscali = `⚖️ 3. BENEFICI E NORMATIVA FISCALE DI LEGGE:\n` +
-            `• La semplice sostituzione isolata di questo elemento non dà diritto autonomamente a detrazioni fiscali dirette (intervento di manutenzione ordinaria).\n` +
-            `• L'agevolazione fiscale (Bonus Ristrutturazioni al 50%) è applicabile ESCLUSIVAMENTE se l'intervento rientra all'interno di un progetto complessivo e autorizzato di Manutenzione Straordinaria o Ristrutturazione Edilizia dell'immobile.\n`;
+            `• La sostituzione isolata di questo elemento non beneficia autonomamente di detrazioni fiscali dirette (intervento di manutenzione ordinaria).\n` +
+            `• L'agevolazione (Bonus Ristrutturazioni al 50%) è applicabile ESCLUSIVAMENTE se inserita in un progetto globale di Manutenzione Straordinaria o Ristrutturazione dell'immobile.\n`;
 
         rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
-            `Rimandare la sostituzione comporta un progressivo peggioramento estetico e funzionale, con il rischio di blocchi meccanici improvvisi, fessurazioni strutturali del supporto e un degrado visivo che svaluta l'armonia complessiva degli spazi abitativi.`;
+            `Mantenere il sistema attuale espone a un progressivo blocco meccanico, fessurazioni strutturali e a un degrado estetico irreversibile che svaluta l'immobile.`;
 
-    // B. GESTIONE SPECIFICA: SERRAMENTI & RIQUALIFICAZIONE ENERGETICA
+    // B. SERRAMENTI & RIQUALIFICAZIONE ENERGETICA
     } else if (catLower.includes('serramenti') || catLower.includes('ristrutturazione_completa')) {
-        analisiStato = "L'esame della fotografia evidenzia un sistema di chiusura esterno datato, caratterizzato da usura superficiale e da un impatto termico superato che penalizza l'efficienza complessiva dell'immobile.";
+        analisiStato = `L'esame visivo dello stato attuale evidenzia infissi datati con tenute ormai compromesse, presenza di ponti termici perimetrali, spifferi d'aria percepibili e un isolamento acustico non più idoneo agli standard moderni.`;
         
-        beneficiSpecifici = `• Isolamento Termico & Risparmio Energetico: L'adozione di materiali evoluti azzera i ponti termici, riducendo drasticamente le dispersioni.\n` +
-            `• Comfort Acustico: Abbattimento certificato dei rumori esterni per un isolamento ottimale.\n` +
-            `• Valorizzazione Estetica: La finitura ${finish} si integra armoniosamente con l'architettura esistente.\n`;
+        beneficiSpecifici = `• Isolamento Termico & Risparmio in Bolletta: L'adozione di ${material} associata a ${glass} abbatte drasticamente le dispersioni termiche.\n` +
+            `• Comfort Acustico Certificato: Eliminazione dei rumori molesti provenienti dall'esterno.\n` +
+            `• Estetica & Valore Immobiliare: La finitura ${finish} rinnova l'aspetto architettonico dell'edificio.\n`;
 
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
-            `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti previsti dalle normative vigenti per l'accesso alle detrazioni fiscali (Ecobonus / Bonus Casa), subordinatamente alla conformità dei requisiti tecnici e di trasmittanza termica previsti dalla legge.\n`;
+            `• Detrazioni Fiscali / Ecobonus: L'intervento rientra nei requisiti di legge per l'efficientamento energetico, subordinatamente al rispetto dei limiti di trasmittanza termica.\n`;
 
         rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
-            `Mantenere serramenti obsoleti alimenta il costo occulto delle dispersioni termiche in bolletta, favorisce la formazione di condensa e muffe sui  punti freddi e svaluta progressivamente il valore commerciale dell'immobile sul mercato.`;
+            `Conservare serramenti obsoleti alimenta il costo occulto delle dispersioni energetiche, favorisce la formazione di condensa e muffe sui muri e deprezza il valore commerciale dell'immobile.`;
 
-    // C. GESTIONE SPECIFICA: PORTONCINI BLINDATI, GARAGE E PROTEZIONI (Sicurezza)
+    // C. PORTONCINI, GARAGE E PROTEZIONI (Analisi sartoriale su Vetri e Materiali)
     } else {
-        analisiStato = "L'esame della fotografia evidenzia un elemento di chiusura attuale che mostra segni di obsolescenza estetica e funzionale, limitando la protezione complessiva e l'impatto visivo dell'accesso.";
+        // Analisi sartoriale specifica se il portoncino ha vetri o se è in legno
+        let notaSpecificaMateriale = "";
+        if (matLower.includes('legno')) {
+            notaSpecificaMateriale = ` Nota tecnica sul materiale: trattandosi di un elemento in legno esposto agli agenti atmosferici diretti, la mancanza di una protezione a ciclo continuo o di una tettoia di riparo accelera il degrado della vernice, richiedendo manutenzioni straordinarie cicliche.`;
+        } else if (matLower.includes('pvc') || matLower.includes('alluminio')) {
+            notaSpecificaMateriale = ` Nota tecnica sul materiale: la scelta di una struttura in ${material} garantisce un'eccellente stabilità dimensionale, insensibilità all'umidità e zero manutenzione contro gli agenti esterni.`;
+        }
+
+        let notaSpecificaVetro = "";
+        if (glassLower.includes('vetro') || glassLower.includes('oblò') || glassLower.includes('fiancoluce') || catLower.includes('vetrat')) {
+            notaSpecificaVetro = ` Attenzione alla sicurezza del vano vetrato: se la vetratura esistente o scelta non è opportunamente stratificata con caratteristiche antisfondamento (es. classe P4A), rappresenta storicamente il punto più vulnerabile del portoncino contro tentativi di effrazione. La configurazione scelta mitiga questo rischio con vetri di sicurezza adeguati.`;
+        }
+
+        analisiStato = `L'esame visivo dello stato attuale evidenzia un ingresso principale con segni evidenti di obsolescenza estetica, giochi meccanici sulle chiusure e difese antieffrazione non più in linea con gli standard attuali.${notaSpecificaMateriale}${notaSpecificaVetro}`;
         
-        beneficiSpecifici = `• Sicurezza & Affidabilità: Soluzione strutturata per garantire protezione elevata contro tentativi di effrazione e un funzionamento meccanico impeccabile nel tempo.\n` +
-            `• Estetica & Coordinamento: Il nuovo design in ${finish} rinnova radicalmente l'impatto visivo dell'affaccio.\n`;
+        beneficiSpecifici = `• Sicurezza Antieffrazione & Affidabilità: Struttura progettata per offrire un'elevata resistenza meccanica all'effrazione e un funzionamento impeccabile.\n` +
+            `• Isolamento & Comfort: Eliminazione degli spifferi perimetrali e miglioramento del comfort termico dell'ingresso.\n` +
+            `• Estetica Coordinata: Il nuovo design in ${finish} valorizza immediatamente l'affaccio principale della casa.\n`;
 
         beneficiFiscali = `⚖️ 3. AGEVOLAZIONI E BENEFICI DI LEGGE:\n` +
-            `• Bonus Sicurezza / Ristrutturazioni: L'intervento può accedere alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi (sistemi antieffrazione) o per interventi di ristrutturazione edilizia.\n`;
+            `• Bonus Sicurezza / Ristrutturazioni: L'intervento accede alle detrazioni fiscali previste per le misure finalizzate alla prevenzione di atti illeciti da parte di terzi (sistemi di sicurezza antieffrazione) o ristrutturazione edilizia.\n`;
 
         rischiNonIntervento = `⚠️ 4. I RISCHI DEL "NON INTERVENTO":\n` +
-            `Lasciare inalterati sistemi di chiusura o protezione vulnerabili espone l'immobile a rischi concreti di intrusione, usura meccanica irreversibile e costi di manutenzione straordinaria ricorrenti nel tempo.`;
+            `Mantenere un portoncino o un accesso vulnerabile espone l'immobile a rischi concreti di intrusione, perdite di calore incontrollate e costi di riparazione meccanica continui nel tempo.`;
     }
 
     let dettagliInstallazione = "";
@@ -185,7 +202,7 @@ app.post('/api/visual-generate', async (req, res) => {
         analisiStato + `\n\n` +
         `✨ 2. LA SOLUZIONE E I VANTAGGI DEL "DOPO":\n` +
         beneficiSpecifici +
-        `• Manutenzione Ridotta: Trattamenti superficiali protettivi studiati per resistere all'usura e semplificare la pulizia quotidiana.\n\n` +
+        `• Manutenzione Semplificata: Trattamenti superficiali studiati per resistere all'usura quotidiana e facilitare le operazioni di pulizia.\n\n` +
         beneficiFiscali + `\n` +
         rischiNonIntervento;
 
