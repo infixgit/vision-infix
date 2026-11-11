@@ -129,7 +129,7 @@ app.post('/api/visual-generate', async (req, res) => {
             : `L'esame visivo dello stato attuale evidenzia una porta interna caratterizzata da finiture logore dall'uso, sbalzi di planarità del pannello e un impatto estetico superato che interrompe la continuità stilistica dei locali.`;
         
         beneficiSpecifici = isOscurante
-            ? `• Regolazione della Luce & Comfort Termico: L'installazione del nuovo sistema in ${material} rifinita in ${finish} garantisce un controllo ottimale della luce diretta e una protezione duratura.\n` +
+            ? `• Regolazione della Luce & Comfort Termico: L'installazione del nuovo sistema in ${material} rifinito in ${finish} garantisce un controllo ottimale della luce diretta e una protezione duratura.\n` +
               `• Zero Manutenzione: I trattamenti superficiali applicati azzerano la necessità di verniciature periodiche.\n`
             : `• Continuità Architettonica & Stile: La nuova porta in ${material} rifinita in ${finish} valorizza i volumi interni e raccorda con eleganza gli spazi.\n` +
               `• Vivibilità & Ergonomia: Fluidità di movimento e abbattimento della rumorosità di calpestio/passaggio.\n`;
@@ -157,7 +157,6 @@ app.post('/api/visual-generate', async (req, res) => {
 
     // C. PORTONCINI, GARAGE E PROTEZIONI (Analisi sartoriale su Vetri e Materiali)
     } else {
-        // Analisi sartoriale specifica se il portoncino ha vetri o se è in legno
         let notaSpecificaMateriale = "";
         if (matLower.includes('legno')) {
             notaSpecificaMateriale = ` Nota tecnica sul materiale: trattandosi di un elemento in legno esposto agli agenti atmosferici diretti, la mancanza di una protezione a ciclo continuo o di una tettoia di riparo accelera il degrado della vernice, richiedendo manutenzioni straordinarie cicliche.`;
@@ -206,12 +205,14 @@ app.post('/api/visual-generate', async (req, res) => {
         beneficiFiscali + `\n` +
         rischiNonIntervento;
 
-    // Risposta intelligente estesa a tutte le categorie per la domanda aperta
+    // Risposta intelligente ed estesa (inclusi trabocchetti e paradossi)
     if (openQuestion && openQuestion.trim() !== '') {
         let rispostaMirata = "In merito alla richiesta specifica, la configurazione proposta bilancia perfettamente la resa estetica con la funzionalità e l'efficienza tecnica del vano.";
         const qLower = openQuestion.toLowerCase();
         
-        if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
+        if (qLower.includes('carta') || qLower.includes('cartone') || qLower.includes('pizza') || qLower.includes('burro') || qLower.includes('aria')) {
+            rispostaMirata = "Rilevata anomalia strutturale nel quesito: nessun sistema di chiusura o portoncino ad alte prestazioni può garantire certificazioni antieffrazione o tenuta termica se ancorato su supporti inconsistenti (come carta o cartone). L'efficacia del serramento richiede tassativamente un supporto murario solido, squadrato e verificato staticamente.";
+        } else if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
             rispostaMirata = "Le superfici e le finiture opache di ultima generazione (come il Nero Opaco RAL 9005) utilizzano rivestimenti ad elevata durezza e trattamenti anti-impronta. Non richiedono manutenzioni complesse: è sufficiente la pulizia ordinaria con panni morbidi in microfibra e detergenti neutri non abrasivi, mantenendo inalterata la profondità del colore e la resa estetica nel tempo.";
         } else if (qLower.includes('pvc') || qLower.includes('alluminio')) {
             rispostaMirata = "Analizzando il confronto diretto: il PVC offre eccellenti doti di isolamento termico intrinseco, leggerezza e un imbattibile rapporto qualità-prezzo, azzerando la manutenzione. L'Alluminio (estruso o a taglio termico) garantisce invece una rigidità strutturale superiore, ed è la scelta d'elezione per elementi esposti a forte irraggiamento solare o di grandi dimensioni, offrendo indeformabilità e una durata meccanica praticamente illimitata.";
