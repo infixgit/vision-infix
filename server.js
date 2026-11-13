@@ -205,27 +205,30 @@ app.post('/api/visual-generate', async (req, res) => {
         beneficiFiscali + `\n` +
         rischiNonIntervento;
 
-    // Risposta intelligente ed estesa (gestione avanzata domande aperte e trabocchetti)
+    // RISPOSTA MIRATA INTELLIGENTE E RIGOROSA SULLA DOMANDA APERTA
     if (openQuestion && openQuestion.trim() !== '') {
         let rispostaMirata = "";
         const qLower = openQuestion.toLowerCase();
         
-        if (qLower.includes('gomma') || qLower.includes('elastik') || qLower.includes('elastico') || qLower.includes('gelatin') || qLower.includes('morbido')) {
-            rispostaMirata = "Anomalia fisica estrema rilevata: montare una porta blindata pesante su una parete di gomma o materiale deformabile trasforma l'ingresso in un trampolino elastico piuttosto che in un sistema di chiusura sicuro. Si consiglia vivamente di sostituire la gomma con muratura portante o cemento armato prima di procedere all'installazione!";
-        } else if (qLower.includes('acqua') || qLower.includes('piscina') || qLower.includes('sommers') || qLower.includes('subacque')) {
-            rispostaMirata = "Anomalia di progetto critica: nessun serramento, porta o portoncino residenziale è certificato per l'immersione continua o parziale in ambiente natatorio (piscina). L'esposizione costante a umidità satura, cloro e getti d'acqua compromette rapidamente le guarnizioni, i trattamenti superficiali e i componenti meccanici, invalidando ogni garanzia.";
-        } else if (qLower.includes('carta') || qLower.includes('cartone') || qLower.includes('pizza') || qLower.includes('burro') || qLower.includes('aria')) {
-            rispostaMirata = "Rilevata anomalia strutturale nel quesito: nessun sistema di chiusura o portoncino ad alte prestazioni può garantire certificazioni antieffrazione o tenuta termica se ancorato su supporti inconsistenti (come carta o cartone). L'efficacia del serramento richiede tassativamente un supporto murario solido, squadrato e verificato staticamente.";
+        // Controllo prioritario su materiali e supporti impossibili (nylon, gomma, carta, cartone, piscina)
+        if (qLower.includes('nylon') || qLower.includes('telo') || qLower.includes('plastica flessibile')) {
+            rispostaMirata = "Incompatibilità strutturale assoluta: l'installazione di serramenti rigidi (sia in PVC che in alluminio o legno) dotati di vetri pesanti su una parete o supporto in nylon è tecnicamente impossibile e priva di qualsiasi requisito di sicurezza. Un infisso richiede tassativamente un controtelaio squadrato ancorato a muratura portante o struttura rigida certificata.";
+        } else if (qLower.includes('gomma') || qLower.includes('elastico') || qLower.includes('gelatina') || qLower.includes('morbido')) {
+            rispostaMirata = "Anomalia fisica critica: montare serramenti o vetri blindati su pareti di gomma o materiali deformabili compromette l'ancoraggio meccanico, azzera la tenuta agli agenti atmosferici e rende vano qualsiasi standard di sicurezza antieffrazione.";
+        } else if (qLower.includes('acqua') || qLower.includes('piscina') || qLower.includes('sommerso') || qLower.includes('subacqueo')) {
+            rispostaMirata = "Anomalia di progetto: nessun serramento residenziale standard è concepito per l'immersione in ambiente natatorio o a contatto diretto con masse d'acqua continue, pena il degrado immediato delle guarnizioni e dei meccanismi.";
+        } else if (qLower.includes('carta') || qLower.includes('cartone') || qLower.includes('pizza') || qLower.includes('burro')) {
+            rispostaMirata = "Rilevata anomalia strutturale: nessun sistema di chiusura ad alte prestazioni può garantire tenuta o sicurezza se ancorato su supporti inconsistenti. È richiesto un supporto murale solido.";
         } else if (qLower.includes('nero') || qLower.includes('pulire') || qLower.includes('impronte') || qLower.includes('graff')) {
-            rispostaMirata = "Le superfici e le finiture opache di ultima generazione (come il Nero Opaco RAL 9005) utilizzano rivestimenti ad elevata durezza e trattamenti anti-impronta. Non richiedono manutenzioni complesse: è sufficiente la pulizia ordinaria con panni morbidi in microfibra e detergenti neutri non abrasivi, mantenendo inalterata la profondità del colore e la resa estetica nel tempo.";
+            rispostaMirata = "Le superfici e le finiture opache di ultima generazione utilizzano trattamenti protettivi avanzati; la pulizia ordinaria con panni in microfibra e detergenti neutri non abrasivi preserva inalterata la resa estetica nel tempo.";
         } else if (qLower.includes('pvc') || qLower.includes('alluminio')) {
-            rispostaMirata = "Analizzando il confronto diretto: il PVC offre eccellenti doti di isolamento termico intrinseco, leggerezza e un imbattibile rapporto qualità-prezzo, azzerando la manutenzione. L'Alluminio (estruso o a taglio termico) garantisce invece una rigidità strutturale superiore, ed è la scelta d'elezione per elementi esposti a forte irraggiamento solare o di grandi dimensioni, offrendo indeformabilità e una durata meccanica praticamente illimitata.";
+            rispostaMirata = "Confronto diretto: il PVC offre eccellenti doti di isolamento termico e leggerezza, azzerando la manutenzione. L'alluminio garantisce una rigidità strutturale superiore ed è ideale per grandi dimensioni o forte irraggiamento solare.";
         } else if (qLower.includes('condensa') || qLower.includes('spifferi') || qLower.includes('freddo')) {
-            rispostaMirata = "Per risolvere le problematiche di dispersione e condensa, la scelta di sistemi a multi-camera con guarnizioni perimetrali di tenuta e vetri basso emissivi interrompe efficacemente i ponti termici, eliminando spifferi e sbalzi di temperatura superficiale.";
+            rispostaMirata = "La scelta di sistemi multi-camera con guarnizioni perimetrali e vetri basso-emissivi interrompe efficacemente i ponti termici, eliminando spifferi e condensa superficiale.";
         } else if (qLower.includes('sicurezza') || qLower.includes('blindat') || qLower.includes('effraz') || qLower.includes('classe')) {
-            rispostaMirata = "Dal punto di vista della protezione antieffrazione, l'adozione di strutture rinforzate in acciaio, serrature a cilindro europeo protetto e rostri di sicurezza garantiscono standard elevati di resistenza attiva e passiva, tutelando efficacemente gli accessi dell'immobile.";
+            rispostaMirata = "L'adozione di strutture rinforzate e ferramenta di sicurezza multiasse garantisce elevati standard di protezione attiva e passiva per gli accessi dell'immobile.";
         } else {
-            rispostaMirata = `In merito al quesito specifico "${openQuestion}", l'analisi tecnica conferma che la scelta progettuale del componente deve essere coordinata con le tolleranze dimensionali del vano e con i requisiti prestazionali richiesti dalla normativa vigente in cantiere.`;
+            rispostaMirata = `In merito alla richiesta specifica inserita ("${openQuestion}"), l'analisi tecnica conferma che la posa in opera e la scelta dei materiali devono rispettare rigorosamente le tolleranze geometriche del vano e le normative tecniche vigenti in cantiere.`;
         }
 
         technicalReport += `\n\n💡 RISPOSTA ALLA TUA RICHIESTA SPECIFICA:\n` +
