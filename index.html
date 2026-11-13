@@ -56,10 +56,10 @@
         .diagnostic-photo { flex: 1; min-width: 280px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
         .diagnostic-photo img { width: 100%; height: 210px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
-        /* MOCKUP TECNICO DEL DOPO */
-        .mockup-after-box { width: 100%; height: 210px; background: #111; color: #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align: center; }
+        /* MOCKUP TECNICO DEL DOPO EVOLUTO */
+        .mockup-after-box { width: 100%; height: 210px; background: #111; color: #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align: center; overflow: hidden; }
         .mockup-badge { background: #28a745; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .mockup-color-swatch { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff; margin: 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .mockup-color-panel { width: 85%; height: 60px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.3); margin: 6px 0; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.4); transition: background 0.3s ease; }
     </style>
 </head>
 <body>
@@ -295,14 +295,16 @@
                     <img id="beforeImage" alt="Foto Originale Cantiere">
                 </div>
 
-                <!-- COLONNA 2: IL DOPO (MOCKUP TECNICO / SIMULAZIONE) -->
+                <!-- COLONNA 2: IL DOPO (MOCKUP TECNICO / SIMULAZIONE EVOLUTA) -->
                 <div class="diagnostic-photo">
                     <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #111;">Soluzione Installata (Il Dopo - Simulato)</h4>
                     <div class="mockup-after-box">
                         <div class="mockup-badge">Vision INFIX® Verified</div>
-                        <div id="mockupSwatch" class="mockup-color-swatch" style="background: #0056b3;"></div>
-                        <div id="mockupProductText" style="font-size: 12px; font-weight: bold; margin-top: 4px;">Configurazione Installata</div>
-                        <div id="mockupFinishText" style="font-size: 11px; color: #aaa; margin-top: 2px;">Finitura selezionata</div>
+                        <div id="mockupColorPanel" class="mockup-color-panel">
+                            <span id="mockupPanelText" style="font-size: 11px; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); color: #fff;">Tinta Applicata</span>
+                        </div>
+                        <div id="mockupProductText" style="font-size: 11px; font-weight: bold; margin-top: 2px;">Configurazione</div>
+                        <div id="mockupFinishText" style="font-size: 10px; color: #aaa; margin-top: 1px;">Finitura</div>
                     </div>
                 </div>
             </div>
@@ -731,7 +733,7 @@
             const file = fileInput.files[0];
             if (!file) { alert("Carica prima una foto!"); return; }
 
-            const macroText = document.getElementById('macroCategorySelect').options[document.getElementById('macroCategorySelect').selectedIndex].text;
+            const macroText = document.getElementById('macroCategorySelect').options[document.getElementById('macroCategorySelectselectedIndex'] ? document.getElementById('macroCategorySelect').selectedIndex : document.getElementById('macroCategorySelect').selectedIndex].text;
             const productText = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
             const materialText = document.getElementById('materialSelect').value;
             const glassText = document.getElementById('glassSelect').value;
@@ -740,14 +742,12 @@
             const subframeText = isSerramenti ? document.getElementById('subframeSelect').value : "Non applicabile";
             const shutterBoxText = isSerramenti ? document.getElementById('shutterBoxSelect').value : "Non applicabile";
 
-            // Gestione corretta della finitura (inclusa quella personalizzata)
+            // Gestione corretta della finitura
             const finishSelectEl = document.getElementById('finishSelect');
             let finishText = finishSelectEl.options[finishSelectEl.selectedIndex].text;
             if (finishSelectEl.value === 'altro_finitura') {
                 const customFinishInput = document.getElementById('customFinishInput').value.trim();
-                if (customFinishInput !== '') {
-                    finishText = customFinishInput;
-                }
+                finishText = customFinishInput !== '' ? customFinishInput : "Finitura Personalizzata";
             }
 
             const openQuestionText = document.getElementById('openQuestionInput').value.trim();
@@ -761,20 +761,33 @@
                 const base64Full = e.target.result;
                 document.getElementById('beforeImage').src = base64Full;
                 
-                // Aggiornamento dinamico del Mockup Tecnico "Il Dopo" con il testo corretto della finitura
+                // Aggiornamento dinamico del Mockup Tecnico "Il Dopo"
                 document.getElementById('mockupProductText').innerText = productText;
                 document.getElementById('mockupFinishText').innerText = `Finitura: ${finishText}`;
+                document.getElementById('mockupPanelText').innerText = finishText;
                 
-                // Assegnazione colore dinamico allo Swatch visivo
-                const swatch = document.getElementById('mockupSwatch');
+                // MAPPATURA PRECISA DEI COLORI (GESTIONE RAL 6003, 6012, VERDI, BLU, ECC.)
+                const panel = document.getElementById('mockupColorPanel');
                 const fLower = finishText.toLowerCase();
-                if (fLower.includes('antracite') || fLower.includes('7016')) swatch.style.background = '#383e42';
-                else if (fLower.includes('nero') || fLower.includes('9005')) swatch.style.background = '#1a1a1a';
-                else if (fLower.includes('bianco') || fLower.includes('9010') || fLower.includes('1013') || fLower.includes('crema')) swatch.style.background = '#f8f9fa';
-                else if (fLower.includes('verde') || fLower.includes('6005')) swatch.style.background = '#2c5e3b';
-                else if (fLower.includes('marrone') || fLower.includes('noce') || fLower.includes('rovere') || fLower.includes('8017')) swatch.style.background = '#5c4033';
-                else if (fLower.includes('grigio')) swatch.style.background = '#adb5bd';
-                else swatch.style.background = '#0056b3';
+
+                if (fLower.includes('antracite') || fLower.includes('7016')) {
+                    panel.style.background = '#383e42';
+                } else if (fLower.includes('nero') || fLower.includes('9005')) {
+                    panel.style.background = '#1a1a1a';
+                } else if (fLower.includes('bianco') || fLower.includes('9010') || fLower.includes('1013') || fLower.includes('crema')) {
+                    panel.style.background = '#e2e8f0';
+                    panel.style.color = '#111';
+                } else if (fLower.includes('verde') || fLower.includes('6003') || fLower.includes('6005') || fLower.includes('6012') || fLower.includes('ral 6')) {
+                    panel.style.background = '#2c5e3b'; // Verde corretto per RAL 6003 / 6012
+                } else if (fLower.includes('blu') || fLower.includes('50') || fLower.includes('ral 5')) {
+                    panel.style.background = '#1d3557'; // Blu istituzionale
+                } else if (fLower.includes('marrone') || fLower.includes('noce') || fLower.includes('rovere') || fLower.includes('8017') || fLower.includes('ral 8')) {
+                    panel.style.background = '#5c4033';
+                } else if (fLower.includes('grigio') || fLower.includes('70') || fLower.includes('argento')) {
+                    panel.style.background = '#6c757d';
+                } else {
+                    panel.style.background = '#2c5e3b'; // Default coordinato
+                }
 
                 const base64Data = base64Full.split(',')[1];
 
