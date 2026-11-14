@@ -13,8 +13,8 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Funzione helper per chiamare direttamente le API REST di Google Gemini (Multimodale con foto)
-function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType) {
+// Funzione helper con retry automatico in caso di sovraccarico di Google (503)
+function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries = 3, delay = 1000) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
       contents: [
@@ -49,8 +49,20 @@ function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType) {
     const req = https.request(options, (res) => {
       let body = '';
       res.on('data', (chunk) => (body += chunk));
-      res.on('end', () => {
+      res.on('end', async () => {
         try {
+          // Se riceviamo 503 (sovraccarico temporaneo Google), riproviamo in automatico
+          if (res.statusCode === 503 && retries > 0) {
+            console.warn(`Gemini temporaneamente occupato (503). Nuovo tentativo tra ${delay}ms... (${retries} tentativi rimasti)`);
+            await new Promise(r => setTimeout(r, delay));
+            try {
+              const resRetry = await callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries - 1, delay * 2);
+              return resolve(resRetry);
+            } catch (errRetry) {
+              return reject(errRetry);
+            }
+          }
+
           const parsed = JSON.parse(body);
           if (res.statusCode >= 200 && res.statusCode < 300) {
             const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
