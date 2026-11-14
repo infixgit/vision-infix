@@ -4,7 +4,7 @@ const https = require('https');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '20mb' }));
+app.use(express.json({ limit: '30mb' })); // Aumentato il limite per evitare blocchi con foto pesanti
 
 const PORT = process.env.PORT || 3000;
 const otpStore = new Map();
@@ -13,8 +13,8 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Funzione helper con retry automatico in caso di sovraccarico di Google (503)
-function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries = 3, delay = 1000) {
+// Funzione helper con retry automatico per gestire i sovraccarichi temporanei di Google (503)
+function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries = 3, delay = 2000) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
       contents: [
@@ -51,9 +51,9 @@ function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries
       res.on('data', (chunk) => (body += chunk));
       res.on('end', async () => {
         try {
-          // Se riceviamo 503 (sovraccarico temporaneo Google), riproviamo in automatico
+          // Se Google risponde 503 (sovraccarico temporaneo), riprova in automatico
           if (res.statusCode === 503 && retries > 0) {
-            console.warn(`Gemini temporaneamente occupato (503). Nuovo tentativo tra ${delay}ms... (${retries} tentativi rimasti)`);
+            console.warn(`Gemini occupato (503). Nuovo tentativo tra ${delay}ms... (${retries} tentativi rimasti)`);
             await new Promise(r => setTimeout(r, delay));
             try {
               const resRetry = await callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries - 1, delay * 2);
@@ -69,18 +69,18 @@ function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType, retries
             if (text) {
               resolve(text.trim());
             } else {
-              reject(new Error('Risposta vuota da Gemini: ' + body));
+              reject(new Error('Risposta vuota o bloccata dai filtri di sicurezza di Gemini: ' + body));
             }
           } else {
             reject(new Error(`Errore API Gemini (${res.statusCode}): ${body}`));
           }
         } catch (err) {
-          reject(err);
+          reject(new Error('Errore nel parsing della risposta JSON: ' + err.message));
         }
       });
     });
 
-    req.on('error', (err) => reject(err));
+    req.on('error', (err) => reject(new Error('Errore di connessione HTTPS con Google: ' + err.message)));
     req.write(payload);
     req.end();
   });
