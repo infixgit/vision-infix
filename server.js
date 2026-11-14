@@ -38,7 +38,7 @@ function callGeminiMultimodal(apiKey, promptText, imageBase64, mimeType) {
 
     const options = {
       hostname: 'generativelanguage.googleapis.com',
-      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      path: `/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -205,10 +205,10 @@ FORMATTAZIONE ESATTA DELL'OUTPUT:
 DOSSIER TECNICO & ANALISI COMPARATIVA (PRIMA vs DOPO)
 
 🎯 CONFIGURAZIONE DI PROGETTO SCELTA:
-• Tipologia: ${category}
-• Materiale / Struttura: ${material || 'Non specificato'}
-• Tamponamento / Vetro / Pannello: ${glass || 'Non specificato'}
-• Finitura Estetica: ${finish}
+- Tipologia: ${category}
+- Materiale / Struttura: ${material || 'Non specificato'}
+- Tamponamento / Vetro / Pannello: ${glass || 'Non specificato'}
+- Finitura Estetica: ${finish}
 
 🔍 1. ANALISI DELLO STATO ATTUALE (IL "PRIMA"):
 [Inserisci qui l'analisi visiva reale basata sulla foto]
