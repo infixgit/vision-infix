@@ -216,47 +216,22 @@
                 </select>
             </div>
 
-            <!-- LIVELLO 8: FINITURA / COLORE TELAIO -->
+            <!-- CAMPO DI TESTO LIBERO PER LA FINITURA INTERPRETATA DALL'IA -->
             <div class="form-group">
-                <label for="finishSelect">🎨 8. Scegli Finitura / Colore del "Dopo"</label>
-                <select id="finishSelect" onchange="verificaAltraFinitura()" required>
-                    <optgroup label="Standard & Tinte RAL">
-                        <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
-                        <option value="Bianco Avorio RAL 1013">Bianco Avorio RAL 1013</option>
-                        <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
-                        <option value="Grigio Sedum RAL 7007">Grigio Sedum RAL 7007</option>
-                        <option value="Grigio Luce RAL 7035">Grigio Luce RAL 7035</option>
-                        <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
-                        <option value="Verde Nerastro RAL 6012">Verde Nerastro RAL 6012</option>
-                        <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
-                        <option value="Nero Opaco Moderno RAL 9005">Nero Opaco Moderno RAL 9005</option>
-                        <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
-                    </optgroup>
-                    <optgroup label="Effetto Legno / Pregiati">
-                        <option value="Legno Effetto Noce Scuro">Legno Effetto Noce Scuro</option>
-                        <option value="Legno Effetto Rovere Naturale">Legno Effetto Rovere Naturale</option>
-                        <option value="Legno Effetto Douglas / Ciliegio">Legno Effetto Douglas / Ciliegio</option>
-                        <option value="Effetto Cor-ten / Ruggine Spazzolato">Effetto Cor-ten / Ruggine Spazzolato</option>
-                    </optgroup>
-                    <option value="altro_finitura">➕ Altro colore / Finitura personalizzata...</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="customFinishContainer" style="display: none;">
-                <label for="customFinishInput">✏️ Specifica Colore / Finitura</label>
-                <input type="text" id="customFinishInput" placeholder="Es. RAL 7007, RAL 9001...">
+                <label for="finishInput">🎨 8. Specifica Colore / Finitura del "Dopo" (Qualsiasi RAL, es. RAL 7009, o tinta personalizzata)</label>
+                <input type="text" id="finishInput" placeholder="Es. RAL 7009, Grigio Verde, Noce scuro..." required>
             </div>
 
             <!-- DOMANDA APERTA -->
             <div class="form-group" style="background: #fff8e1; border: 1px solid #ffe0b2; padding: 12px; border-radius: 6px;">
                 <label for="openQuestionInput" style="color: #f57f17; font-weight: bold;">💬 Domanda aperta o richiesta specifica per l'IA (opzionale)</label>
-                <textarea id="openQuestionInput" rows="3" placeholder="Es. Posso montare questa porta nella vasca idromassaggio?..."></textarea>
+                <textarea id="openQuestionInput" rows="3" placeholder="Es. Posso montare questa porta dentro una botte di vino?..."></textarea>
             </div>
 
             <!-- NOTE DI CANTIERE -->
             <div class="form-group">
                 <label for="customUserRequest">✏️ 9. Note o criticità tecniche di cantiere (opzionale)</label>
-                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condanna termica, cassonetto non coibentato..."></textarea>
+                <textarea id="customUserRequest" rows="2" placeholder="Es. Presenza di spifferi storici, condensa termica..."></textarea>
             </div>
 
             <!-- PULSANTE DI GENERAZIONE DOSSIER -->
@@ -596,7 +571,6 @@
         function verificaAltroProdotto() { document.getElementById('customProductContainer').style.display = (document.getElementById('productSelect').value === 'altro_prodotto') ? 'flex' : 'none'; }
         function verificaAltroMateriale() { document.getElementById('customMaterialContainer').style.display = (document.getElementById('materialSelect').value === 'altro_materiale') ? 'flex' : 'none'; }
         function verificaAltroVetro() { document.getElementById('customGlassContainer').style.display = (document.getElementById('glassSelect').value === 'altro_vetro') ? 'flex' : 'none'; }
-        function verificaAltraFinitura() { document.getElementById('customFinishContainer').style.display = (document.getElementById('finishSelect').value === 'altro_finitura') ? 'flex' : 'none'; }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('infix_visual_user_email');
@@ -712,13 +686,7 @@
             const subframeText = isSerramenti ? document.getElementById('subframeSelect').value : "Non applicabile";
             const shutterBoxText = isSerramenti ? document.getElementById('shutterBoxSelect').value : "Non applicabile";
 
-            const finishSelectEl = document.getElementById('finishSelect');
-            let finishText = finishSelectEl.options[finishSelectEl.selectedIndex].text;
-            if (finishSelectEl.value === 'altro_finitura') {
-                const customFinishInput = document.getElementById('customFinishInput').value.trim();
-                finishText = customFinishInput !== '' ? customFinishInput : "Finitura Personalizzata";
-            }
-
+            const finishText = document.getElementById('finishInput').value.trim() || "Personalizzata";
             const openQuestionText = document.getElementById('openQuestionInput').value.trim();
             const customRequest = document.getElementById('customUserRequest').value.trim();
 
@@ -733,24 +701,6 @@
                 document.getElementById('mockupProductText').innerText = productText;
                 document.getElementById('mockupFinishText').innerText = `Finitura: ${finishText}`;
                 document.getElementById('mockupPanelText').innerText = finishText;
-                
-                const panel = document.getElementById('mockupColorPanel');
-                const fLower = finishText.toLowerCase();
-
-                if (fLower.includes('7007') || fLower.includes('sedum') || fLower.includes('7016') || fLower.includes('grigio')) {
-                    panel.style.background = '#6c757d';
-                } else if (fLower.includes('6003') || fLower.includes('6005') || fLower.includes('6012') || fLower.includes('verde')) {
-                    panel.style.background = '#2c5e3b';
-                } else if (fLower.includes('9005') || fLower.includes('nero')) {
-                    panel.style.background = '#1a1a1a';
-                } else if (fLower.includes('9010') || fLower.includes('1013') || fLower.includes('bianco') || fLower.includes('crema')) {
-                    panel.style.background = '#e2e8f0';
-                    panel.style.color = '#111';
-                } else if (fLower.includes('8017') || fLower.includes('marrone') || fLower.includes('noce') || fLower.includes('rovere')) {
-                    panel.style.background = '#5c4033';
-                } else {
-                    panel.style.background = '#2c5e3b';
-                }
 
                 const base64Data = base64Full.split(',')[1];
 
@@ -775,6 +725,11 @@
                     if (response.ok && data.success) {
                         document.getElementById('resultSubtitle').innerText = `Configurazione: ${macroText} / ${productText} | Finitura: ${finishText}`;
                         document.getElementById('technicalDossierText').innerText = data.dossier;
+                        
+                        // Applicazione del colore dinamico calcolato da Gemini
+                        const panel = document.getElementById('mockupColorPanel');
+                        panel.style.background = data.hexColor || '#2c5e3b';
+
                         document.getElementById('resultArea').style.display = 'block';
                         document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
                     } else {
