@@ -51,12 +51,10 @@
 
         .result-box { margin-top: 20px; display: none; background: #fff; border: 1px solid #cbd5e0; padding: 20px; border-radius: 8px; text-align: left; box-sizing: border-box; width: 100%; }
         
-        /* GRIGLIA AFFIANCATA PRIMA VS DOPO */
         .diagnostic-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
         .diagnostic-photo { flex: 1; min-width: 280px; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef; box-sizing: border-box; }
         .diagnostic-photo img { width: 100%; height: 210px; object-fit: contain; background: #fff; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
-        /* MOCKUP TECNICO DEL DOPO EVOLUTO */
         .mockup-after-box { width: 100%; height: 210px; background: #111; color: #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align: center; overflow: hidden; }
         .mockup-badge { background: #28a745; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .mockup-color-panel { width: 85%; height: 60px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.3); margin: 6px 0; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.4); transition: background 0.3s ease; }
@@ -72,7 +70,7 @@
             
             <div class="welcome-note">
                 👋 <strong>Benvenuto in Vision INFIX®!</strong><br>
-                Carica la foto del cantiere, seleziona i dettagli mirati e genera il dossier professionale con analisi comparativa e argomenti di vendita mirati.
+                Carica la foto del cantiere, seleziona i dettagli mirati e genera il dossier professionale con analisi comparativa.
             </div>
 
             <div id="free-trial-box">
@@ -88,20 +86,17 @@
                     
                     <div style="font-size: 12px; color: #444; display: flex; align-items: center; gap: 6px; text-align: left; width: 100%;">
                         <input type="checkbox" id="privacy-checkbox" style="cursor: pointer; width: 14px; height: 14px;">
-                        <label for="privacy-checkbox" style="cursor: pointer; margin: 0;">Accetto l'informativa sulla privacy e il trattamento dei dati.</label>
+                        <label for="privacy-checkbox" style="cursor: pointer; margin: 0;">Accetto l'informativa sulla privacy.</label>
                     </div>
                     
                     <button id="send-otp-btn" class="btn-green" onclick="richiediCodiceOtp()">Invia Codice OTP ✉️</button>
                 </div>
 
                 <div id="step-otp-container" style="display: none; flex-direction: column; gap: 8px; align-items: center; margin-top: 6px; width: 100%;">
-                    <p style="font-size: 12px; color: #1b5e20; margin: 0; line-height: 1.4;">
-                        Codice OTP inviato a <strong id="sent-email-label" style="color: #000;"></strong>
-                    </p>
-                    <input type="text" id="otp-input" placeholder="Codice a 6 cifre..." style="letter-spacing: 2px; font-weight: bold; width: 100%; max-width: 200px; padding: 8px; box-sizing: border-box;">
+                    <p style="font-size: 12px; color: #1b5e20; margin: 0;">Codice OTP inviato a <strong id="sent-email-label"></strong></p>
+                    <input type="text" id="otp-input" placeholder="Codice a 6 cifre..." style="letter-spacing: 2px; font-weight: bold; width: 100%; max-width: 200px; padding: 8px;">
                     <button onclick="verificaCodiceOtpEAccedi()" class="btn-green">Verifica e Accedi 🚀</button>
                 </div>
-
                 <div id="trial-error-msg" style="color: #d9534f; font-size: 12px; margin-top: 6px; display: none; font-weight: bold;"></div>
             </div>
 
@@ -229,8 +224,10 @@
                         <option value="Bianco Puro RAL 9010">Bianco Puro RAL 9010</option>
                         <option value="Bianco Avorio RAL 1013">Bianco Avorio RAL 1013</option>
                         <option value="Grigio Antracite RAL 7016">Grigio Antracite RAL 7016</option>
+                        <option value="Grigio Sedum RAL 7007">Grigio Sedum RAL 7007</option>
                         <option value="Grigio Luce RAL 7035">Grigio Luce RAL 7035</option>
                         <option value="Verde Persiana RAL 6005">Verde Persiana RAL 6005</option>
+                        <option value="Verde Nerastro RAL 6012">Verde Nerastro RAL 6012</option>
                         <option value="Marrone Testa di Moro RAL 8017">Marrone Testa di Moro RAL 8017</option>
                         <option value="Nero Opaco Moderno RAL 9005">Nero Opaco Moderno RAL 9005</option>
                         <option value="Alluminio Anodizzato / Argento">Alluminio Anodizzato / Argento</option>
@@ -247,13 +244,13 @@
 
             <div class="form-group" id="customFinishContainer" style="display: none;">
                 <label for="customFinishInput">✏️ Specifica Colore / Finitura</label>
-                <input type="text" id="customFinishInput" placeholder="Es. RAL 9001 Bianco Crema...">
+                <input type="text" id="customFinishInput" placeholder="Es. RAL 7007, RAL 9001...">
             </div>
 
             <!-- DOMANDA APERTA -->
             <div class="form-group" style="background: #fff8e1; border: 1px solid #ffe0b2; padding: 12px; border-radius: 6px;">
                 <label for="openQuestionInput" style="color: #f57f17; font-weight: bold;">💬 Domanda aperta o richiesta specifica per l'IA (opzionale)</label>
-                <textarea id="openQuestionInput" rows="3" placeholder="Es. Meglio PVC o Alluminio? La finitura nera attira impronte? Come si risolve la condensa?..."></textarea>
+                <textarea id="openQuestionInput" rows="3" placeholder="Es. Posso montare questa porta nella vasca idromassaggio?..."></textarea>
             </div>
 
             <!-- NOTE DI CANTIERE -->
@@ -318,7 +315,7 @@
             <!-- PULSANTI AZIONE (PDF & NUOVA CONSULENZA) -->
             <div id="actionButtonsContainer" style="margin-top: 20px; border-top: 1px solid #e9ecef; padding-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
                 <button onclick="scaricaDossierPdf()" style="background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; flex: 1;">📥 Scarica Dossier in PDF Ufficiale</button>
-                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; flex: 1;">🔄 Nuova Consulenza</button>
+                <button onclick="resettaNuovaSimulazione()" style="background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1;">🔄 Nuova Consulenza</button>
             </div>
         </div>
     </div>
@@ -334,18 +331,6 @@
             <button onclick="eseguiLoginPassword()" style="background: #111; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Accedi</button>
             <button onclick="chiudiLoginModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
             <p id="login-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
-        </div>
-    </div>
-
-    <div id="reset-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: #fff; padding: 25px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; box-sizing: border-box;">
-            <h3 style="margin-top: 0; color: #111; font-size: 1.2rem;">Recupero Accesso</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Inserisci la tua email autorizzata per ricevere un nuovo codice OTP.</p>
-            <label style="font-size: 12px; font-weight: bold; color: #444;">Email</label>
-            <input type="email" id="reset-email-input" placeholder="nome@email.com" style="width: 100%; padding: 8px; margin: 5px 0 15px 0; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box;" />
-            <button onclick="eseguiRichiestaReset()" id="reset-send-btn" style="background: #2e7d32; color: #fff; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px;">Invia Codice OTP ✉️</button>
-            <button onclick="chiudiResetModal()" style="background: #e2e8f0; color: #333; padding: 8px; border: none; border-radius: 5px; width: 100%; margin-top: 8px; cursor: pointer; font-weight: 600;">Annulla</button>
-            <p id="reset-msg" style="font-size: 12px; margin-top: 10px; text-align: center; font-weight: bold;"></p>
         </div>
     </div>
 
@@ -698,8 +683,6 @@
 
         function mostraLoginModal(e) { e.preventDefault(); document.getElementById('login-modal').style.display = 'flex'; }
         function chiudiLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-        function mostraResetPasswordModal(e) { e.preventDefault(); document.getElementById('reset-modal').style.display = 'flex'; }
-        function chiudiResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function scrollToPacks() { window.scrollTo({ top: document.getElementById('stripePaywall').offsetTop, behavior: 'smooth' }); }
 
         function eseguiLoginPassword() {
@@ -714,35 +697,21 @@
 
         document.getElementById('visualForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const email = localStorage.getItem('infix_visual_user_email');
-            let credits = localStorage.getItem('infix_visual_credits');
-
-            if (email && email.toLowerCase() !== 'infix@outlook.it') {
-                let numCredits = parseInt(credits);
-                if (isNaN(numCredits) || numCredits <= 0) {
-                    document.getElementById('visualForm').style.display = 'none';
-                    document.getElementById('stripePaywall').style.display = 'block';
-                    return;
-                }
-                numCredits--;
-                localStorage.setItem('infix_visual_credits', numCredits.toString());
-                document.getElementById('credits-counter-display').innerText = numCredits;
-            }
-
             const fileInput = document.getElementById('photoInput');
             const file = fileInput.files[0];
             if (!file) { alert("Carica prima una foto!"); return; }
 
-            const macroText = document.getElementById('macroCategorySelect').options[document.getElementById('macroCategorySelectselectedIndex'] ? document.getElementById('macroCategorySelect').selectedIndex : document.getElementById('macroCategorySelect').selectedIndex].text;
-            const productText = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
+            const macroSelectEl = document.getElementById('macroCategorySelect');
+            const macroText = macroSelectEl.options[macroSelectEl.selectedIndex].text;
+            const productSelectEl = document.getElementById('productSelect');
+            const productText = productSelectEl.options[productSelectEl.selectedIndex].text;
             const materialText = document.getElementById('materialSelect').value;
             const glassText = document.getElementById('glassSelect').value;
             
-            const isSerramenti = document.getElementById('macroCategorySelect').value === 'serramenti' || document.getElementById('macroCategorySelect').value === 'ristrutturazione_completa';
+            const isSerramenti = macroSelectEl.value === 'serramenti' || macroSelectEl.value === 'ristrutturazione_completa';
             const subframeText = isSerramenti ? document.getElementById('subframeSelect').value : "Non applicabile";
             const shutterBoxText = isSerramenti ? document.getElementById('shutterBoxSelect').value : "Non applicabile";
 
-            // Gestione corretta della finitura
             const finishSelectEl = document.getElementById('finishSelect');
             let finishText = finishSelectEl.options[finishSelectEl.selectedIndex].text;
             if (finishSelectEl.value === 'altro_finitura') {
@@ -761,32 +730,26 @@
                 const base64Full = e.target.result;
                 document.getElementById('beforeImage').src = base64Full;
                 
-                // Aggiornamento dinamico del Mockup Tecnico "Il Dopo"
                 document.getElementById('mockupProductText').innerText = productText;
                 document.getElementById('mockupFinishText').innerText = `Finitura: ${finishText}`;
                 document.getElementById('mockupPanelText').innerText = finishText;
                 
-                // MAPPATURA PRECISA DEI COLORI (GESTIONE RAL 6003, 6012, VERDI, BLU, ECC.)
                 const panel = document.getElementById('mockupColorPanel');
                 const fLower = finishText.toLowerCase();
 
-                if (fLower.includes('antracite') || fLower.includes('7016')) {
-                    panel.style.background = '#383e42';
-                } else if (fLower.includes('nero') || fLower.includes('9005')) {
+                if (fLower.includes('7007') || fLower.includes('sedum') || fLower.includes('7016') || fLower.includes('grigio')) {
+                    panel.style.background = '#6c757d';
+                } else if (fLower.includes('6003') || fLower.includes('6005') || fLower.includes('6012') || fLower.includes('verde')) {
+                    panel.style.background = '#2c5e3b';
+                } else if (fLower.includes('9005') || fLower.includes('nero')) {
                     panel.style.background = '#1a1a1a';
-                } else if (fLower.includes('bianco') || fLower.includes('9010') || fLower.includes('1013') || fLower.includes('crema')) {
+                } else if (fLower.includes('9010') || fLower.includes('1013') || fLower.includes('bianco') || fLower.includes('crema')) {
                     panel.style.background = '#e2e8f0';
                     panel.style.color = '#111';
-                } else if (fLower.includes('verde') || fLower.includes('6003') || fLower.includes('6005') || fLower.includes('6012') || fLower.includes('ral 6')) {
-                    panel.style.background = '#2c5e3b'; // Verde corretto per RAL 6003 / 6012
-                } else if (fLower.includes('blu') || fLower.includes('50') || fLower.includes('ral 5')) {
-                    panel.style.background = '#1d3557'; // Blu istituzionale
-                } else if (fLower.includes('marrone') || fLower.includes('noce') || fLower.includes('rovere') || fLower.includes('8017') || fLower.includes('ral 8')) {
+                } else if (fLower.includes('8017') || fLower.includes('marrone') || fLower.includes('noce') || fLower.includes('rovere')) {
                     panel.style.background = '#5c4033';
-                } else if (fLower.includes('grigio') || fLower.includes('70') || fLower.includes('argento')) {
-                    panel.style.background = '#6c757d';
                 } else {
-                    panel.style.background = '#2c5e3b'; // Default coordinato
+                    panel.style.background = '#2c5e3b';
                 }
 
                 const base64Data = base64Full.split(',')[1];
@@ -826,22 +789,18 @@
             reader.readAsDataURL(file);
         });
 
-        // Funzione per scaricare il PDF pulito del dossier
         function scaricaDossierPdf() {
             const element = document.getElementById('resultArea');
             const actionButtons = document.getElementById('actionButtonsContainer');
-            
             if (actionButtons) actionButtons.style.display = 'none';
 
-            const opt = {
-                margin:       10,
-                filename:     'Dossier_Tecnico_Vision_INFIX.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().from(element).set(opt).save().then(() => {
+            html2pdf().from(element).set({
+                margin: 10,
+                filename: 'Dossier_Tecnico_Vision_INFIX.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).save().then(() => {
                 if (actionButtons) actionButtons.style.display = 'flex';
             });
         }
@@ -853,8 +812,7 @@
         }
 
         function avviaCheckout(planKey) {
-            const links = { 'pack_1': 'https://buy.stripe.com/...', 'pack_2': 'https://buy.stripe.com/...', 'pack_3': 'https://buy.stripe.com/...', 'pro_unlimited': 'https://buy.stripe.com/...' };
-            window.location.href = links[planKey] || "https://buy.stripe.com/INFIX_LINK";
+            window.location.href = "https://buy.stripe.com/INFIX_LINK";
         }
 
         function eseguiLogout() { localStorage.clear(); location.reload(); }
